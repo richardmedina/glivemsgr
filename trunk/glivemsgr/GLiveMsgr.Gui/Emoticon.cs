@@ -32,6 +32,16 @@ namespace GLiveMsgr.Gui
 			}
 		}
 		
+		public string [] Triggers {
+			get { 
+				return new string [] {
+					trigger, 
+					string.Format ("{0}1", trigger), 
+					string.Format ("{0}2", trigger)
+				};
+			}
+		}
+		
 		public string Filename {
 			get {
 				return string.Format ("smileys/{0}", filename);
