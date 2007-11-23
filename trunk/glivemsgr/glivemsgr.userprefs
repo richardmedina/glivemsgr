@@ -1,18 +1,13 @@
 ﻿<UserCombinePreferences version="1.0" filename="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/glivemsgr.mds">
   <Files>
     <File name="Welcome" />
-    <File name="./GLiveMsgr.Gui/EmoticonCollection.cs" line="9" column="36" />
-    <File name="./GLiveMsgr.Gui/Widgets/CellRendererContact.cs" line="34" column="67" />
-    <File name="./GLiveMsgr.Gui/Emoticon.cs" line="38" column="15" />
+    <File name="./GLiveMsgr.Gui/EmoticonCollection.cs" line="2" column="14" />
+    <File name="./GLiveMsgr.Gui/Widgets/CellRendererContact.cs" line="128" column="25" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
-        <Node name="GLiveMsgr.Gui" expanded="True">
-          <Node name="Widgets" expanded="True">
-            <Node name="CellRendererContact.cs" selected="True" />
-          </Node>
-        </Node>
+        <Node name="GLiveMsgr.Gui" selected="True" />
       </Node>
     </ViewMemento>
     <ViewMemento id="ClassPad">
