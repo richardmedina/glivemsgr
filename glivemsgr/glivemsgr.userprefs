@@ -1,14 +1,23 @@
-﻿<UserCombinePreferences version="1.0" filename="/home/ricki/Projects/glivemsgr/glivemsgr.mds">
+﻿<UserCombinePreferences version="1.0" filename="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/glivemsgr.mds">
   <Files>
     <File name="Welcome" />
+    <File name="./GLiveMsgr.Gui/EmoticonCollection.cs" line="9" column="36" />
+    <File name="./GLiveMsgr.Gui/Widgets/CellRendererContact.cs" line="34" column="67" />
+    <File name="./GLiveMsgr.Gui/Emoticon.cs" line="38" column="15" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
-      <Node expanded="True" selected="True" />
+      <Node expanded="True">
+        <Node name="GLiveMsgr.Gui" expanded="True">
+          <Node name="Widgets" expanded="True">
+            <Node name="CellRendererContact.cs" selected="True" />
+          </Node>
+        </Node>
+      </Node>
     </ViewMemento>
     <ViewMemento id="ClassPad">
       <Node expanded="True">
-        <Node name="System.Net.Protocols.Msnp" expanded="True" />
+        <Node name="RickiLib" expanded="True" />
       </Node>
     </ViewMemento>
     <ViewMemento id="ConnectionManagerPad">
@@ -19,7 +28,7 @@
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="Welcome" />
+    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Widgets/CellRendererContact.cs" />
     <Property key="ActiveConfiguration" value="Debug" />
   </Properties>
 </UserCombinePreferences>
