@@ -1,0 +1,25 @@
+<Combine name="glivemsgr" fileversion="2.0" outputpath="./build/bin/">
+  <Configurations active="Debug">
+    <Configuration name="Debug" ctype="CombineConfiguration">
+      <Entry build="True" name="GLiveMsgr.Gui" configuration="Debug" />
+      <Entry build="True" name="System.Net.Protocols" configuration="Debug" />
+      <Entry build="True" name="System.Net.Protocols.Msnp" configuration="Debug" />
+    </Configuration>
+    <Configuration name="Release" ctype="CombineConfiguration">
+      <Entry build="True" name="GLiveMsgr.Gui" configuration="Release" />
+      <Entry build="True" name="System.Net.Protocols" configuration="Release" />
+      <Entry build="True" name="System.Net.Protocols.Msnp" configuration="Release" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="GLiveMsgr.Gui" single="True">
+    <Execute type="None" entry="GLiveMsgr.Gui" />
+    <Execute type="None" entry="System.Net.Protocols" />
+    <Execute type="None" entry="System.Net.Protocols.Msnp" />
+  </StartMode>
+  <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
+  <Entries>
+    <Entry filename="./GLiveMsgr.Gui/GLiveMsgr.mdp" />
+    <Entry filename="./System.Net.Protocols/System.Net.Protocols.mdp" />
+    <Entry filename="./System.Net.Protocols.Msnp/System.Net.Protocols.Msnp.mdp" />
+  </Entries>
+</Combine>
