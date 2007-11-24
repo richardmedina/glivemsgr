@@ -7,13 +7,11 @@
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
-        <Node name="GLiveMsgr.Gui" selected="True" />
+        <Node name="System.Net.Protocols" selected="True" />
       </Node>
     </ViewMemento>
     <ViewMemento id="ClassPad">
-      <Node expanded="True">
-        <Node name="RickiLib" expanded="True" />
-      </Node>
+      <Node expanded="True" />
     </ViewMemento>
     <ViewMemento id="ConnectionManagerPad">
       <Node expanded="True" selected="True" />
