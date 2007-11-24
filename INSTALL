@@ -1,0 +1,13 @@
+DEPENDENCIES
+-----------------
+
+GNOME Live Messenger depends from Mono[1], Gtk#, Cairo and System.Drawing Libraries please install then before you compile
+
+
+INSTALLING
+-----------------
+
+GLive messenger must be compiled using MonoDevelop[1].
+
+
+[1] http://www.monodevelop.org
