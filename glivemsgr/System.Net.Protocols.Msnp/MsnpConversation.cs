@@ -17,7 +17,9 @@ namespace System.Net.Protocols.Msnp
 		private MsnpAccount account;
 		
 		private static string msg_header = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nX-MMS-IM-Format: FN=Verdana; EF=; CO=800000; CS=0; PF=22\r\n\r\n{0}";
-				
+		
+		private event EventHandler started;
+		
 		public MsnpConversation (MsnpAccount account, 
 			string hostname, 
 			int port)
@@ -27,6 +29,7 @@ namespace System.Net.Protocols.Msnp
 			this.account = account;
 			this.hostname = hostname;
 			this.port = port;
+			this.started = onStarted;
 		}
 		
 		public void Join (string random1, string random2)
@@ -50,12 +53,13 @@ namespace System.Net.Protocols.Msnp
 			connection.StartAsynchronousReading ();
 		}
 		
+		//FIXME: perform in separated thread and throw Started event
 		public void Start (MsnpContact contact, string random)
 		{
 			connection = new Connection (hostname, port);
 			
 			//connection.Disconnected += delegate { this.Close (); };
-			
+			System.Threading.Thread thread = new System.Threading.Thread ((ThreadStart) delegate {
 			try {
 				connection.Open ();
 			}catch (Exception e) {
@@ -81,6 +85,13 @@ namespace System.Net.Protocols.Msnp
 				this.processCommand (args.Data);
 			};
 			connection.StartAsynchronousReading ();
+			
+			Console.WriteLine ("OnStarted");
+			OnStarted ();
+			
+			});
+			
+			thread.Start ();
 		}
 		
 		private bool processCommand (string msnpcommand)
@@ -235,6 +246,16 @@ namespace System.Net.Protocols.Msnp
 			connection.Close ();
 			base.OnClosed ();
 		}
+		
+		protected virtual void OnStarted ()
+		{
+			started ( this, EventArgs.Empty);
+		}
+		
+		private void onStarted (object sender,EventArgs args)
+		{
+		}
+		
 		/*
 		private void formatMessage (string message)
 		{
@@ -266,8 +287,14 @@ namespace System.Net.Protocols.Msnp
 		public MsnpAccount Account {
 			get { return account; }
 		}
+		
 		public new BuddyCollection Buddies {
 			get { return base.Buddies; }
+		}
+		
+		public event EventHandler Started {
+			add { started += value; }
+			remove { started -= value; }
 		}
 	}
 }

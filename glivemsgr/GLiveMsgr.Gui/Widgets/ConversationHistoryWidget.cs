@@ -72,6 +72,10 @@ namespace GLiveMsgr.Gui
 				
 			view.Buffer.MoveMark (view.Buffer.InsertMark, view.Buffer.EndIter);
 			
+			view.Buffer.MoveMark (
+				view.Buffer.GetMark ("selection_bound"),
+				view.Buffer.EndIter);
+			
 			view.ScrollToMark (view.Buffer.InsertMark, 0.4, true, 0.0, 1.0);
 		}
 		

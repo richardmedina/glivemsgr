@@ -14,10 +14,6 @@ namespace GLiveMsgr.Gui
 	public class ContactList : Gtk.TreeView
 	{
 		private TreeStore store;
-//		private Gtk.TreeViewColumn column;
-		
-//		private MsnpGroupCollection groups;
-//		private BuddyCollection buddies;
 
 		private Gdk.Pixbuf [] pixbufState;
 		
@@ -31,6 +27,10 @@ namespace GLiveMsgr.Gui
 		
 		private TreeIterCollection groupIters;
 		private TreeIterCollection contactIters;
+		
+		private static readonly string group_nogroup_name = "No Group";
+		private static readonly string group_empty_message = 
+			"<i><small>Drag and drop your contacts here</small></i>";
 		
 		public ContactList (MsnpAccount account)
 		{
@@ -79,6 +79,20 @@ namespace GLiveMsgr.Gui
 			
 		//	PopulateList ();
 						
+			/*			
+			for (int i =0; i < 3; i ++) {
+				MsnpGroup group = new MsnpGroup ("Group " + (i+1), i);
+				GroupAdd (group);
+				MsnpContact contact = new MsnpContact ("ricki@dana-ide.org",
+				":) Ricki :p (h) dsadsa :@ que paso? :)");
+				contact.State = MsnpContactState.Offline;
+				contact.Groups.Add (group);
+				ContactAdd (contact);
+			}
+			
+			MsnpGroup empty_group = new MsnpGroup ("Empty Group", 3);
+			GroupAdd (empty_group);
+			*/
 			base.ModifyBase (StateType.Normal,
 				Theme.GetGdkColor (System.Drawing.Color.White));
 		}
@@ -136,6 +150,12 @@ namespace GLiveMsgr.Gui
 				MsnpGroup g1 = (MsnpGroup) item1.Obj;
 				MsnpGroup g2 = (MsnpGroup) item2.Obj;
 				
+				if (g1.Id == -1)
+					return 1;
+				
+				if(g2.Id == -1)
+					return 0;
+				
 				return string.Compare (g1.Name, g2.Name);
 			}
 			
@@ -190,10 +210,9 @@ namespace GLiveMsgr.Gui
 					}
 				}
 				if (i == 0) {
-					string message = "Drag and drop your contacts here";
 					store.AppendValues (iter, null, 
-						message,
-						new ContactListItem (message));
+						group_empty_message,
+						new ContactListItem (group_empty_message));
 				}
 			}
 		}
@@ -216,47 +235,7 @@ namespace GLiveMsgr.Gui
 			//GLib.Timeout.Add (500, findIconMouseOver);
 		}
 
-		/*
-		private bool findIconMouseOver ()
-		{
-			Gtk.TreePath path;
-			Gtk.TreeViewColumn column;
-			
-			int x, y;
-			
-			Debug.WriteLine ("Finding Over Icon");
-			base.GetPointer (out x, out y);
-			
-			if (base.GetPathAtPos (
-				x,
-				y,
-				out path,
-				out column)) {
 
-				Gdk.Rectangle rect = base.GetCellArea (
-					path,
-					column);
-						
-				if (column.Equals (col1)) {
-					Debug.WriteLine ("Found!");
-/*
-					Gtk.TreeIter iter;
-					if (store.GetIterFromString (
-						out iter,
-						path.ToString ()))
-						if (store.GetValue (iter, 0) != null);*/
-/*				}
-				
-				base.QueueDrawArea (
-					rect.X,
-					rect.Y,
-					rect.Width,
-					rect.Height);
-			}
-			
-			 return true;
-		}
-*/				
 		private void col1_cellDataFunc (
 			TreeViewColumn column, 
 			CellRenderer renderer, 
@@ -342,11 +321,12 @@ namespace GLiveMsgr.Gui
 		private void addToNoGroup (MsnpContact contact)
 		{
 			if (!store.IterIsValid (iterNoGroup)) {
-				MsnpGroup g = new MsnpGroup ("Sin grupo", -1);
-				iterNoGroup = store.AppendValues (
-					null,
-					g.Name,
-					new ContactListItem (g));
+				MsnpGroup g = new MsnpGroup (group_nogroup_name, -1);
+				GroupAdd (g);
+				//iterNoGroup = store.AppendValues (
+				//	null,
+				//	g.Name,
+				//	new ContactListItem (g));
 			}
 			
 			Gtk.TreeIter iter = store.AppendValues (iterNoGroup,
@@ -397,8 +377,8 @@ namespace GLiveMsgr.Gui
 				}
 			}
 			
-			if (!added)
-				addToNoGroup (contact);
+			//if (!added)
+			//	addToNoGroup (contact);
 		
 		/*
 			if (!ContactExists (contact)) {
@@ -471,13 +451,12 @@ namespace GLiveMsgr.Gui
 			if (!GroupExists (group)) {
 				Gtk.TreeIter iter = store.AppendValues ( 
 					null, 
-					group.Name, 
-					new ContactListItem (group));
-				string msg = "Drag and drop your contacts here"; 
+					string.Format ("<b>{0}</b>",group.Name), 
+					new ContactListItem (group)); 
 				store.AppendValues (iter, 
 					null,
-					msg,
-					new ContactListItem (msg));
+					group_empty_message,
+					new ContactListItem (group_empty_message));
 			
 				groupIters.Add (iter);
 			}

@@ -47,40 +47,11 @@ namespace GLiveMsgr.Gui
 		{
 			ThreadNotify notify = new ThreadNotify (
 				delegate {
-				//contactListWidget = new ContactListWidget (account);
-				//notebook.AppendPage (contactListWidget,
-				//new Label ("ContactList"));
-
-				//contactListWidget.List.PopulateList ();
-				notebook.Page = 1;
+					notebook.Page = 1;
 				});
 			notify.WakeupMain ();
-			/*
-			foreach (MsnpContact contact in account.Buddies) {
-				Debug.WriteLine ("{0} Alias {1} State {2}, Mask {3}, Groups : {4}",
-					contact.Username, contact.Alias, contact.State,contact.ListsMask, contact.Groups.Count);
-				foreach (MsnpGroup group in contact.Groups)
-					Debug.WriteLine ("\t{0} with id {0}", group.Name, group.Id);
-			}
-			*/
 		}
 
-/*				
-		private bool connect ()
-		{
-			int ret = account.Login ();
-			Console.WriteLine ("Login returns: {0}", ret);
-			
-			return ret == 0;
-		}
-		
-		private void oper_Terminated (object sender, 
-			GtkOperationTerminatedArgs args)
-		{
-			//if (args.RetVal)
-			//	notebook.Page = 1;
-		}
-*/		
 		public MsnpAccount Account {
 			get { return account; }
 		}

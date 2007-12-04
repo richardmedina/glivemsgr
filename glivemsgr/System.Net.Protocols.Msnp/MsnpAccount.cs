@@ -24,6 +24,10 @@ namespace System.Net.Protocols.Msnp
 		
 		private MsnpPassportInfo passport;
 		
+		private static readonly string group_nogroup_name = "Sin Grupo Account";
+		
+		private static readonly MsnpGroup noGroup = new MsnpGroup (group_nogroup_name, -1);
+		
 		public event ConversationRequestHandler ConversationRequest;
 		
 		private readonly string [] loginCommands = {
@@ -65,6 +69,7 @@ namespace System.Net.Protocols.Msnp
 			
 			buddies.Clear ();
 			groups.Clear ();
+			groups.Add (noGroup);
 			conversations.Clear ();
 			
 			Debug.WriteLine ("Debug enable");
@@ -394,7 +399,12 @@ namespace System.Net.Protocols.Msnp
 						string [] ids = command  [4].Split (
 							",".ToCharArray ());
 						
-						Debug.WriteLine ("Belog to {0} group mask", command [3]);
+						Debug.WriteLine ("Be log to {0} group mask", command [3]);
+						if (ids.Length == 0) {
+							//Debug.WriteLine ("Adding {0} to no group", contact.Username);
+							contact.Groups.Add (noGroup);
+						}
+						
 						foreach (string id in ids) {
 							Debug.WriteLine ("\tid>{0}", id);
 							MsnpGroup mGroup = this.Groups.GetById (int.Parse (id));

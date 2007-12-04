@@ -1,13 +1,33 @@
 ﻿<UserCombinePreferences version="1.0" filename="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/glivemsgr.mds">
   <Files>
     <File name="Welcome" />
-    <File name="./GLiveMsgr.Gui/EmoticonCollection.cs" line="2" column="14" />
-    <File name="./GLiveMsgr.Gui/Widgets/CellRendererContact.cs" line="128" column="25" />
+    <File name="./GLiveMsgr.Gui/Widgets/CellRendererContact.cs" line="57" column="50" />
+    <File name="./GLiveMsgr.Gui/MainWindow.cs" line="93" column="10" />
+    <File name="./GLiveMsgr.Gui/Widgets/ContactList.cs" line="372" column="21" />
+    <File name="./GLiveMsgr.Gui/MainWidget.cs" line="55" column="1" />
+    <File name="./GLiveMsgr.Gui/Widgets/ContactListHeader.cs" line="27" column="4" />
+    <File name="./GLiveMsgr.Gui/Widgets/ContactListWidget.cs" line="20" column="47" />
+    <File name="./GLiveMsgr.Gui/EmoticonManager.cs" line="53" column="13" />
+    <File name="./GLiveMsgr.Gui/Emoticon.cs" line="9" column="2" />
+    <File name="./GLiveMsgr.Gui/Widgets/CellRendererContactIcon.cs" line="156" column="35" />
+    <File name="./System.Net.Protocols.Msnp/MsnpAccount.cs" line="408" column="29" />
+    <File name="./System.Net.Protocols.Msnp/MsnpConversation.cs" line="252" column="11" />
+    <File name="./GLiveMsgr.Gui/Widgets/ConversationWindow.cs" line="1" column="1" />
+    <File name="./GLiveMsgr.Gui/Widgets/ConversationWidget.cs" line="92" column="5" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
-        <Node name="System.Net.Protocols" selected="True" />
+        <Node name="GLiveMsgr.Gui" expanded="True">
+          <Node name="Widgets" expanded="True">
+            <Node name="DisplayPictureWidget.cs" selected="True" />
+          </Node>
+        </Node>
+        <Node name="RickiLib" expanded="True">
+          <Node name="Widgets" expanded="True" />
+        </Node>
+        <Node name="System.Net.Protocols" expanded="True" />
+        <Node name="System.Net.Protocols.Msnp" expanded="True" />
       </Node>
     </ViewMemento>
     <ViewMemento id="ClassPad">
@@ -21,7 +41,7 @@
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Widgets/CellRendererContact.cs" />
+    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Widgets/ConversationWidget.cs" />
     <Property key="ActiveConfiguration" value="Debug" />
   </Properties>
 </UserCombinePreferences>
