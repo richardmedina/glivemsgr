@@ -45,12 +45,12 @@ namespace GLiveMsgr.Gui
 					"ricardo@innovaciontecnologica.com"
 				});
 			
-			comboEmail.Entry.Text = "ricardo@innovaciontecnologica.com";
+			comboEmail.Entry.Text = string.Empty;
 			
 			entryPassword = new FixedEntry ();
 			entryPassword.Entry.Visibility = false;
 			
-			entryPassword.Entry.Text = "09b9085a";
+			entryPassword.Entry.Text = string.Empty;
 			//comboState = new ComboMsnState ();
 			//comboState.ModifyBase (StateType.Normal, new Gdk.Color (255, 0, 0));
 			buttonConnect = new Button ("Login");

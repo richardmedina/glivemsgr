@@ -17,22 +17,14 @@ namespace GLiveMsgr.Gui
 
 		private ConversationMenu menu;
 		private ConversationWidget widget;
+		private Gtk.Statusbar statusbar;
+		
+		
 		
 		public ConversationWindow (MsnpConversation conv)
 		{
 			this.conversation = conv;
 			this.conversation.Closed += conversation_Closed;
-			
-			this.conversation.Typing += delegate {
-				ThreadNotify notify = new ThreadNotify (delegate {
-				MessageDialog d = new MessageDialog (null, DialogFlags.DestroyWithParent,
-				MessageType.Info, ButtonsType.Ok, "Typing");
-				d.Run ();
-				d.Destroy ();
-				});
-				
-				notify.WakeupMain ();
-			};
 			
 			this.conversation.Buddies.Added += conversation_Buddies_Added;
 			
@@ -44,6 +36,7 @@ namespace GLiveMsgr.Gui
 			menu = new ConversationMenu ();
 			
 			widget = new ConversationWidget (conv);
+			statusbar = new Statusbar ();
 			//Debug.WriteLine ("ConversationWindow.ctor");
 			base.VBox.PackStart (menu, false, false, 0);
 			base.VBox.PackStart (widget);
@@ -80,17 +73,17 @@ namespace GLiveMsgr.Gui
 		private void conversation_Buddies_Added (object sender,
 			WatchedCollectionEventArgs<Buddy> args)
 		{
-			string title = "Conversation with : ";
+			new ThreadNotify (delegate {
+				string title = "Conversation with : ";
+					
+				for (int i = 0; i < conversation.Buddies.Count; i ++) {
+					title += conversation.Buddies [i].Username;
+					if (i+1 < conversation.Buddies.Count)
+						title +=", ";
+				}
 			
-			
-			for (int i = 0; i < conversation.Buddies.Count; i ++) {
-				title += conversation.Buddies [i].Username;
-				if (i+1 < conversation.Buddies.Count)
-					title +=", ";
-			}
-			
-			base.Title = title;
-		
+				base.Title = title;
+			}).WakeupMain ();
 		}
 				
 		public MsnpConversation Conversation {

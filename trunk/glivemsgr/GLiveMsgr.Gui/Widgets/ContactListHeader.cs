@@ -24,7 +24,7 @@ namespace GLiveMsgr.Gui
 		public ContactListHeader (MsnpAccount account)
 		{
 			this.account = account;
-			ModifyBg (StateType.Normal, new Gdk.Color (255, 0, 0));
+			
 			Gdk.Pixbuf pixbuf = Gdk.Pixbuf.LoadFromResource 
 				("user_display_picture_default.png");
 			
@@ -61,17 +61,6 @@ namespace GLiveMsgr.Gui
 			vbox.HeightRequest = 85;
 			
 			PackStart (hbox);
-			
-			base.ModifyBg (StateType.Normal,
-				Theme.GdkColorFromCairo (Theme.BaseColor));
-		}
-		
-		protected override void OnRealized ()
-		{
-			base.OnRealized ();
-			
-			GdkWindow.InvalidateRect (Allocation, true);
-			GdkWindow.ProcessUpdates (true);
 		}
 		
 		public MsnpAccount Account {

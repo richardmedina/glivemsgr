@@ -50,11 +50,14 @@ namespace GLiveMsgr.Gui
 		
 		public void WindowShowHide ()
 		{
-			if (window.Visible)
+			if (window.Visible) {
+				window.Iconify ();
 				window.Hide ();
+			}
 			else {
+				if ((window.GdkWindow.State & Gdk.WindowState.Iconified) > 0)
+					window.Deiconify ();
 				window.Show ();
-			//	window.GdkWindow.Raise ();
 			}
 		}
 		
