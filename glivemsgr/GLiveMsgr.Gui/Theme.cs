@@ -55,15 +55,6 @@ namespace GLiveMsgr.Gui
 			Console.WriteLine ("GDkColor: {0}>{1}>{2}",
 				c.Red, c.Green, c.Blue);
 				
-			
-			//conv_border = Color.Aqua;
-			
-			/*
-			Debug.WriteLine ("R={0} G={1} B={2}", 
-				conv_background.R,
-				conv_background.G,
-				conv_background.B);
-			*/
 			conv_header_gradient_end_color = DrawingColorFromGdk (
 				GdkColorFromCairo (Theme.BgColor));
 				

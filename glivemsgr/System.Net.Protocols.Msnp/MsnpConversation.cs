@@ -18,8 +18,12 @@ namespace System.Net.Protocols.Msnp
 		
 		private static string msg_header = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nX-MMS-IM-Format: FN=Verdana; EF=; CO=800000; CS=0; PF=22\r\n\r\n{0}";
 		
-		private event EventHandler started;
+		private MessageStack messages;
 		
+		public MsnpConversation (MsnpAccount account) : 
+			this (account, string.Empty, 0)
+		{
+		}
 		public MsnpConversation (MsnpAccount account, 
 			string hostname, 
 			int port)
@@ -29,7 +33,7 @@ namespace System.Net.Protocols.Msnp
 			this.account = account;
 			this.hostname = hostname;
 			this.port = port;
-			this.started = onStarted;
+			messages = new MessageStack ();
 		}
 		
 		public void Join (string random1, string random2)
@@ -49,7 +53,7 @@ namespace System.Net.Protocols.Msnp
 				DataArrivedArgs args) {
 				this.processCommand (args.Data);
 			};
-			
+			Connected = true;
 			connection.StartAsynchronousReading ();
 		}
 		
@@ -59,7 +63,8 @@ namespace System.Net.Protocols.Msnp
 			connection = new Connection (hostname, port);
 			
 			//connection.Disconnected += delegate { this.Close (); };
-			System.Threading.Thread thread = new System.Threading.Thread ((ThreadStart) delegate {
+			System.Threading.Thread thread = 
+				new System.Threading.Thread ((ThreadStart) delegate {
 			try {
 				connection.Open ();
 			}catch (Exception e) {
@@ -88,10 +93,12 @@ namespace System.Net.Protocols.Msnp
 			
 			Console.WriteLine ("OnStarted");
 			OnStarted ();
-			
+			Connected = true;
 			});
 			
+			Console.WriteLine ("Starting Thread");
 			thread.Start ();
+			Console.WriteLine ("Thread working...");
 		}
 		
 		private bool processCommand (string msnpcommand)
@@ -216,6 +223,11 @@ namespace System.Net.Protocols.Msnp
 		//static int trid = 1;
 		public override void SendText (string text)
 		{
+			if (!Connected) {
+				Console.WriteLine ("NOt Connected, saving stack");
+				messages.Push (text);
+				return;
+			}
 			string data = string.Format (msg_header, text);
 			
 			string d = string.Format ("MSG {0} N {1}\r\n{2}", 1, data.Length, data);
@@ -223,6 +235,17 @@ namespace System.Net.Protocols.Msnp
 			connection.RawSend (d);
 			
 			base.SendDataSent (text);
+		}
+		
+		protected override void OnStarted ()
+		{
+			base.OnStarted ();
+			Console.WriteLine ("Sending popped messages");
+			while (messages.Count > 0) {
+				Console.WriteLine ("Sending : {0}", messages.Peek ());
+				SendText (messages.Pop ());
+			}
+			Console.WriteLine ("DONE popped");
 		}
 				
 		protected override void OnDataReceived (string data)
@@ -242,18 +265,17 @@ namespace System.Net.Protocols.Msnp
 		
 		protected override void OnClosed ()
 		{
-			connection.RawSend ("OUT");
-			connection.Close ();
+			if (Connected) {
+				Console.WriteLine ("Seding 'OUT'");
+				connection.RawSend ("OUT");
+				connection.Close ();
+			}
 			base.OnClosed ();
 		}
 		
-		protected virtual void OnStarted ()
+		public void Close ()
 		{
-			started ( this, EventArgs.Empty);
-		}
-		
-		private void onStarted (object sender,EventArgs args)
-		{
+			OnClosed ();
 		}
 		
 		/*
@@ -288,13 +310,18 @@ namespace System.Net.Protocols.Msnp
 			get { return account; }
 		}
 		
-		public new BuddyCollection Buddies {
-			get { return base.Buddies; }
+		public string Hostname {
+			get { return hostname; }
+			set { hostname = value; }
 		}
 		
-		public event EventHandler Started {
-			add { started += value; }
-			remove { started -= value; }
+		public int Port {
+			get { return port; }
+			set { port = value; }
 		}
+		
+		public new BuddyCollection Buddies {
+			get { return base.Buddies; }
+		}		
 	}
 }

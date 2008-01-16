@@ -11,36 +11,35 @@ namespace GLiveMsgr.Gui
 {
 	
 	
-	public class NotificationIcon : GLiveMsgr.Gui.TrayIcon
+	public class NotificationIcon : Gtk.StatusIcon
 	{
 		private MainWindow window;
 		
-		private Gtk.EventBox eventBox;
-		
 		private NotificationMenu menu;
 		
-		public NotificationIcon (MainWindow window) : base ("GNOME Live Messenger")
+		public NotificationIcon (MainWindow window)
 		{
 			this.window = window;
-			
-			eventBox = new Gtk.EventBox ();
-			
-			eventBox.Add (new Image (Stock.GoUp, IconSize.Button));
-			eventBox.ButtonPressEvent += eventBox_ButtonPressEvent;
-			
+			this.Stock = Gtk.Stock.GoUp; 
+						
 			menu = new NotificationMenu ();
 			menu.ItemShowHide.Activated += delegate { WindowShowHide (); };
 			menu.ItemQuit.Activated += menu_ItemQuit_Activated;
 			menu.ShowAll ();
-			
-			base.Add (eventBox);
 		}
-		private void eventBox_ButtonPressEvent (object sender, ButtonPressEventArgs args)
+		
+		protected override void OnPopupMenu (uint button, uint activate_time)
 		{
-			if (args.Event.Button == 3)
+			if (button == 3)
 				menu.Popup ();
-			else
-				WindowShowHide ();
+			base.OnPopupMenu (button, activate_time);
+		}
+
+		
+		protected override void OnActivate ()
+		{
+			WindowShowHide ();
+			base.OnActivate ();
 		}
 		
 		private void menu_ItemQuit_Activated (object sender, EventArgs args)
@@ -71,10 +70,10 @@ namespace GLiveMsgr.Gui
 			public NotificationMenu ()
 			{
 				itemShowHide = new ImageMenuItem ("Mostrar/Ocultar ventana principal");
-				itemPrefs = new ImageMenuItem (Stock.Preferences, null);
-				itemAbout = new ImageMenuItem (Stock.About, null);
+				itemPrefs = new ImageMenuItem (Gtk.Stock.Preferences, null);
+				itemAbout = new ImageMenuItem (Gtk.Stock.About, null);
 				itemAbout.Activated += itemAbout_Activated;
-				itemQuit = new ImageMenuItem (Stock.Quit, null);
+				itemQuit = new ImageMenuItem (Gtk.Stock.Quit, null);
 				
 				base.Append (itemShowHide);
 				base.Append (new Gtk.SeparatorMenuItem ());

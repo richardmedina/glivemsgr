@@ -39,6 +39,9 @@ namespace GLiveMsgr.Gui
 		{
 		}
 		
+		//FIXME: Find better way to change state 
+		// app crashes when try to change internal value
+		// but throw Changed event and the account is not initialized
 		public ContactStateMenu (MsnpContactState state)
 		{
 			Changed = onChanged;
@@ -49,7 +52,7 @@ namespace GLiveMsgr.Gui
 				menus [i] = createImageMenuItem (i);
 				base.Append (menus [i]);
 			}
-			State = state;
+			//State = state;
 			
 			base.ShowAll ();
 		}

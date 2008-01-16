@@ -65,15 +65,14 @@ namespace System.Net.Protocols
 		}
 		
 		// Setter will be used by server for alias change notification 
-		public string Alias {
+		public virtual string Alias {
 			get { return alias; }
 			set {
 				alias = value;
-				OnAliasChanged ();
 			}
 		}
 		
-		public int State {
+		public virtual int State {
 			get { return state; }
 			set { 
 				state = value;
