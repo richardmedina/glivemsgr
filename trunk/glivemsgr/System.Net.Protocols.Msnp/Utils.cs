@@ -68,7 +68,7 @@ namespace System.Net.Protocols.Msnp
 		
 		public static string UrlEncode (string text)
 		{
-			return HttpUtility.UrlEncode (text);
+			return HttpUtility.UrlPathEncode (text);
 		}
 		
 		public static string UrlDecode (string text)

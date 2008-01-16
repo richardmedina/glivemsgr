@@ -64,7 +64,7 @@ namespace GLiveMsgr.Gui
 		
 		private void conversation_Typing (object sender, TypingArgs args)
 		{
-			new ThreadNotify (delegate {
+			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
 				if (messageTime < 0) {
 					statusbar.Push (1, 
 						string.Format ("{0} writing message",
@@ -72,7 +72,7 @@ namespace GLiveMsgr.Gui
 					messageTime = 2;
 					GLib.Timeout.Add (1000, dec_messageTime);
 				}
-			}).WakeupMain ();
+			});
 		}
 		
 		private bool dec_messageTime ()

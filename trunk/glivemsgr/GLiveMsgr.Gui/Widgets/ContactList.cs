@@ -30,7 +30,7 @@ namespace GLiveMsgr.Gui
 		
 		private static readonly string group_nogroup_name = "No Group";
 		private static readonly string group_empty_message = 
-			"<i><small>Drag and drop your contacts here</small></i>";
+			"Drag and drop your contacts here";
 		
 		public ContactList (MsnpAccount account)
 		{
@@ -64,8 +64,10 @@ namespace GLiveMsgr.Gui
 				"text",
 				1);
 			
-			col1.SetCellDataFunc (cell1, col1_cellDataFunc);
-			col2.SetCellDataFunc (cell2, col2_cellDataFunc);			
+			col1.SetCellDataFunc (cell1, 
+				(TreeCellDataFunc) col1_cellDataFunc);
+			col2.SetCellDataFunc (cell2, 
+				(TreeCellDataFunc) col2_cellDataFunc);
 			
 			pixbufState = new Gdk.Pixbuf [] {
 				Gdk.Pixbuf.LoadFromResource ("online.png"), // Online
@@ -272,7 +274,7 @@ namespace GLiveMsgr.Gui
 		private void account_Buddies_Added (object sender, 
 			RickiLib.Types.WatchedCollectionEventArgs<Buddy> args)
 		{
-			ContactAdd ((MsnpContact)args.Instance);
+			ContactAdd ((MsnpContact) args.Instance);
 		}
 		
 		private void contact_StateChanged (object sender, EventArgs args)
@@ -451,7 +453,7 @@ namespace GLiveMsgr.Gui
 			if (!GroupExists (group)) {
 				Gtk.TreeIter iter = store.AppendValues ( 
 					null, 
-					string.Format ("<b>{0}</b>",group.Name), 
+					group.Name, 
 					new ContactListItem (group)); 
 				store.AppendValues (iter, 
 					null,

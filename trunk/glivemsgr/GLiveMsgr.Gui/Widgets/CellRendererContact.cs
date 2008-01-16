@@ -32,74 +32,17 @@ namespace GLiveMsgr.Gui
 		
 				//Mutex m = new Mutex ();
 				//m.WaitOne ();
-				using (Cairo.Context context = Gdk.CairoHelper.Create (window)) {
-							
-				int index = 0;
-				// x will be used for text or image orizontal position
-				
-				string text = Text;
-				
-				bool realized = false;
-				
+			using (Cairo.Context context = Gdk.CairoHelper.Create (window)) {				
 				int x = background_area.X;
-
-				if (this.IsExpander) {
+				
+				bool isgroup = false;
+				if (IsExpander) {
 					x = 15;
+					isgroup = true;
 				}
-					showText (context, Text, ref x, background_area.Y, true);
-					return;
-				//}
 				
-				
-
-				//while (index < text.Length) {
-				//	Console.WriteLine ("While iteration index {0}", index);
-					for (int i = 0; i < emoticons.Count; i ++) {
-						Emoticon emoticon = emoticons [i];
-						realized = false;
-						int pos = text.IndexOf (
-							emoticon.Trigger, 
-							index);
-						
-						if (pos == -1) {
-							continue;
-						}
-						
-						if (pos > index) {
-						//	Console.WriteLine ("pos is major than index");
-							showText (context, 
-							text.Substring (index, pos), 
-							ref x, background_area.Y);
-							// Pedding
-							index += pos;
-						}
-						//else {
-							showImage (context, 
-							emoticon.Filename, 
-							ref x, 
-							background_area.Y);
-							
-							pos += emoticon.Trigger.Length;
-						//}
-						
-						index = pos;
-						//Console.WriteLine ("Current index is now {0} and length {1} pos {2} trigger {3}", 
-						//	index, text.Length, pos, emoticon.Trigger.Length);
-						//realized = true;
-						i = -1;
-						//break;
-					}
-					
-					//if (!realized)
-					//	if (index < text.Length) {
-					//		showText (context, text.Substring (index, text.Length - index), ref x, background_area.Y);
-					//	}
-				//}
-				
-				//((IDisposable)context.Target).Dispose ();
-				//((IDisposable)context).Dispose ();
+				showText (context, Text, ref x, background_area.Y, true, isgroup);
 			}
-			//	m.ReleaseMutex ();
 		}
 		
 		private void showImage (Cairo.Context cr, string filename, ref int x, int y)
@@ -114,19 +57,37 @@ namespace GLiveMsgr.Gui
 			x += image.Width;
 		}
 
-		private void showText (Cairo.Context cr, string text, ref int x, int y, bool usemarkup) 
+		private void showText (Cairo.Context cr, string text, ref int x, int y, bool usemarkup, bool isgroup) 
 		{
 			//Console.WriteLine ("Adding text : '{0} at {1}'", text, x);
 			
 			Pango.Layout layout = Pango.CairoHelper.CreateLayout (cr);
-			
-			if (usemarkup)
-				layout.SetMarkup (text);
+			/*
+			if (usemarkup) {
+				if (!isgroup) {
+					text = text.Replace ("<", "&lt;");
+					text = text.Replace (">", "&gt;");
+					text = text.Replace ("&", "&amp;");
+				}
+				
+				layout.SetMarkup (
+					string.Format ("<small>{0}</small>",text));
+			}
 			else
 				layout.SetText (text);
+			*/
+			
+			Gtk.Style s = new Style ();
+			
+			layout.FontDescription = s.FontDesc;
+			if (isgroup)
+				layout.FontDescription.Weight = Pango.Weight.Bold;
+			
+			layout.SetText (text); 
 			
 			cr.Color = new Cairo.Color (0, 0, 0);
 			cr.MoveTo (x, y);
+			
 			Pango.CairoHelper.ShowLayout (cr, layout);
 			
 			int lw, lh;

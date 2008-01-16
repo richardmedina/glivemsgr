@@ -13,6 +13,7 @@ namespace GLiveMsgr.Gui
 	{
 		private MsnpAccount account;
 		private MainWidget mainWidget;
+		private Gtk.StatusIcon icon;
 		private NotificationIcon notification;
 		
 //		private Gdk.Cursor resizeCursor;
@@ -35,6 +36,13 @@ namespace GLiveMsgr.Gui
 			mainWidget = new MainWidget (account);
 			VBox.PackStart (mainWidget);
 			
+			/*
+			icon = new StatusIcon ();
+			icon.IconName = Stock.GoUp;
+			icon.Tooltip = "GNOMELive Messenger";
+			*/
+			//icon.Visible = true;
+			
 			Resize (280, 530);
 			showNotification ();
 		}
@@ -48,17 +56,7 @@ namespace GLiveMsgr.Gui
 				
 		private void showNotification ()
 		{
-			//notification.
-			notification = new NotificationIcon (this);
-			
-			
-			ThreadNotify notif = new ThreadNotify (
-				delegate {
-					notification.ShowAll ();
-					//base.ShowAll ();
-				});
-			
-			notif.WakeupMain ();
+			notification = new NotificationIcon (this);			
 		}
 		
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
@@ -166,7 +164,7 @@ namespace GLiveMsgr.Gui
 			Hide ();
 			return true;//base.OnDeleteEvent (args);
 		}
-
+		
 		int w =0, h = 0;
 		Gdk.Pixmap pixmap;
 		

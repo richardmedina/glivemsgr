@@ -24,7 +24,7 @@ namespace System.Net.Protocols.Msnp
 		
 		private MsnpPassportInfo passport;
 		
-		private static readonly string group_nogroup_name = "Sin Grupo Account";
+		private static readonly string group_nogroup_name = "Sin Grupo";
 		
 		private static readonly MsnpGroup noGroup = new MsnpGroup (group_nogroup_name, -1);
 		
@@ -197,15 +197,20 @@ namespace System.Net.Protocols.Msnp
 			base.Logout ();
 		}
 		
+		//FIXME:This procedure must show the window and later
+		// do operations with connection
 		public void StartConversation (MsnpContact contact)
 		{
+			MsnpConversation conv = new MsnpConversation (this);
+			
+			OnConversationRequest (conv);
+		
 			dispatchServer.Send ("XFR {0} SB", TrId);
 			
 			string recv = string.Empty;
 			bool gotit = false;
 			
 			do {
-				
 				if (!gotit) {
 					this.processCommand (recv);
 					recv = dispatchServer.Read ();
@@ -218,19 +223,25 @@ namespace System.Net.Protocols.Msnp
 			
 			string []  server_info = command [3].Split (":".ToCharArray ());
 			
-			MsnpConversation conv = new MsnpConversation (
-				this,
-				server_info [0],
-				int.Parse (server_info [1]));
+			conv.Hostname = server_info [0];
+			conv.Port = int.Parse (server_info [1]);
+			//MsnpConversation conv = new MsnpConversation (
+			//	this,
+			//	server_info [0],
+			//	int.Parse (server_info [1]));
 			
 			Console.WriteLine ("Starting conversation:\n\tHost: {0}\n\tPort: {1}\n\tRandom: {2}",
 				server_info [0], server_info [1], command [5]);
 			
 			conv.Start (contact, command [5]);
 			
-			this.ConversationRequest (this, 
-				new ConversationRequestArgs (conv));
-			
+			//this.ConversationRequest (this, 
+			//	new ConversationRequestArgs (conv));
+		}
+		
+		protected virtual void OnConversationRequest (MsnpConversation conv)
+		{
+			ConversationRequest (this, new ConversationRequestArgs (conv));
 		}
 
 		
@@ -249,7 +260,23 @@ namespace System.Net.Protocols.Msnp
 			return format;
 
 		}
-				
+		
+		public void ChangeAlias (string newalias)
+		{
+			dispatchServer.Send ("REA {0} {1} {2}",
+				TrId,
+				Username,
+				Utils.UrlEncode (newalias));
+		}
+		
+		public void ChangeState (MsnpContactState state)
+		{
+			Console.WriteLine ("Changing State");
+			dispatchServer.Send ("CHG {0} {1}",
+				TrId,
+				Utils.ContactStateToString (state));
+		}
+		
 		internal void SendCommand (string command, params object [] objs)
 		{
 			Thread thread = new Thread (delegate () {
@@ -331,6 +358,7 @@ namespace System.Net.Protocols.Msnp
 					
 					this.Alias = Utils.UrlDecode (
 						command [4]);
+					OnAliasChanged ();
 					Debug.WriteLine ("Setting Alias: {0}", 
 						this.Alias);
 					SendCommand ("SYN {0} 0", TrId);
@@ -424,6 +452,7 @@ namespace System.Net.Protocols.Msnp
 				case "CHG": {
 					this.State = Utils.StringToContactState (
 						command [2]);
+					OnStateChanged ();
 					//this.SendStateChanged ();
 					Debug.WriteLine ("Changed ContactState to {0}..", 
 						this.State.ToString ());
@@ -521,6 +550,15 @@ namespace System.Net.Protocols.Msnp
 						new ConversationRequestArgs (conversation));
 					
 				}
+				break;
+				
+				case "REA":
+					//Console.WriteLine ("Changing to {0} == {1}", 
+					//	command [4],
+					//	Utils.UrlDecode (command [4]));
+					Alias = Utils.UrlDecode (command [4]);
+					Console.WriteLine ("New alias : {0}", Alias);
+					OnAliasChanged ();
 				break;
 
 			}
@@ -638,8 +676,16 @@ namespace System.Net.Protocols.Msnp
 		
 		private void onConversationRequest (object sender, ConversationRequestArgs args)
 		{
-			Console.WriteLine ("Saving Conversation");
+			Console.WriteLine ("Adding Conversation");
+			args.Conversation.Closed += conversation_Closed;
 			conversations.Add (args.Conversation);
+		}
+		
+		private void conversation_Closed (object sender, EventArgs args)
+		{
+			Console.WriteLine ("Removing Conversation");
+			MsnpConversation conv = (MsnpConversation) sender;
+			conversations.Remove (conv);
 		}
 		
 		/*
@@ -690,6 +736,12 @@ namespace System.Net.Protocols.Msnp
 			get { return base.Username; }
 			set { base.Username = value; }
 		}
+		/*
+		public override string Alias {
+			set { 	}
+		}
+		*/
+
 		
 		public new string Password {
 			get { return base.Password; }

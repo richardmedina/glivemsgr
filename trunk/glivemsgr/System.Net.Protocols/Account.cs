@@ -10,12 +10,14 @@ namespace System.Net.Protocols
 		private string password;
 		private bool logged;
 		
-		public event EventHandler started;
+		private event EventHandler started;
 		private event EventHandler terminated;
 		
 		public Account (string username, string password) : base (username)
 		{
 			started = onStarted;
+			terminated = onTerminated;
+			logged = false;
 			this.password = password;
 		}
 		
@@ -38,7 +40,16 @@ namespace System.Net.Protocols
 			started (this, EventArgs.Empty);
 		}
 		
+		protected virtual void OnTerminated ()
+		{
+			terminated (this, EventArgs.Empty);
+		}
+		
 		private void onStarted (object sender, EventArgs args)
+		{
+		}
+		
+		private void onTerminated (object sender, EventArgs args)
 		{
 		}
 		

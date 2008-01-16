@@ -37,7 +37,7 @@ namespace GLiveMsgr.Gui
 			
 			widget = new ConversationWidget (conv);
 			statusbar = new Statusbar ();
-			//Debug.WriteLine ("ConversationWindow.ctor");
+			
 			base.VBox.PackStart (menu, false, false, 0);
 			base.VBox.PackStart (widget);
 						
@@ -65,7 +65,7 @@ namespace GLiveMsgr.Gui
 		{
 			new ThreadNotify ( 
 			delegate {
-				base.Destroy ();
+				statusbar.Push (1, "Conversation closed by remote user");
 			}).WakeupMain ();
 			
 			
@@ -73,17 +73,19 @@ namespace GLiveMsgr.Gui
 		private void conversation_Buddies_Added (object sender,
 			WatchedCollectionEventArgs<Buddy> args)
 		{
-			new ThreadNotify (delegate {
-				string title = "Conversation with : ";
+			RickiLib.Widgets.Utils.RunOnGtkThread (
+				delegate {
+					string title = "Conversation with : ";
 					
-				for (int i = 0; i < conversation.Buddies.Count; i ++) {
-					title += conversation.Buddies [i].Username;
-					if (i+1 < conversation.Buddies.Count)
-						title +=", ";
-				}
+					for (int i = 0; i < conversation.Buddies.Count; i ++) {
+						title += conversation.Buddies [i].Username;
+						if (i+1 < conversation.Buddies.Count)
+							title +=", ";
+					}
 			
-				base.Title = title;
-			}).WakeupMain ();
+					base.Title = title;
+				}
+			);
 		}
 				
 		public MsnpConversation Conversation {

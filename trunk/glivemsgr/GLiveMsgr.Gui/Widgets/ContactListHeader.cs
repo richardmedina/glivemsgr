@@ -16,8 +16,9 @@ namespace GLiveMsgr.Gui
 		
 		private Gtk.HBox hbox;
 		
-//		private AliasChangeButton aliasButton;
-		private EditableLabelButton buttonMsg;
+		
+		private EditableLabelButton elbMsg;
+		private EditableLabelButton elbAlias;
 		
 		private MsnpAccount account;
 		
@@ -33,9 +34,9 @@ namespace GLiveMsgr.Gui
 			displayPic = new Gtk.Image (pixbuf);
 			
 			//aliasButton = new AliasChangeButton ();
-			buttonMsg = new EditableLabelButton ();
+			elbMsg = new EditableLabelButton ();
 			
-			buttonMsg.HBox.PackStart (
+			elbMsg.HBox.PackStart (
 				new Arrow (ArrowType.Down, ShadowType.None), 
 				false, false, 0);
 			
@@ -54,7 +55,7 @@ namespace GLiveMsgr.Gui
 			
 			vbox = new VBox ();
 			vbox.BorderWidth = 10;
-			vbox.PackEnd (buttonMsg, false, false, 0);
+			vbox.PackEnd (elbMsg, false, false, 0);
 
 			hbox.PackStart (vbox);
 			

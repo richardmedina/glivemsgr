@@ -9,12 +9,16 @@ namespace System.Net.Protocols
 	{
 		
 		private BuddyCollection buddies;
+		
+		private event EventHandler started;
 		public event DataReceivedHandler DataReceived;
 		private event DataEventHandler dataGet;
 		private event DataEventHandler dataSent;
 		
 		public event TypingHandler Typing;
 		public event EventHandler Closed;
+		
+		private bool connected;
 		
 		public Conversation ()
 		{
@@ -26,6 +30,7 @@ namespace System.Net.Protocols
 			
 			Typing = onTyping;
 			buddies = new BuddyCollection ();
+			connected = false;
 		}
 		
 		public virtual void SendText (string text)
@@ -98,6 +103,15 @@ namespace System.Net.Protocols
 			OnDataReceived (args.Data);
 		}
 		
+		protected virtual void OnStarted ()
+		{
+			started (this, EventArgs.Empty);
+		}
+		
+		private void onStarted (object sender, EventArgs args)
+		{
+		}
+		
 		private void onDataSent (object sender, DataEventArgs args)
 		{
 		}
@@ -120,6 +134,11 @@ namespace System.Net.Protocols
 			get { return buddies; }
 		}
 		
+		public event EventHandler Started {
+			add { started += value; }
+			remove { started -= value; }
+		}
+		
 		public event DataEventHandler DataSent {
 			add { dataSent += value; }
 			remove { dataSent += value; }
@@ -130,5 +149,9 @@ namespace System.Net.Protocols
 			remove { dataGet += value; }
 		}
 		
+		public bool Connected {
+			get { return connected; }
+			set { connected = value; }
+		}
 	}
 }
