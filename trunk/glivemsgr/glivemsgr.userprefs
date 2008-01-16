@@ -17,22 +17,29 @@
     <File name="./GLiveMsgr.Gui/Widgets/ConversationWindow.cs" line="58" column="15" />
     <File name="./GLiveMsgr.Gui/NotificationIcon.cs" line="25" column="35" />
     <File name="./GLiveMsgr.Gui/Widgets/CellRendererContact.cs" line="79" column="4" />
+    <File name="./GLiveMsgr.Gui/Emoticon.cs" line="2" column="14" />
+    <File name="./GLiveMsgr.Gui/Theme.cs" line="251" column="9" />
+    <File name="./GLiveMsgr.Gui/Widgets/ConversationWidget.cs" line="1" column="1" />
+    <File name="./GLiveMsgr.Gui/Widgets/Toolbar.cs" line="13" column="56" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
-        <Node name="System.Net.Protocols.Msnp" expanded="True">
-          <Node name="MsnpConversation.cs" selected="True" />
+        <Node name="GLiveMsgr.Gui" expanded="True">
+          <Node name="Widgets" expanded="True">
+            <Node name="Toolbar.cs" selected="True" />
+          </Node>
         </Node>
+        <Node name="System.Net.Protocols.Msnp" expanded="True" />
       </Node>
     </ViewMemento>
     <ViewMemento id="ClassPad">
       <Node expanded="True">
         <Option id="ShowProjects" value="True" />
         <Option id="NestedNamespaces" value="True" />
+        <Option id="GroupByAccess" value="True" />
         <Option id="PublicApiOnly" value="False" />
         <Option id="GroupByType" value="True" />
-        <Option id="GroupByAccess" value="True" />
       </Node>
     </ViewMemento>
     <ViewMemento id="ConnectionManagerPad">
@@ -43,7 +50,7 @@
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/System.Net.Protocols.Msnp/MsnpConversation.cs" />
+    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Widgets/Toolbar.cs" />
     <Property key="ActiveConfiguration" value="Debug" />
   </Properties>
 </UserCombinePreferences>
