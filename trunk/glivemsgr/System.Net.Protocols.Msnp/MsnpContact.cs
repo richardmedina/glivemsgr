@@ -11,14 +11,14 @@ namespace System.Net.Protocols.Msnp
 		private MsnpGroupCollection groups;
 		private int listsMask;
 		
-		private MsnpAccount account;
+		private MsnpAccount _account;
 		
 		public MsnpContact (string email, string alias) : 
 			base (email, alias, (int) MsnpContactState.Offline)
 		{
-			this.personalMessage = string.Empty;
-			this.groups = new MsnpGroupCollection ();
-			this.listsMask = 0;
+			personalMessage = string.Empty;
+			groups = new MsnpGroupCollection ();
+			listsMask = 0;
 		}
 		
 		public MsnpContact (string email) : 
@@ -30,7 +30,9 @@ namespace System.Net.Protocols.Msnp
 		public override Conversation OpenConversation ()
 		{
 			//MsnpConversation conv = new MsnpConversation (
-			this.Account.SendCommand ("XFR {0} SB", MsnpAccount.TrId);
+			Account.SendCommand ("XFR {0} SB", Account.TrId);
+			MsnpConversation conv = new MsnpConversation (_account);
+			
 			
 			return null;
 		}
@@ -43,8 +45,6 @@ namespace System.Net.Protocols.Msnp
 		
 		public MsnpGroupCollection Groups {
 			get { return groups; }
-			
-			//set { groups = value; }
 		}
 		
 		public int ListsMask {
@@ -58,8 +58,8 @@ namespace System.Net.Protocols.Msnp
 		}
 		
 		public MsnpAccount Account {
-			get { return account; }
-			internal set { account = value; }
+			get { return _account; }
+			internal set { _account = value; }
 		}
 	}
 }

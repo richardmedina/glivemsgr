@@ -26,7 +26,7 @@ namespace GLiveMsgr.Gui
 			toolbar = new EntryEditingToolbar ();
 			entry = new ConversationEntryWidget (conversation);
 			
-			toolbar.EmoticonBox.Selected += onSelected;
+			toolbar.EmoticonBox.Selected += EmoticonBox_Selected;
 			
 			vpaned = new VPaned ();
 			vbox = new VBox (false, 0);
@@ -47,7 +47,7 @@ namespace GLiveMsgr.Gui
 				Theme.GetGdkColor (Theme.ConversationBackground));
 		}
 		
-		private void onSelected (object sender, EmoticonSelectedArgs args)
+		private void EmoticonBox_Selected (object sender, EmoticonSelectedArgs args)
 		{
 			entry.RitchTextView.InsertAtCursor (args.Emoticon.Trigger);
 		}

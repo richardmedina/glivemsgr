@@ -130,7 +130,7 @@ namespace System.Net.Protocols
 			OnTyping (args.Buddy);
 		}
 		
-		protected BuddyCollection Buddies {
+		public BuddyCollection Buddies {
 			get { return buddies; }
 		}
 		

@@ -21,28 +21,7 @@ namespace System.Net.Protocols.Msnp
 		
 		public static string ContactStateToString (MsnpContactState state)
 		{
-		/*
-			switch (state) {
-				case MsnpContactState.Offline:
-					return "HDN";
-				case MsnpContactState.Online:
-					return "NLN";
-				case MsnpContactState.Away:
-					return "AWY";
-				case MsnpContactState.Brb:
-					return "BRB";
-				case MsnpContactState.Bussy:
-					return "BSY";
-				case MsnpContactState.Lunch:
-					return "LUN";
-				case MsnpContactState.Phone:
-					return "PHN";
-			}
-			return "HDN";
-		*/
 			return states [(int) state];
-				
-		
 		}
 		
 		public static MsnpContactState StringToContactState (string state)

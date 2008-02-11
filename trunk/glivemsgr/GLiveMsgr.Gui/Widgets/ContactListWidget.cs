@@ -15,24 +15,24 @@ namespace GLiveMsgr.Gui
 		private ContactList list;
 		private AliasChangeButton aliasButton;
 		
-		private MsnpAccount account;
+		private MsnpAccount _account;
 		
 		public ContactListWidget (MsnpAccount account)
 		{
-			this.account = account;
-			this.account.AliasChanged += account_AliasChanged;
-			this.account.StateChanged += account_StateChanged;
+			_account = account;
+			_account.AliasChanged += account_AliasChanged;
+			_account.StateChanged += account_StateChanged;
 			
 			BorderWidth = 10;
 			
 			Spacing = 5;
 			
-			header = new ContactListHeader (account);
+			header = new ContactListHeader (_account);
 			aliasButton = new AliasChangeButton ();
 			aliasButton.EditableLabel.Changed += aliasButton_EditableLabel_Changed;
 			aliasButton.StateMenu.Changed += aliasButton_StateMenu_Changed;
 			
-			list = new ContactList (account);
+			list = new ContactList (_account);
 						
 			ScrolledWindow scrolled = new ScrolledWindow ();
 			scrolled.ShadowType = ShadowType.EtchedOut;
@@ -47,25 +47,29 @@ namespace GLiveMsgr.Gui
 		private void account_AliasChanged (object sender, EventArgs args)
 		{
 			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
-				aliasButton.EditableLabel.Text = account.Alias;
+				aliasButton.EditableLabel.Text = _account.Alias;
 			});
 		}
 		
 		private void account_StateChanged (object sender, EventArgs args)
 		{
+			/*
 			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
-				aliasButton.StateMenu.State = account.State;
+				aliasButton.StateMenu.State = _account.State;
 			});
+			*/
 		}
 		
 		private void aliasButton_EditableLabel_Changed (object sender, EventArgs args)
 		{
-			account.ChangeAlias (aliasButton.EditableLabel.Text);
+			_account.ChangeAlias (aliasButton.EditableLabel.Text);
 		}
 		
 		private void aliasButton_StateMenu_Changed (object sender, EventArgs args)
 		{
-			//account.ChangeState (aliasButton.StateMenu.State);
+			if (_account.Logged) {
+				_account.ChangeState (aliasButton.StateMenu.State);
+			}
 		}
 				
 		public ContactList List {
@@ -73,7 +77,7 @@ namespace GLiveMsgr.Gui
 		}
 		
 		public MsnpAccount Account {
-			get { return account; }
+			get { return _account; }
 		}
 	}
 }

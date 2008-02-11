@@ -12,7 +12,7 @@ namespace System.Net.Protocols.Msnp
 
 	public class MsnpAccount : System.Net.Protocols.Account
 	{
-		private static int trId = 1;
+		private int trId = 1;
 		
 		private Connection notificationServer;
 		private Connection dispatchServer = null;
@@ -22,13 +22,19 @@ namespace System.Net.Protocols.Msnp
 		private MsnpGroupCollection groups;
 		private MsnpConversationCollection conversations;
 		
+		//private MsnpConversationCollection bconversations;
+		
 		private MsnpPassportInfo passport;
 		
-		private static readonly string group_nogroup_name = "Sin Grupo";
+		private MsnpConversation _nextConversation;
+		
+		private static readonly string group_nogroup_name = "No group";
 		
 		private static readonly MsnpGroup noGroup = new MsnpGroup (group_nogroup_name, -1);
 		
 		public event ConversationRequestHandler ConversationRequest;
+		
+		private event MsnpCommandHandler command;
 		
 		private readonly string [] loginCommands = {
 			"VER {0} MSNP8 MSNP9 CVR0",
@@ -49,11 +55,14 @@ namespace System.Net.Protocols.Msnp
 			passport = new MsnpPassportInfo ();
 			buddies = new BuddyCollection ();
 			conversations = new MsnpConversationCollection ();
+			//bconversations = new MsnpConversationCollection ();
 
-			State = MsnpContactState.Offline;			
+			State = MsnpContactState.Offline;
 			groups = new MsnpGroupCollection ();
 			
 			ConversationRequest = onConversationRequest;
+			command = onMsnpCommand;
+			createNextConversation ();
 		}
 		
 		//Return values
@@ -64,8 +73,8 @@ namespace System.Net.Protocols.Msnp
 		public override int Login ()
 		{
 			//Clear current data
-			MsnpAccount.trId = 0;
-			Debug.Enable = true;
+			trId = 0;
+			Debug.Enable = false;
 			
 			buddies.Clear ();
 			groups.Clear ();
@@ -99,14 +108,14 @@ namespace System.Net.Protocols.Msnp
 			
 			notificationServer.Send (loginCommands [1], 
 				TrId,
-				this.Username);
+				Username);
 			Debug.WriteLine ("response: {0}", 
 				notificationServer.Read ());
 			
 			
 			notificationServer.Send (loginCommands [2], 
 				TrId,
-				this.Username);
+				Username);
 			
 			string response = notificationServer.Read ();
 			
@@ -147,11 +156,11 @@ namespace System.Net.Protocols.Msnp
 			Debug.WriteLine (dispatchServer.Read ());
 			
 			dispatchServer.Send (loginCommands [1],
-				TrId, this.Username);
+				TrId, Username);
 			
 			Debug.WriteLine (dispatchServer.Read ());
 			dispatchServer.Send (loginCommands [2], 
-				TrId, this.Username);
+				TrId, Username);
 				
 			response = dispatchServer.Read ();
 			Debug.WriteLine (response);
@@ -197,68 +206,40 @@ namespace System.Net.Protocols.Msnp
 			base.Logout ();
 		}
 		
-		//FIXME:This procedure must show the window and later
-		// do operations with connection
-		public void StartConversation (MsnpContact contact)
+		public void OpenConversation (MsnpContact contact)
 		{
-			MsnpConversation conv = new MsnpConversation (this);
 			
-			OnConversationRequest (conv);
+		}
 		
-			dispatchServer.Send ("XFR {0} SB", TrId);
+		//FIXME:This procedure must show the window and later
+		// perform operations with connection handler
+		public void StartConversation (MsnpContact contact)
+		{	
 			
-			string recv = string.Empty;
-			bool gotit = false;
+			MsnpConversation conv;
 			
-			do {
-				if (!gotit) {
-					this.processCommand (recv);
-					recv = dispatchServer.Read ();
-					gotit = recv.StartsWith ("XFR");
-				}
-			} while (!gotit);
+			if (!FindConversation (contact, out conv)) {
+				conv = _nextConversation;
+				createNextConversation ();
+				conversations.Add (conv);
+			}
+						
+			if (!conv.Connected)
+				conv.Open (contact);
+		}
+		
+		protected virtual void OnMsnpCommand (string msnpcommand)
+		{
+			MsnpCommand cmd = 
+				MsnpCommand.CreateFromString (msnpcommand);
 			
-			Console.WriteLine ("COMMAND>{0}", recv);
-			string [] command = recv.Split (" ".ToCharArray ());
-			
-			string []  server_info = command [3].Split (":".ToCharArray ());
-			
-			conv.Hostname = server_info [0];
-			conv.Port = int.Parse (server_info [1]);
-			//MsnpConversation conv = new MsnpConversation (
-			//	this,
-			//	server_info [0],
-			//	int.Parse (server_info [1]));
-			
-			Console.WriteLine ("Starting conversation:\n\tHost: {0}\n\tPort: {1}\n\tRandom: {2}",
-				server_info [0], server_info [1], command [5]);
-			
-			conv.Start (contact, command [5]);
-			
-			//this.ConversationRequest (this, 
-			//	new ConversationRequestArgs (conv));
+			command (this, 
+				new MsnpCommandArgs (cmd));
 		}
 		
 		protected virtual void OnConversationRequest (MsnpConversation conv)
 		{
 			ConversationRequest (this, new ConversationRequestArgs (conv));
-		}
-
-		
-		private string formatCockie (string cockie)
-		{
-			cockie  = cockie.Replace ("USR 6 TWN S ", "");
-			string format = string.Format (
-				"Passport1.4 OrgVerb=GET," +
-				"OrgURL=http%3A%2F%2Fmessenger%2Emsn%2Ecom," +
-				"sign-in={0},pwd={1},{2}",
-				this.Username,
-				this.Password,
-				cockie);
-			
-			
-			return format;
-
 		}
 		
 		public void ChangeAlias (string newalias)
@@ -271,7 +252,6 @@ namespace System.Net.Protocols.Msnp
 		
 		public void ChangeState (MsnpContactState state)
 		{
-			Console.WriteLine ("Changing State");
 			dispatchServer.Send ("CHG {0} {1}",
 				TrId,
 				Utils.ContactStateToString (state));
@@ -279,18 +259,68 @@ namespace System.Net.Protocols.Msnp
 		
 		internal void SendCommand (string command, params object [] objs)
 		{
-			Thread thread = new Thread (delegate () {
-					dispatchServer.Send (string.Format (
-						command, objs));
-			});
-			
-			thread.Start ();
+			dispatchServer.Send (command, objs);
 		}
+		
+		private bool FindConversation (MsnpContact contact, 
+			out MsnpConversation conversation)
+		{
+			conversation = null;
+			
+			foreach (MsnpConversation c in conversations) {
+				if ( c.Buddies.Count == 1 &&
+					c.Buddies [0].Username == contact.Username) {
+					conversation = c;
+					return true;
+				} else if (c.Buddies.Count == 0 && 
+					c.RemoteContact.Username == contact.Username) {
+					conversation = c;
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		private void createNextConversation ()
+		{
+			_nextConversation = new MsnpConversation (this);
+			_nextConversation.Closed += nextConversation_Closed;
+		}
+		
+		private string formatCockie (string cockie)
+		{
+			cockie  = cockie.Replace ("USR 6 TWN S ", "");
+			string format = string.Format (
+				"Passport1.4 OrgVerb=GET," +
+				"OrgURL=http%3A%2F%2Fmessenger%2Emsn%2Ecom," +
+				"sign-in={0},pwd={1},{2}",
+				Username,
+				Password,
+				cockie);
+			
+			
+			return format;
 
+		}
+		
+		private void nextConversation_Closed (object sender, EventArgs args)
+		{
+			Console.WriteLine ("Removing Conversation");
+			Conversations.Remove ((MsnpConversation) sender);
+		}
+		
 		private string nexusLogin (string cockie)
 		{
-			WebRequest req = WebRequest.Create ("https:nexus.passport.com/rdr/pprdr.asp");
-			WebResponse res = req.GetResponse ();
+			WebRequest req;
+			WebResponse res;
+			try {
+				 req = WebRequest.Create ("https:nexus.passport.com/rdr/pprdr.asp");
+				 res = req.GetResponse ();
+			} catch (Exception e) {
+				Console.WriteLine (e.ToString ());
+				return string.Empty;
+			}
 			
 			Regex regex = new Regex ("dalogin=([^,]+)", RegexOptions.IgnoreCase);
 			
@@ -336,9 +366,11 @@ namespace System.Net.Protocols.Msnp
 			return string.Empty;
 		}
 
-		private void processCommand (string msnpcommand)
+		private void processCommand (MsnpCommand cmd)
 		{
-			Debug.WriteLine ("MsnpAccount.processCommand>{0}<=", msnpcommand);
+			string msnpcommand = cmd.RawString;
+			//Console.WriteLine ("MsnpAccount.processCommand>{0}<=", msnpcommand);
+			//Console.WriteLine ("Type: {0}", cmd.Type.ToString ());
 			
 			if (msnpcommand == string.Empty) {
 				return;
@@ -351,57 +383,34 @@ namespace System.Net.Protocols.Msnp
 				setPassportAttr (command [0], command [1]);
 				return;
 			}
-			// FIXME: this would be improved comparing with
-			// enumeration values
-			switch (command [0]) {
-				case "USR": { // Getting Alias
+			
+			switch (cmd.Type) {
+				case MsnpCommandType.USR: { // Getting Alias
 					
-					this.Alias = Utils.UrlDecode (
+					Alias = Utils.UrlDecode (
 						command [4]);
 					OnAliasChanged ();
 					Debug.WriteLine ("Setting Alias: {0}", 
-						this.Alias);
+						Alias);
 					SendCommand ("SYN {0} 0", TrId);
 				}
 				break;
 				
-				case "SYN": { // Getting contact and group lists
-					int groups = int.Parse (command [4]);
-					int contacts = int.Parse (command [3]);
-				
-					for (int i = 0; i < 4; i ++)
-					Debug.WriteLine ("//{0}",
-						dispatchServer.Read ());
+				case MsnpCommandType.SYN: { // Getting contact and group lists
+					//int groups = int.Parse (command [4]);
+					//int contacts = int.Parse (command [3]);
 					
-					for (int i = 1; i < groups; i ++) {
-						string str = string.Empty;
-						do {
-							str = dispatchServer.Read ();
-							processCommand (str);
-						} while (!str.StartsWith ("LSG"));
-							//processCommand (str);
-					}
-					
-					for (int i = 0; i < contacts; i ++) {
-						string str = string.Empty;
-						do {
-							str = dispatchServer.Read ();
-							processCommand (str);
-						}while (!str.StartsWith ("LST"));
-						//processCommand (str);
-					}
-					
-					base.OnStarted ();
+					OnStarted ();
 					
 					string c =  string.Format ("CHG {0} {1}",
 							TrId,
 							Utils.ContactStateToString (
-								this.State));
+								State));
 					dispatchServer.Send (c);
 				}
 				break;
 				
-				case "LSG": { // List Groups
+				case MsnpCommandType.LSG: { // List Groups
 					int group_id = int.Parse (command [1]);
 					
 					Debug.WriteLine ("Adding Group..{0} with id {1}", 
@@ -416,18 +425,20 @@ namespace System.Net.Protocols.Msnp
 				}
 				break;
 				
-				case "LST": { // Save Contact (list) and groups for each contact
+				case MsnpCommandType.LST: { // Save Contact (list) and groups for each contact
 					MsnpContact contact = new MsnpContact (
 						command [1],
 						Utils.UrlDecode (command [2])
 					);
 					contact.Account = this;
 					
+					//Console.WriteLine ("LST nick : {0}",Utils.UrlDecode (command [2]));
+					
 					if (command.Length == 5) {
 						string [] ids = command  [4].Split (
 							",".ToCharArray ());
 						
-						Debug.WriteLine ("Be log to {0} group mask", command [3]);
+						Debug.WriteLine ("Belong to {0} group mask", command [3]);
 						if (ids.Length == 0) {
 							//Debug.WriteLine ("Adding {0} to no group", contact.Username);
 							contact.Groups.Add (noGroup);
@@ -435,7 +446,7 @@ namespace System.Net.Protocols.Msnp
 						
 						foreach (string id in ids) {
 							Debug.WriteLine ("\tid>{0}", id);
-							MsnpGroup mGroup = this.Groups.GetById (int.Parse (id));
+							MsnpGroup mGroup = Groups.GetById (int.Parse (id));
 							if (mGroup != null) {
 								Debug.WriteLine ("Adding group {0} to {1}", mGroup.Name, contact.Username);
 								contact.Groups.Add (mGroup);
@@ -449,17 +460,17 @@ namespace System.Net.Protocols.Msnp
 				}
 				break;
 				
-				case "CHG": {
-					this.State = Utils.StringToContactState (
+				case MsnpCommandType.CHG: {
+					State = Utils.StringToContactState (
 						command [2]);
 					OnStateChanged ();
-					//this.SendStateChanged ();
+					//SendStateChanged ();
 					Debug.WriteLine ("Changed ContactState to {0}..", 
-						this.State.ToString ());
+						State.ToString ());
 				}
 				break;
 				
-				case "FLN": {
+				case MsnpCommandType.FLN: {
 					MsnpContact c = (MsnpContact) 
 						Buddies.GetByUsername (command [1]);
 					
@@ -470,31 +481,28 @@ namespace System.Net.Protocols.Msnp
 				}
 				break;
 				
-				case "ILN":
-					
-				case "NLN": {
-					Console.WriteLine (msnpcommand);
-					
+				case MsnpCommandType.ILN:
+				case MsnpCommandType.NLN: {
 					int state_index = command [0] == "ILN"?2:1;
+					int username_index = state_index + 1;
+					int alias_index = state_index + 2;
 					
-					
-					if (command [3] == this.Username) {
-						Debug.WriteLine ("Setting Alias");
-						this.Alias =  Utils.UrlDecode (
-							command [state_index + 2]);
+					if (command [alias_index] == Username) {
+						Alias =  Utils.UrlDecode (
+							command [alias_index]);
 						
 						Debug.WriteLine ("Now Online with {0} contacts", Buddies.Count);
 					} else{
-						MsnpContact c = (MsnpContact) this.Buddies.GetByUsername (
-							command[state_index + 1]);
+						MsnpContact c = (MsnpContact) Buddies.GetByUsername (
+							command[username_index]);
 						
 						if (c != null) {
-							Debug.WriteLine ("{0} is {1}",
+							Console.WriteLine ("{0}({1}) is {2}",
 								c.Username,
+								command [alias_index],
 								command [state_index]);
-							c.Alias = Utils.UrlDecode (command [state_index + 2]);
+							c.Alias = Utils.UrlDecode (command [alias_index]);
 							c.State = Utils.StringToContactState (command [state_index]);
-							Console.WriteLine ("Setting state to {0}", Utils.StringToContactState (command [state_index]));
 							
 							Debug.WriteLine ("State is {0}", c.State);
 						} else
@@ -503,24 +511,46 @@ namespace System.Net.Protocols.Msnp
 				}	
 				break;
 				
-				case "CHL": { // send md5 hash
+				case MsnpCommandType.CHL: { // send md5 hash
+				
+					Console.Write ("Ping? ");
 					string static_key = "Q1P7W2E4J9R8U3S5";
 					
 					string md5sum = Utils.MD5Sum (command [2] + static_key);
 					
 					dispatchServer.Send ("QRY {0} msmsgs@msnmsgr.com 32", TrId);
 					dispatchServer.RawSend (md5sum);
+					Console.WriteLine ("..Pong!");
 					
 					//Debug.WriteLine ("MD5Sum: {0}", md5sum);
 				}
 				break;
 				
+				case MsnpCommandType.RNG:
+					Console.WriteLine ("Ready for create conversation");
+					
+					MsnpContact c = (MsnpContact) Buddies.GetByUsername (cmd.Arguments [4]);
+					
+					if (c != null) {
+						foreach (MsnpConversation conv in Conversations)
+							if (conv.Buddies.Count == 1 &&	conv.RemoteContact == c)
+							return;
+					
+						_nextConversation.RemoteContact = (MsnpContact) c;
+						Conversations.Add (_nextConversation);
+						createNextConversation ();
+					}
+					//_nextConversation._account_Command (this, new MsnpCommandArgs (cmd));
+				break;
+				/*
 				// FIXME: Find a nice way to perform that..
-				case "RNG": { // Conversation request
+				case MsnpCommandType.RNG: { // Conversation request
 					string r1 = command [1];
 					string [] conn_info = command [2].Split (":".ToCharArray ());
 					string r2 = command [4];
 					string email = command [5];
+					
+					Console.WriteLine (msnpcommand);
 					
 					//connect to switchboard server
 					
@@ -528,36 +558,32 @@ namespace System.Net.Protocols.Msnp
 					MsnpContact contact = 
 						(MsnpContact) Buddies.GetByUsername (email);
 
-					MsnpConversation conversation =
-						new MsnpConversation (
-							this,
-							conn_info [0],
-							int.Parse (conn_info [1]));
+					MsnpConversation conversation = new MsnpConversation (this);
+					conversation.Hostname = conn_info [0];
+					conversation.Port = int.Parse (conn_info [1]);
+					conversation.Contact = contact;
+					conversation.Create = false;
+					conversation.Id = r1;
+					conversation.Id2 = r2;
+					conversation.Connect ();
+					
+					//	new MsnpConversation (
+					//		this,
+					//		conn_info [0],
+					//		int.Parse (conn_info [1]));
 										
 					Debug.WriteLine ("Conversation from {0} ({1})", contact.Alias, contact.State);
 					
-					conversation.Join (r1, r2);
+					//conversation.Join (r1, r2);
 					
-					//conversation.DataReceived += 
-					//	delegate (object sender, 
-					//		DataReceivedArgs args) {
-					//	Debug.WriteLine ("Rec: {0}", args.Data);
-						//conversation.SendText ("Que paso?");
-					//};
-					
-					
-					this.ConversationRequest (this, 
+					ConversationRequest (this, 
 						new ConversationRequestArgs (conversation));
 					
 				}
 				break;
-				
-				case "REA":
-					//Console.WriteLine ("Changing to {0} == {1}", 
-					//	command [4],
-					//	Utils.UrlDecode (command [4]));
+				*/
+				case MsnpCommandType.REA:
 					Alias = Utils.UrlDecode (command [4]);
-					Console.WriteLine ("New alias : {0}", Alias);
 					OnAliasChanged ();
 				break;
 
@@ -570,93 +596,96 @@ namespace System.Net.Protocols.Msnp
 		
 			switch (attr) {
 				case "MIME-Version:":
-					this.Passport.MimeVersion = 
+					Passport.MimeVersion = 
 						float.Parse (val);
 				break;
 				
 				case "Content-Type:":
-					this.Passport.ContentType = val;
+					Passport.ContentType = val;
 				break;
 				
 				case "LoginTime:":
-					this.Passport.LoginTime = 
+					Passport.LoginTime = 
 					long.Parse (val);
 				break;
 				
 				case "EmailEnabled:":
-					this.Passport.EmailEnabled = val;
+					Passport.EmailEnabled = val;
 				break;
 				
 				case "MemberIdHigh:":
-					this.Passport.MemberIdHight = 
+					Passport.MemberIdHight = 
 						int.Parse (val);
 				break;
 				
 				case "MemberIdLow:":
-					this.Passport.MemberIdLow = 
+					Passport.MemberIdLow = 
 						int.Parse (val);
 				break;
 				
 				case "lang_preference:":
-					this.Passport.LangPreference = 
+					Passport.LangPreference = 
 						int.Parse (val);
 				break;
 				
 				case "preferredEmail:":
-					this.Passport.PreferredEmail = val;
+					Passport.PreferredEmail = val;
 				break;
 				
 				case "country:":
-					this.Passport.Country = val;
+					Passport.Country = val;
 				break;
 				
 				case "PostalCode:":
-					this.Passport.PostalCode = val;
+					Passport.PostalCode = val;
 				break;
 				
 				case "Gender:":
-					this.Passport.Gender = val;
+					Passport.Gender = val;
 				break;
 				
 				case "Kid:":
-					this.Passport.Kid = int.Parse (val);
+					Passport.Kid = int.Parse (val);
 				break;
 				
 				case "Age:":
-					this.Passport.Age = val;
+					Passport.Age = val;
 				break;
 				
 				case "BDayPre:":
-					this.Passport.BDayPre = val;
+					Passport.BDayPre = val;
 				break;
 				
 				case "Birthday:":
-					this.Passport.Birthday = val;
+					Passport.Birthday = val;
 				break;
 				
 				case "Wallet:":
-					this.Passport.Wallet = val;
+					Passport.Wallet = val;
 				break;
 				
 				case "Flags:":
-					this.Passport.Flags = long.Parse (val);
+					Passport.Flags = long.Parse (val);
 				break;
 				
 				case "sid:":
-					this.Passport.SId = int.Parse (val);
+					Passport.SId = int.Parse (val);
 				break;
 				
 				case "MSPAuth:":
-					this.Passport.MspAuth = val;
+					Passport.MspAuth = val;
 				break;
 				
 				case "ClientIP:":
-					this.Passport.ClientIP = val;
+					Passport.ClientIP = val;
 				break;
 				
 				case "ClientPort:":
-					this.Passport.ClientPort = 
+					Passport.ClientPort = 
 						int.Parse (val);
+				break;
+				default:
+					Console.WriteLine ("Passport <{0}> attr not found.", attr);
 				break;
 			}
 		}
@@ -664,8 +693,9 @@ namespace System.Net.Protocols.Msnp
 		private void dispatchServer_DataArrived (object sender,
 			DataArrivedArgs args)
 		{
-			Debug.WriteLine ("DataArrived: {0}", args.Data);
-			processCommand (args.Data);
+			//Debug.WriteLine ("DataArrived: {0}", args.Data);
+			//processCommand (args.Data);
+			OnMsnpCommand (args.Data);
 		}
 		
 		private void dispatchServer_Disconnected (object sender,
@@ -688,17 +718,13 @@ namespace System.Net.Protocols.Msnp
 			conversations.Remove (conv);
 		}
 		
-		/*
-		private void doLogin ()
+		private void onMsnpCommand (object sender, MsnpCommandArgs args)
 		{
-			Debug.WriteLine ("Reconnecting");
-			Login ();
+			processCommand (args.Command);
 		}
-		*/
-		public static int TrId {
-			get {
-				return trId ++;
-			}
+		
+		public int TrId {
+			get { return trId ++; }
 		}
 		
 		public MsnpPassportInfo Passport {
@@ -736,26 +762,15 @@ namespace System.Net.Protocols.Msnp
 			get { return base.Username; }
 			set { base.Username = value; }
 		}
-		/*
-		public override string Alias {
-			set { 	}
-		}
-		*/
 
-		
 		public new string Password {
 			get { return base.Password; }
 			set { base.Password = value; }
 		}
 		
-//		public event ConversationRequestHandler ConversationRequest {
-//			add { conversationRequest += value; }
-//			remove { conversationRequest -= value; }
-//		}
-		/*public Connection Connection {
-			get { return connection; }
-			set { connection = value; }
-		}*/
-	
+		public event MsnpCommandHandler Command {
+			add { command += value; }
+			remove { command -= value; }
+		}
 	}
 }

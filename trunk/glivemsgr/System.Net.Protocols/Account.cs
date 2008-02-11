@@ -33,15 +33,18 @@ namespace System.Net.Protocols
 		
 		public virtual void Logout ()
 		{
+			OnTerminated ();
 		}
 				
 		protected virtual void OnStarted ()
 		{
+			logged = true;
 			started (this, EventArgs.Empty);
 		}
 		
 		protected virtual void OnTerminated ()
 		{
+			logged = false;
 			terminated (this, EventArgs.Empty);
 		}
 		

@@ -43,6 +43,7 @@ namespace System.Net.Protocols
 			efd = new List <Socket> ();
 			
 			thread = new Thread (thread_callback);
+			thread.IsBackground = false;
 		}
 		
 		public void Open ()
@@ -86,7 +87,7 @@ namespace System.Net.Protocols
 			
 			if (excep) {
 				text = string.Empty;
-				Debug.WriteLine ("Thrown Disconnected");
+				Debug.WriteLine ("Throw Disconnected");
 				if (IsAsynchronousReading) {
 					try {
 						thread.Abort ();

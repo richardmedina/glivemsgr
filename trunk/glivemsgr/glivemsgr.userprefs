@@ -1,34 +1,24 @@
 ﻿<UserCombinePreferences version="1.0" filename="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/glivemsgr.mds">
   <Files>
     <File name="Welcome" />
-    <File name="./System.Net.Protocols/Buddy.cs" line="75" column="18" />
-    <File name="./System.Net.Protocols/BuddyCollection.cs" line="12" column="1" />
-    <File name="./System.Net.Protocols/Connection.cs" line="39" column="12" />
-    <File name="./System.Net.Protocols.Msnp/MsnpConversation.cs" line="21" column="33" />
-    <File name="./GLiveMsgr.Gui/Widgets/ContactList.cs" line="45" column="16" />
-    <File name="./System.Net.Protocols.Msnp/MsnpAccount.cs" line="679" column="46" />
-    <File name="./GLiveMsgr.Gui/MainWindow.cs" line="58" column="4" />
-    <File name="./GLiveMsgr.Gui/Widgets/ContactListHeader.cs" line="66" column="3" />
-    <File name="./GLiveMsgr.Gui/Widgets/ContactListWidget.cs" line="17" column="3" />
-    <File name="./GLiveMsgr.Gui/Widgets/AliasChangeButton.cs" line="26" column="40" />
-    <File name="./RickiLib/Widgets/EditableLabel.cs" line="111" column="18" />
-    <File name="./System.Net.Protocols/Account.cs" line="7" column="36" />
-    <File name="./GLiveMsgr.Gui/Widgets/ContactStateMenu.cs" line="44" column="64" />
-    <File name="./GLiveMsgr.Gui/Widgets/ConversationWindow.cs" line="58" column="15" />
-    <File name="./GLiveMsgr.Gui/NotificationIcon.cs" line="25" column="35" />
-    <File name="./GLiveMsgr.Gui/Widgets/CellRendererContact.cs" line="79" column="4" />
-    <File name="./GLiveMsgr.Gui/Emoticon.cs" line="2" column="14" />
-    <File name="./GLiveMsgr.Gui/Theme.cs" line="251" column="9" />
-    <File name="./GLiveMsgr.Gui/Widgets/ConversationWidget.cs" line="1" column="1" />
-    <File name="./GLiveMsgr.Gui/Widgets/Toolbar.cs" line="13" column="56" />
+    <File name="System.Net.Protocols.Msnp/MsnpCommand.cs" line="86" column="23" />
+    <File name="System.Net.Protocols.Msnp/MsnpAccount.cs" line="393" column="6" />
+    <File name="System.Net.Protocols/Buddy.cs" line="80" column="23" />
+    <File name="GLiveMsgr.Gui/Widgets/ConversationWindow.cs" line="20" column="35" />
+    <File name="System.Net.Protocols.Msnp/MsnpContact.cs" line="8" column="31" />
+    <File name="System.Net.Protocols.Msnp/MsnpConversation.cs" line="244" column="19" />
+    <File name="GLiveMsgr.Gui/Widgets/ContactListWidget.cs" line="55" column="4" />
+    <File name="GLiveMsgr.Gui/MainWidget.cs" line="98" column="54" />
+    <File name="System.Net.Protocols/Connection.cs" line="31" column="3" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
-        <Node name="GLiveMsgr.Gui" expanded="True">
-          <Node name="Widgets" expanded="True">
-            <Node name="Toolbar.cs" selected="True" />
-          </Node>
+        <Node name="Glivemsgr" expanded="True">
+          <Node name="Widgets" expanded="True" />
+        </Node>
+        <Node name="System.Net.Protocols" expanded="True">
+          <Node name="Connection.cs" selected="True" />
         </Node>
         <Node name="System.Net.Protocols.Msnp" expanded="True" />
       </Node>
@@ -42,15 +32,12 @@
         <Option id="GroupByType" value="True" />
       </Node>
     </ViewMemento>
-    <ViewMemento id="ConnectionManagerPad">
-      <Node expanded="True" selected="True" />
-    </ViewMemento>
     <ViewMemento id="MonoDevelop.NUnit.TestPad">
       <Node />
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Widgets/Toolbar.cs" />
+    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/System.Net.Protocols/Connection.cs" />
     <Property key="ActiveConfiguration" value="Debug" />
   </Properties>
 </UserCombinePreferences>

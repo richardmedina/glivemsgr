@@ -1,8 +1,13 @@
+// MsnpBetaConversation.cs created with MonoDevelop
+// User: ricki at 19:14 01/20/2008
+//
+// To change standard headers go to Edit->Preferences->Coding->Standard Headers
+//
 
 using System;
-using System.Threading;
+using System.Collections.Generic;
 using System.Net.Protocols;
-using System.Text.RegularExpressions;
+
 
 namespace System.Net.Protocols.Msnp
 {
@@ -10,149 +15,176 @@ namespace System.Net.Protocols.Msnp
 	
 	public class MsnpConversation : Conversation
 	{
-		private string hostname;
-		private int port;
 		
-		private Connection connection;
-		private MsnpAccount account;
+		private Connection _connection;
 		
-		private static string msg_header = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nX-MMS-IM-Format: FN=Verdana; EF=; CO=800000; CS=0; PF=22\r\n\r\n{0}";
+		private MsnpAccount _account;
 		
-		private MessageStack messages;
+		private MsnpContact _remoteContact = null;
 		
-		public MsnpConversation (MsnpAccount account) : 
-			this (account, string.Empty, 0)
+		private event EventHandler _activated;
+		
+		private int _id;
+		
+		private bool _isChat;
+		
+		private MessageQueue messages;
+		
+		//private void Buddies 
+		
+		private static string _msg_header = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nX-MMS-IM-Format: FN=Verdana; EF=; CO=800000; CS=0; PF=22\r\n\r\n{0}";
+		
+		public MsnpConversation (MsnpAccount account)
 		{
+			_id = -1;
+			_account = account;
+			_connection = null;
+			_account.Command += _account_Command;
+			_activated += onActivated;
+			_isChat = false;
+			messages = new MessageQueue ();
 		}
-		public MsnpConversation (MsnpAccount account, 
-			string hostname, 
-			int port)
-			//string random1,
-			//string random2)
+		
+		public void Open (MsnpContact contact)
 		{
-			this.account = account;
-			this.hostname = hostname;
-			this.port = port;
-			messages = new MessageStack ();
+			OnActivated ();
+			_remoteContact = contact;
+			_id = _account.TrId;
+			_account.SendCommand ("XFR {0} SB", _id);
 		}
 		
-		public void Join (string random1, string random2)
+		public void Invite (MsnpContact contact)
 		{
-			connection = new Connection (hostname, port);
-			
+			if (_connection.Connected)
+				_connection.RawSend ("CAL 1 {0}\r\n", 
+					contact.Username);
+		}
+		
+		private Connection createConnection (string hostname, int port)
+		{
+			Connection connection = new Connection (hostname, port);
+			connection.DataArrived += _connection_DataArrived;
 			connection.Open ();
-			Debug.WriteLine ("Connected to new conversation");
-			connection.RawSend ("ANS 1 {0} {1} {2}\r\n",
-				account.Username, random2, random1);
-						
-			connection.Disconnected += delegate {
-				this.Close ();
-			};
 			
-			connection.DataArrived += delegate (object sender, 
-				DataArrivedArgs args) {
-				this.processCommand (args.Data);
-			};
-			Connected = true;
-			connection.StartAsynchronousReading ();
+			return connection;
 		}
 		
-		//FIXME: perform in separated thread and throw Started event
-		public void Start (MsnpContact contact, string random)
+		public void Join (string hostname, int port, string id1, string id2)
 		{
-			connection = new Connection (hostname, port);
+			if (_connection != null && _connection.Connected)
+				_connection.Close ();
+				
+			_connection = createConnection (hostname, port);
 			
-			//connection.Disconnected += delegate { this.Close (); };
-			System.Threading.Thread thread = 
-				new System.Threading.Thread ((ThreadStart) delegate {
-			try {
-				connection.Open ();
-			}catch (Exception e) {
-				Console.WriteLine ("Error connecting : {0}",e.Message);
+			//_connection.Open ();
+			
+			_connection.StartAsynchronousReading ();
+			
+			_connection.RawSend (
+				"ANS 1 {0} {1} {2}\r\n",
+				_account.Username, 
+				id2, 
+				id1);
+			//OnStarted();
+		}
+		
+		public override void SendText (string text)
+		{
+			/*
+			if (!Connected) {
+				Console.WriteLine ("Not Connected, saving stack");
+				_messages.Push (text);
 				return;
 			}
 			
-			Console.WriteLine ("USR 1 {0} {1}",account.Username, random);
+			if (Buddies.Count == 0 && lastContact != null) {
+				
+			}
+			*/
 			
-			connection.RawSend ("USR 1 {0} {1}\r\n",account.Username, random);
+			if (Buddies.Count == 0 && !IsChat) {
+				messages.Enqueue (text);
+				Invite (RemoteContact);
+				return;
+			}
+			string data = string.Format (_msg_header, text);
 			
-			string recv = connection.Read ();
-			Debug.WriteLine (recv);
+			string d = string.Format ("MSG {0} N {1}\r\n{2}", 1, data.Length, data);
+			Debug.WriteLine ("Debug:{0}",d);
+			_connection.RawSend (d);
 			
-			Console.WriteLine ("CAL 1 {0}", contact.Username);
+			base.SendDataSent (text);
+		}
+		
+		protected virtual void OnActivated ()
+		{
+			_activated (this, EventArgs.Empty);
+		}
+		
+		protected override void OnDataGet (Buddy buddy, string data)
+		{
+			base.OnDataGet (buddy, data);
+			OnActivated ();
+		}
+		
+		protected override void OnClosed ()
+		{
+			if (_connection.Connected)
+				_connection.Close ();
 			
-			connection.RawSend ("CAL 1 {0}\r\n", contact.Username);
-			recv = connection.Read ();
-			Debug.WriteLine (recv);
-			
-			connection.DataArrived += delegate (object sender,
-			DataArrivedArgs args) {
-				this.processCommand (args.Data);
-			};
-			connection.StartAsynchronousReading ();
-			
-			Console.WriteLine ("OnStarted");
-			OnStarted ();
-			Connected = true;
-			});
-			
-			Console.WriteLine ("Starting Thread");
-			thread.Start ();
-			Console.WriteLine ("Thread working...");
+			base.OnClosed ();
+		}
+		
+		private void _connection_DataArrived (
+			object sender,
+			DataArrivedArgs args)
+		{
+			processCommand (args.Data);
 		}
 		
 		private bool processCommand (string msnpcommand)
 		{				
 			string [] command = msnpcommand.Split (" ".ToCharArray ());
 			
-			Debug.WriteLine (">{0}<", msnpcommand);
+			//Console.WriteLine (">{0}<", msnpcommand);
 			
 			switch (command [0]) {
 			
 				case "IRO": {
 					Buddy buddy = 
-						account.Buddies.GetByUsername (
+						_account.Buddies.GetByUsername (
 							command [4]);
 					if (buddy != null) {
-						this.Buddies.Add (buddy);
+						Buddies.Add (buddy);
 						Debug.WriteLine ("Added {0} to conversation", buddy.Username);
+						sendQueuedMessages ();
+						if (Buddies.Count >= 2)
+							_isChat = true;
 					}
 					else
 						Debug.WriteLine ("{0} is not here", command [4]);
 				} break;
 				
 				case "JOI": {
-					Buddy buddy = account.Buddies.GetByUsername (command [1]);
-					
+					Buddy buddy = _account.Buddies.GetByUsername (command [1]);
+						
 					if (buddy != null) {
-						this.Buddies.Add (buddy);
+						//lastContact = (MsnpContact) buddy;
+						Buddies.Add (buddy);
 						Debug.WriteLine ("{0} Joins to conversation", buddy.Username);
+						if (Buddies.Count > 1)
+							_isChat = true;
+						sendQueuedMessages ();
+						OnActivated ();
 					}
-				
 				} break;
 				
 				case "MSG": {
 					int length = int.Parse (
 						command [command.Length -1]);
 					
-					string message = connection.Read (length);
-/*
-					string mv = "MIME-Version: ";
-					int mime_index = mv.Length;
+					string message = _connection.Read (length);
 					
-					int end_index = message.IndexOf ("\r", 
-						mime_index);
-					
-					string mime = message.Substring (
-						mime_index ,
-						end_index
-					);
-					
-					Debug.WriteLine ("MiME :{0}", mime);
-					
-					
-*/
-					//formatMessage (message);
 					string str = "\r\n\r\n";
 					int index = message.IndexOf (str) + str.Length;
 					Debug.WriteLine ("\"{0}\"", message);
@@ -173,7 +205,7 @@ namespace System.Net.Protocols.Msnp
 							Debug.WriteLine ("Charset: {0}", content_array [1]);
 							Buddy buddy = Buddies.GetByUsername (command [1]);
 							
-							base.SendDataGet (
+							SendDataGet (
 								buddy,
 								message.Substring (index));
 						}
@@ -188,11 +220,11 @@ namespace System.Net.Protocols.Msnp
 						string username = 
 							message.Substring (tu).Trim ();
 						
-						Buddy b = this.Buddies.GetByUsername (
+						Buddy b = Buddies.GetByUsername (
 							username);
 						
 						if (b != null)
-							this.SendTyping (b);
+							SendTyping (b);
 						else
 							Debug.WriteLine ("Is not here");
 					}
@@ -209,119 +241,100 @@ namespace System.Net.Protocols.Msnp
 					Buddy bud = Buddies.GetByUsername (command [1]);
 					
 					if (bud != null) {
-						Debug.WriteLine ("{0} Leaves the conversation", bud.Alias);
+						Console.WriteLine ("{0} Leaves the conversation", bud.Alias);
 						Buddies.Remove (bud);
 					}
+					if (Buddies.Count == 0) {
+					}
+					//lastContact = (MsnpContact) bud;
 				} break;
-				
+								
 				default:
 				break;
 			}
 			
 			return true;
 		}
-		//static int trid = 1;
-		public override void SendText (string text)
+		
+		
+		private void _account_Command (object sender, MsnpCommandArgs args)
+		{	
+			if (args.Command.Type == MsnpCommandType.RNG) {
+				MsnpContact c = (MsnpContact) _account.Buddies.GetByUsername (
+					args.Command.Arguments [4]);
+				
+				if (c == null || RemoteContact == null || c != RemoteContact)
+					return;
+				
+				string [] arguments = args.Command.Arguments;
+				
+				string [] peer = arguments [1].Split (":".ToCharArray ());
+				
+				string hostname = peer [0];
+				int port;
+				
+				if (!int.TryParse (peer [1], out port))
+					return;
+								
+				Join (hostname, port, arguments [0], arguments [3]);
+			} else if (args.Command.Type == MsnpCommandType.XFR) {				
+				if (args.Command.TrId == _id) {
+					createConversation (args.Command);
+				}
+			}
+		}
+		
+		// TODO: Implement createConversation (string, int)..
+		
+		private void createConversation (MsnpCommand cmd)
 		{
-			if (!Connected) {
-				Console.WriteLine ("NOt Connected, saving stack");
-				messages.Push (text);
+			string [] args = cmd.Arguments;
+			
+			string [] pieces = args [1].Split (":".ToCharArray ());
+			string hostname = pieces [0];
+			int port;
+				
+			if (!int.TryParse (pieces[1], out port))
 				return;
-			}
-			string data = string.Format (msg_header, text);
 			
-			string d = string.Format ("MSG {0} N {1}\r\n{2}", 1, data.Length, data);
-			Debug.WriteLine ("Debug:{0}",d);
-			connection.RawSend (d);
+			_connection = createConnection (hostname, port);
+			_connection.StartAsynchronousReading ();
 			
-			base.SendDataSent (text);
+			_connection.RawSend ("USR 1 {0} {1}\r\n", 
+				_account.Username,
+				args [3]);
+			
+			Invite (_remoteContact);
 		}
 		
-		protected override void OnStarted ()
+		private void sendQueuedMessages ()
 		{
-			base.OnStarted ();
-			Console.WriteLine ("Sending popped messages");
 			while (messages.Count > 0) {
-				Console.WriteLine ("Sending : {0}", messages.Peek ());
-				SendText (messages.Pop ());
-			}
-			Console.WriteLine ("DONE popped");
-		}
-				
-		protected override void OnDataReceived (string data)
-		{
-			Debug.WriteLine ("MsnpConversation.Received>{0}", data);
-		}
-		
-		protected override void OnDataGet (Buddy buddy, string data)
-		{
-			base.OnDataGet (buddy, data);
-			Debug.WriteLine ("MsnpConversation.Received>{0}", data);
-		}
-		
-		protected override void OnTyping (Buddy buddy)
-		{
-		}
-		
-		protected override void OnClosed ()
-		{
-			if (Connected) {
-				Console.WriteLine ("Seding 'OUT'");
-				connection.RawSend ("OUT");
-				connection.Close ();
-			}
-			base.OnClosed ();
-		}
-		
-		public void Close ()
-		{
-			OnClosed ();
-		}
-		
-		/*
-		private void formatMessage (string message)
-		{
-			Regex regex = new Regex (
-				@"\w*Content-Type: (?<ContentType>[\w/-]+);" + // ContentType
-				@"[^\w]*(charset=(?<charset>[\w-]+)){,1}" + // charset
-				@"[^\w]*(X-MMS-IM-Format: FN=(?<FontName>[\w-]+); ){,1}" + // FontName
-				@"[^\w]*(EF=(?<Efects>\w*); ){,1}" + // Efects
-				@"[^\w]*(CO=(?<Color>\d{6}); ){,1}" +
-				@"[^\w]*(CS=(?<CharCode>\w+); ){,1}" +
-				@"[^\w]*(PF=(?<PF>\w+)){,1}" +
-				@"[^\w]*(TypingUser: (?<TypingUser>w+)){,1}"
-				
-				);
-			
-			MatchCollection mc = regex.Matches (message);
-			string [] gn = regex.GetGroupNames ();
-		
-			Debug.WriteLine ("Matches: {0}", mc.Count);
-			
-			foreach (Match match in mc) {
-				for (int i = 0; i < gn.Length; i ++)
-				Debug.WriteLine ("{0}=>{1}",
-					gn [i],
-					match.Groups [gn [i]]);
+				SendText (messages.Dequeue ());
 			}
 		}
-		*/
+		
+		private void onActivated (object sender, EventArgs args)
+		{
+		}
+		
 		public MsnpAccount Account {
-			get { return account; }
+			get { return _account; }
 		}
 		
-		public string Hostname {
-			get { return hostname; }
-			set { hostname = value; }
+		public event EventHandler Activated {
+			add { _activated += value; }
+			remove { _activated -= value; }
 		}
 		
-		public int Port {
-			get { return port; }
-			set { port = value; }
+		public bool IsChat {
+			get { return _isChat; }
 		}
 		
-		public new BuddyCollection Buddies {
-			get { return base.Buddies; }
-		}		
+		internal MsnpContact RemoteContact {
+			get { return _remoteContact; }
+			set { _remoteContact = value; }
+		}
+		
 	}
 }

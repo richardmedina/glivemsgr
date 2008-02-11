@@ -24,17 +24,19 @@ namespace GLiveMsgr.Gui
 		
 		private Gtk.Statusbar statusbar;
 		
-		private MsnpConversation conversation;
+		private MsnpConversation _conversation;
 		
 		private int messageTime = -1;
 		
 		public ConversationWidget (MsnpConversation conv)
 		{
-			this.conversation = conv;
-			conversation.Started += conversation_Started;
-			header = new ConversationHeaderWidget (conversation);
+			_conversation = conv;
+			header = new ConversationHeaderWidget (
+				_conversation.Account.Username,
+				_conversation.Account.Alias);
+				
 			toolbar = new ConversationToolbar ();
-			chatWidget = new ConversationChatWidget (conversation);
+			chatWidget = new ConversationChatWidget (_conversation);
 			displayPictures = new ConversationPicturesWidget ();
 			hidePictures = new HidePicturesPanel ();
 			hidePictures.Clicked += hidePictures_Clicked;
@@ -58,7 +60,7 @@ namespace GLiveMsgr.Gui
 			vbox.PackStart (hbox);
 			vbox.PackEnd (statusbar, false, false, 0);
 
-			conversation.Typing += conversation_Typing;			
+			_conversation.Typing += conversation_Typing;
 			base.Add (vbox);
 		}
 		
@@ -84,6 +86,7 @@ namespace GLiveMsgr.Gui
 			
 			return true;
 		}
+		
 		
 		private void conversation_Started (object sender,EventArgs args)
 		{
