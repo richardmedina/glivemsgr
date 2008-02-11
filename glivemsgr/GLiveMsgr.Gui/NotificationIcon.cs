@@ -5,6 +5,7 @@
 //
 
 using System;
+using System.Net.Protocols.Msnp;
 using Gtk;
 
 namespace GLiveMsgr.Gui
@@ -13,25 +14,48 @@ namespace GLiveMsgr.Gui
 	
 	public class NotificationIcon : Gtk.StatusIcon
 	{
-		private MainWindow window;
+		private MainWindow _window;
 		
-		private NotificationMenu menu;
+		private NotificationMenu _menu;
+		
+		private int _window_x;
+		private int _window_y;
+		private int _window_width;
+		private int _window_height;
 		
 		public NotificationIcon (MainWindow window)
 		{
-			this.window = window;
-			this.Stock = Gtk.Stock.GoUp; 
+			_window = window;
+			_window.Account.Started += account_Started;
+			_window.Account.Terminated += account_Terminated;
+			
+			Stock = Gtk.Stock.GoUp;
+			 
 						
-			menu = new NotificationMenu ();
-			menu.ItemShowHide.Activated += delegate { WindowShowHide (); };
-			menu.ItemQuit.Activated += menu_ItemQuit_Activated;
-			menu.ShowAll ();
+			_menu = new NotificationMenu ();
+			_menu.ItemShowHide.Activated += delegate { WindowShowHide (); };
+			_menu.ItemDisconnect.Activated += itemDisconnect_Activated;
+			_menu.ItemQuit.Activated += menu_ItemQuit_Activated;
+			_menu.ShowAll ();
+		}
+
+		public void WindowShowHide ()
+		{
+			if (_window.Visible) {
+				pushWindowGeometry ();
+				_window.Hide ();
+			}
+			else {
+				_window.Present ();
+				popWindowGeometry ();
+			}
 		}
 		
 		protected override void OnPopupMenu (uint button, uint activate_time)
 		{
-			if (button == 3)
-				menu.Popup ();
+			if (button == 3) {
+				_menu.Popup ();
+			}
 			base.OnPopupMenu (button, activate_time);
 		}
 
@@ -42,27 +66,46 @@ namespace GLiveMsgr.Gui
 			base.OnActivate ();
 		}
 		
-		private void menu_ItemQuit_Activated (object sender, EventArgs args)
+		private void account_Terminated (object sender, EventArgs args)
 		{
-			window.Quit ();
+			_menu.ItemDisconnect.Sensitive = false;
 		}
 		
-		public void WindowShowHide ()
+		private void account_Started (object sender, EventArgs args)
 		{
-			if (window.Visible) {
-				window.Iconify ();
-				window.Hide ();
-			}
-			else {
-				if ((window.GdkWindow.State & Gdk.WindowState.Iconified) > 0)
-					window.Deiconify ();
-				window.Show ();
-			}
+			_menu.ItemDisconnect.Sensitive = true;
+		}
+		
+		private void itemDisconnect_Activated (object sender, EventArgs args)
+		{
+			if (_window.Account.Logged)
+				_window.Account.Logout ();
+		}
+		
+		private void menu_ItemQuit_Activated (object sender, EventArgs args)
+		{
+			_window.Quit ();
+		}
+		
+		private void pushWindowGeometry ()
+		{
+			_window.GetPosition (out _window_x, out _window_y);
+			_window.GetSize (out _window_width, out _window_height);
+		}
+		
+		private void popWindowGeometry ()
+		{
+			_window.GdkWindow.MoveResize (
+				_window_x,
+				_window_y,
+				_window_width,
+				_window_height);
 		}
 		
 		private class NotificationMenu : Gtk.Menu 
 		{
 			private Gtk.ImageMenuItem itemShowHide;
+			private Gtk.ImageMenuItem itemDisconnect;
 			private Gtk.ImageMenuItem itemPrefs;
 			private Gtk.ImageMenuItem itemAbout;
 			private Gtk.ImageMenuItem itemQuit;
@@ -70,6 +113,8 @@ namespace GLiveMsgr.Gui
 			public NotificationMenu ()
 			{
 				itemShowHide = new ImageMenuItem ("Mostrar/Ocultar ventana principal");
+				itemDisconnect = new ImageMenuItem (Gtk.Stock.Disconnect, null);
+				itemDisconnect.Sensitive = false;
 				itemPrefs = new ImageMenuItem (Gtk.Stock.Preferences, null);
 				itemAbout = new ImageMenuItem (Gtk.Stock.About, null);
 				itemAbout.Activated += itemAbout_Activated;
@@ -77,6 +122,7 @@ namespace GLiveMsgr.Gui
 				
 				base.Append (itemShowHide);
 				base.Append (new Gtk.SeparatorMenuItem ());
+				base.Append (itemDisconnect);
 				base.Append (itemPrefs);
 				base.Append (itemAbout);
 				base.Append (new Gtk.SeparatorMenuItem ());
@@ -94,6 +140,10 @@ namespace GLiveMsgr.Gui
 			
 			public ImageMenuItem ItemShowHide {
 				get { return itemShowHide; }
+			}
+			
+			public ImageMenuItem ItemDisconnect {
+				get { return itemDisconnect; }
 			}
 			
 			public ImageMenuItem ItemQuit {

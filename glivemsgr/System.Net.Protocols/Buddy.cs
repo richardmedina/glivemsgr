@@ -69,6 +69,7 @@ namespace System.Net.Protocols
 			get { return alias; }
 			set {
 				alias = value;
+				OnAliasChanged ();
 			}
 		}
 		
@@ -77,7 +78,6 @@ namespace System.Net.Protocols
 			set { 
 				state = value;
 				OnStateChanged ();
-				//this.SendStateChanged ();
 			}
 		}
 		

@@ -4,6 +4,7 @@ using System.Threading;
 using Gtk;
 using System.Net.Protocols;
 using System.Net.Protocols.Msnp;
+using RickiLib.Types;
 
 namespace GLiveMsgr.Gui
 {
@@ -11,53 +12,107 @@ namespace GLiveMsgr.Gui
 	
 	public class MainWidget : Gtk.VBox
 	{
-		private Gtk.Notebook notebook;
-		private LogonWidget logonWidget;
-		private ContactListWidget contactListWidget;
+		private Gtk.Notebook _notebook;
+		private LogonWidget _logonWidget;
+		private ContactListWidget _contactListWidget;
 		
-		private MsnpAccount account;
+		private WindowCollection windows;
+		
+		private MsnpAccount _account;
 		
 		public MainWidget (MsnpAccount account)
 		{
-			this.account = account;
-			this.account.Started += account_Started;
+			_account = account;
+			_account.Started += account_Started;
+			
+			windows = new WindowCollection ();
 			//account.ConversationRequest += account_ConversationRequest;
-			notebook = new Notebook ();
-			notebook.ShowBorder = true;
-			notebook.ShowTabs = false;
-			notebook.ModifyBg (StateType.Normal,
+			_account.Conversations.Added += account_ConversationAdded;
+			_account.Conversations.Removed += account_ConversationRemoved;
+			_notebook = new Notebook ();
+			_notebook.ShowBorder = false;
+			_notebook.ShowTabs = false;
+			_notebook.ModifyBg (StateType.Normal,
 				Theme.GdkColorFromCairo (Theme.BaseColor));
 			
-			logonWidget = new LogonWidget (account);
-			contactListWidget = new ContactListWidget (account);
+			_logonWidget = new LogonWidget (account);
+			_contactListWidget = new ContactListWidget (account);
 			//logonWidget.LogonData.ButtonConnect.Clicked += 
 			//	ButtonConnect_Clicked;
 			
 			
-			notebook.AppendPage (logonWidget,
+			_notebook.AppendPage (_logonWidget,
 				new Label ("Account Information"));
 			
-			notebook.AppendPage (contactListWidget,
+			_notebook.AppendPage (_contactListWidget,
 				new Label ("ContactList"));
 			
-			base.PackStart (notebook);
+			PackStart (_notebook);
 		}
 				
 		private void account_Started (object sender, EventArgs args)
 		{
 			ThreadNotify notify = new ThreadNotify (
 				delegate {
-					notebook.Page = 1;
+					_notebook.Page = 1;
 				});
 			notify.WakeupMain ();
 		}
+		
+		private void account_ConversationAdded (object sender, 
+			WatchedCollectionEventArgs <MsnpConversation> args)
+		{
+			args.Instance.Activated += conversation_Activated;
+			Console.WriteLine ("Conversation created MainWidget");
+			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
+				ConversationWindow window = new ConversationWindow (args.Instance);
+				windows.Add (window);  
+			});
+		}
+		
+		private void account_ConversationRemoved (object sender,
+			WatchedCollectionEventArgs <MsnpConversation> args)
+		{
+			Console.WriteLine ("MainWidget.ConversationRemoved");
+			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
+				foreach (ConversationWindow window in windows) {
+					if (window.Conversation == args.Instance) {
+						windows.Remove (window);
+						window.Destroy ();
+						break;
+					}
+				}
+			});
+		}
+		
+		private void account_Terminated (object sender, EventArgs args)
+		{
+			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
+				_notebook.Page = 0;
+			});
+		}
+		
+		private void conversation_Activated (object sender,
+			EventArgs args)
+		{
+			Console.WriteLine ("Conversation with activated");
+			//	((MsnpConversation) sender).RemoteContact);
+			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
+				foreach (ConversationWindow window in windows) {
+					if (window.Conversation == sender) {
+						window.Show ();
+						window.Present ();
+					}
+				}
+			});
+		}
 
 		public MsnpAccount Account {
-			get { return account; }
+			get { return _account; }
 		}
 		
 		public Gtk.Notebook Notebook {
-			get { return notebook; }
+			get { return _notebook; }
 		}
 	}
 }

@@ -14,6 +14,7 @@ namespace GLiveMsgr.Gui
 		private ExtendedMenuItem [] menus;
 		
 		public event EventHandler Changed;
+		private event EventHandler _activated;
 		
 		private string [] menu_labels = {
 			"Online",
@@ -45,6 +46,7 @@ namespace GLiveMsgr.Gui
 		public ContactStateMenu (MsnpContactState state)
 		{
 			Changed = onChanged;
+			_activated = onActivated;
 			
 			menus = new ExtendedMenuItem [menu_labels.Length];
 			
@@ -100,6 +102,11 @@ namespace GLiveMsgr.Gui
 			
 			return item;
 		}
+		
+		private void onActivated (object sender, EventArgs args)
+		{
+		
+		}
 
 		private void menu_Activate (object sender, EventArgs args)
 		{
@@ -109,6 +116,12 @@ namespace GLiveMsgr.Gui
 					State = (MsnpContactState) i;
 					return;
 				}
+		}
+		
+		
+		public event EventHandler Activated {
+			add { _activated += value; }
+			remove { _activated -= value; }
 		}
 		
 		public new MsnpContactState State {

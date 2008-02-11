@@ -5,7 +5,7 @@ using System.Net.Protocols.Msnp;
 
 namespace GLiveMsgr.Gui
 {
-	
+	/*
 	
 	public class ContactStateCombo : Gtk.Button
 	{
@@ -21,7 +21,8 @@ namespace GLiveMsgr.Gui
 		
 		private void stateMenu_Changed (object sender, EventArgs args)
 		{
-			base.State = stateMenu.State;
+			State = stateMenu.State;
 		}
 	}
+	*/
 }

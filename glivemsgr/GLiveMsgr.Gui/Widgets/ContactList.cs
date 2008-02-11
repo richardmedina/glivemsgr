@@ -28,6 +28,8 @@ namespace GLiveMsgr.Gui
 		private TreeIterCollection groupIters;
 		private TreeIterCollection contactIters;
 		
+		private ContactListMenu contactListMenu;
+		
 		private static readonly string group_nogroup_name = "No Group";
 		private static readonly string group_empty_message = 
 			"Drag and drop your contacts here";
@@ -36,6 +38,9 @@ namespace GLiveMsgr.Gui
 		{
 			groupIters = new TreeIterCollection ();
 			contactIters = new TreeIterCollection ();
+			
+			contactListMenu = new ContactListMenu ();
+			contactListMenu.ItemOpenConv.Activated += contactListMenu_OpenConv_activated;
 			
 			this.account = account;
 			this.account.Buddies.Added += account_Buddies_Added;
@@ -99,29 +104,69 @@ namespace GLiveMsgr.Gui
 				Theme.GetGdkColor (System.Drawing.Color.White));
 		}
 		
+		public ContactListItem GetItem (Gtk.TreeIter iter)
+		{
+			return (ContactListItem) store.GetValue (iter, 2);
+		}
+		
+		public bool GetSelectedItem (out ContactListItem item)
+		{
+			item = null;
+			
+			Gtk.TreeIter iter;
+			
+			if (Selection.GetSelected (out iter)) {
+				item = GetItem (iter);
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public bool GetOverItem (out ContactListItem item)
+		{
+			int x, y;
+			
+			item = null;
+			
+			GetPointer (out x, out y);
+			
+			Gtk.TreePath path;
+			
+			if (base.GetPathAtPos (x, y, out path)) {
+				Gtk.TreeIter iter;
+				if (store.GetIterFromString (out iter, path.ToString ())) {
+					item = GetItem (iter);
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
 		protected override bool OnButtonPressEvent (Gdk.EventButton args)
 		{
 			Gtk.TreeIter iter;
 			
-			if (args.Type == Gdk.EventType.TwoButtonPress)
-				if (base.Selection.GetSelected (out iter)) {
-					Gdk.Pixbuf buf = 
-						(Gdk.Pixbuf) store.GetValue (
-							iter, 0);
-					if (buf != null) {
-						ContactListItem user = (ContactListItem) store.GetValue (iter, 2);
-						if (user.Type == ContactListItemType.Buddy) {
-							account.StartConversation ((MsnpContact) user.Obj);
-							
-							//ConversationWindow window = new 
-							//	ConversationWindow (account, (MsnpContact) user.Obj);
-							//window.ShowAll ();
+			if (args.Button == 1) {
+				if (args.Type == Gdk.EventType.TwoButtonPress) {
+					ContactListItem item;
+					if (GetSelectedItem (out item)) {
+						if (item.Type == ContactListItemType.Buddy) {
+							account.StartConversation ((MsnpContact) item.Obj);
 						}
 					}
 				}
-			
+			} else if (args.Button == 3) {
+				contactListMenu.Popup ();
+			}
 			
 			return base.OnButtonPressEvent (args);
+		}
+		
+		private void OpenBetaChat ()
+		{
+			//account.StartConversation 
 		}
 				
 		protected virtual int OnTreeIterCompare (Gtk.TreeModel model,
@@ -236,6 +281,19 @@ namespace GLiveMsgr.Gui
 			base.OnShown ();
 			//GLib.Timeout.Add (500, findIconMouseOver);
 		}
+		
+		private void contactListMenu_OpenConv_activated (object sender,
+			EventArgs args)
+		{
+			ContactListItem item;
+			
+			if (GetSelectedItem (out item)) {
+				if (item.Type == ContactListItemType.Buddy) {
+					MsnpContact c = (MsnpContact) item.Obj;
+					account.StartConversation (c);
+				}
+			}
+		}
 
 
 		private void col1_cellDataFunc (
@@ -282,12 +340,7 @@ namespace GLiveMsgr.Gui
 			MsnpContact contact = (MsnpContact) sender;
 			TreeIterCollection iters = GetItersFromContact (contact);
 			
-			//Console.WriteLine ("Hey Contact {0} is now {1} and its are on {2} groups", 
-			//	contact.Username, contact.State, iters.Count);
-			//Console.WriteLine ("Contact has {0} groups", contact.Groups.Count);
-			
 			foreach (TreeIter iter in iters) {
-			//	Console.WriteLine ("Changing Pixbuf");
 				store.SetValue (iter, 0, pixbufState [(int) contact.State]);
 			}
 		}
@@ -297,9 +350,6 @@ namespace GLiveMsgr.Gui
 			MsnpContact contact = (MsnpContact) sender;
 			
 			TreeIterCollection iters = GetItersFromContact (contact);
-			
-			//Console.WriteLine ("Contact {0} chages alias to {1}", 
-			//	contact.Username, contact.Alias);
 			
 			foreach (Gtk.TreeIter iter in iters) {
 				store.SetValue (iter, 1, contact.Alias);
@@ -341,20 +391,12 @@ namespace GLiveMsgr.Gui
 		
 		public void ContactAdd (MsnpContact contact)
 		{
-			
-			//Console.WriteLine ("Adding Contact \"{0}\"..", contact.Username);
-			//foreach (MsnpGroup group in contact.Groups)
-			//	Console.WriteLine ("\tGroup {0}", group.Name);
-			
 			contact.StateChanged += contact_StateChanged;
 			contact.AliasChanged += contact_AliasChanged;
-			
+						
 			bool added = false;
 			
 			foreach (MsnpGroup group in contact.Groups) {
-			//	Console.WriteLine ("{0} groups found in {1}",
-			//		contact.Groups.Count,
-			//		contact.Username);
 				Gtk.TreeIter iter;
 				if (GetIterFromGroup (group, out iter)) {
 					if (store.IterNChildren (iter) == 1) {
@@ -378,26 +420,6 @@ namespace GLiveMsgr.Gui
 					added = true;
 				}
 			}
-			
-			//if (!added)
-			//	addToNoGroup (contact);
-		
-		/*
-			if (!ContactExists (contact)) {
-				contact.StateChanged += contact_StateChanged;
-				foreach (MsnpGroup group in contact.Groups) {
-					Gtk.TreeIter iter;
-					if (GetIterFromGroup (group, out iter)) {
-						Gtk.TreeIter i = store.AppendValues (
-							iter,
-							pixbufState [(int) contact.State],
-							contact.Alias,
-							new ContactListItem (contact));
-						contactIters.Add (i);
-					}
-				}
-			}
-		*/
 		}
 		
 		public bool GetIterFromGroup (MsnpGroup group, out Gtk.TreeIter iter)
@@ -424,15 +446,6 @@ namespace GLiveMsgr.Gui
 			foreach (Gtk.TreeIter iter in contactIters) {
 				ContactListItem item =
 					(ContactListItem) store.GetValue (iter, 2);
-				
-				//MsnpContact contact_on_iter = ((MsnpContact) item.Obj);
-				
-				//if (item.Type == ContactListItemType.Buddy)
-				//	if (contact.Username == contact_on_iter.Username)
-				//		iters.Add (iter);
-				//Console.WriteLine ("{0} == {1}",
-				//	contact.Username,
-				//	((MsnpContact) item.Obj).Username);
 				
 				if (item.Obj.Equals (contact)) {
 					iters.Add (iter);

@@ -7,22 +7,24 @@ namespace System.Net.Protocols.Msnp
 	
 	public enum MsnpCommandType
 	{
-		//Logon Commands
-//		CVR,
-//		USR,
-//		VER,
+		//Authentication Commands
+		CVR,
+		USR,
+		VER,
 //		XFR,
 		//Notification Commands
-		
-		USR,
 		SYN,
 		LSG,
 		LST,
 		CHG,
+		FLN,
 		ILN,
+		NLN,
 		CHL,
-		RNG
+		RNG,
+		XFR,
+		REA,
 		
-		
+		Unknown
 	}
 }

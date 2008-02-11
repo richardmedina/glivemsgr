@@ -17,12 +17,14 @@ namespace GLiveMsgr.Gui
 	{	
 		private System.Drawing.Brush brush;
 		
-		private MsnpConversation conversation;
+		private string _remoteUser;
+		private string _remoteAlias;
 		
-		
-		public ConversationHeaderWidget (MsnpConversation conv)
+		public ConversationHeaderWidget (string remoteUser, string remoteAlias)
 		{
-			this.conversation = conv;
+			_remoteUser = remoteUser;
+			_remoteAlias = remoteAlias;
+			
 			base.HeightRequest = 30;
 			
 			
@@ -87,7 +89,7 @@ namespace GLiveMsgr.Gui
 			
 			graphics.DrawImage (image, new Point (5, 3));
 			
-			graphics.DrawString (conversation.Account.Alias, 
+			graphics.DrawString (_remoteAlias, 
 				new Font (font, FontStyle.Bold | FontStyle.Italic),
 				fbrush,
 				20, 3);
@@ -95,7 +97,7 @@ namespace GLiveMsgr.Gui
 			fbrush = new SolidBrush (Color.Gray);
 			
 			graphics.DrawString (
-				string.Format ("<{0}>", conversation.Account.Username),
+				string.Format ("<{0}>", _remoteUser),
 				font,
 				fbrush,
 				30, 15);
