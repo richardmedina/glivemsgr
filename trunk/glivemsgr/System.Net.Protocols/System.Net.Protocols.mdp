@@ -29,6 +29,7 @@
     <File name="Events/Typing.cs" subtype="Code" buildaction="Compile" />
     <File name="Events/DataEvent.cs" subtype="Code" buildaction="Compile" />
     <File name="MessageStack.cs" subtype="Code" buildaction="Compile" />
+    <File name="BetaConnection.cs" subtype="Code" buildaction="Nothing" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

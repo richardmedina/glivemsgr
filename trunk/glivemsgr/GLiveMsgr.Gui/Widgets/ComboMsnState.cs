@@ -6,7 +6,7 @@ using System.Net.Protocols.Msnp;
 
 namespace GLiveMsgr.Gui
 {
-	
+	/*
 	
 	public class ContactStateCombo : Gtk.ComboBox
 	{
@@ -80,6 +80,7 @@ namespace GLiveMsgr.Gui
 				return (MsnpContactState) this.Active;
 			}
 		}
-
+	
 	}
+	*/
 }

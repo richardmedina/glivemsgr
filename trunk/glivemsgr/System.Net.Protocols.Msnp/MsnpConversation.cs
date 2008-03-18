@@ -53,11 +53,23 @@ namespace System.Net.Protocols.Msnp
 			_account.SendCommand ("XFR {0} SB", _id);
 		}
 		
+		public override void Close ()
+		{
+			if (_connection.Connected)
+				_connection.Send ("BYE");
+			
+			base.Close ();
+		}
+
+		
 		public void Invite (MsnpContact contact)
 		{
 			if (_connection.Connected)
 				_connection.RawSend ("CAL 1 {0}\r\n", 
 					contact.Username);
+			else if (!IsChat) {
+				Open (_remoteContact);
+			}
 		}
 		
 		private Connection createConnection (string hostname, int port)
@@ -88,6 +100,11 @@ namespace System.Net.Protocols.Msnp
 			//OnStarted();
 		}
 		
+		public void RawSend (string data)
+		{
+			_connection.RawSend (data);
+		}
+		
 		public override void SendText (string text)
 		{
 			/*
@@ -103,6 +120,7 @@ namespace System.Net.Protocols.Msnp
 			*/
 			
 			if (Buddies.Count == 0 && !IsChat) {
+				Console.WriteLine ("Queued: {0}", text);
 				messages.Enqueue (text);
 				Invite (RemoteContact);
 				return;
@@ -146,7 +164,7 @@ namespace System.Net.Protocols.Msnp
 		{				
 			string [] command = msnpcommand.Split (" ".ToCharArray ());
 			
-			//Console.WriteLine (">{0}<", msnpcommand);
+			Console.WriteLine (">{0}<", msnpcommand);
 			
 			switch (command [0]) {
 			
@@ -184,6 +202,9 @@ namespace System.Net.Protocols.Msnp
 						command [command.Length -1]);
 					
 					string message = _connection.Read (length);
+					
+					Console.WriteLine ("MSG-DATA: ~{0}~\n",
+						message);
 					
 					string str = "\r\n\r\n";
 					int index = message.IndexOf (str) + str.Length;
@@ -245,6 +266,7 @@ namespace System.Net.Protocols.Msnp
 						Buddies.Remove (bud);
 					}
 					if (Buddies.Count == 0) {
+						OnClosed ();
 					}
 					//lastContact = (MsnpContact) bud;
 				} break;

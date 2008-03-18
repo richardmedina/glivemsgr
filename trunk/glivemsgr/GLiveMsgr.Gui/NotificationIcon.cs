@@ -29,7 +29,7 @@ namespace GLiveMsgr.Gui
 			_window.Account.Started += account_Started;
 			_window.Account.Terminated += account_Terminated;
 			
-			Stock = Gtk.Stock.GoUp;
+			Pixbuf = Gdk.Pixbuf.LoadFromResource ("messenger_icon.png");
 			 
 						
 			_menu = new NotificationMenu ();

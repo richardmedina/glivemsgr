@@ -51,7 +51,7 @@ namespace System.Net.Protocols
 		}
 
 		
-		public void Close ()
+		public virtual void Close ()
 		{
 			OnClosed ();
 		}

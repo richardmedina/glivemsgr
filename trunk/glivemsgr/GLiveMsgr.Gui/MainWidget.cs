@@ -9,7 +9,6 @@ using RickiLib.Types;
 namespace GLiveMsgr.Gui
 {
 	
-	
 	public class MainWidget : Gtk.VBox
 	{
 		private Gtk.Notebook _notebook;
@@ -66,17 +65,18 @@ namespace GLiveMsgr.Gui
 			Console.WriteLine ("Conversation created MainWidget");
 			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
 				ConversationWindow window = new ConversationWindow (args.Instance);
-				windows.Add (window);  
+				windows.Add (window);
 			});
 		}
-		
+				
 		private void account_ConversationRemoved (object sender,
 			WatchedCollectionEventArgs <MsnpConversation> args)
 		{
 			Console.WriteLine ("MainWidget.ConversationRemoved");
 			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
 				foreach (ConversationWindow window in windows) {
-					if (window.Conversation == args.Instance) {
+					if (window.Conversation == args.Instance &&
+						window.Visible == false) {
 						windows.Remove (window);
 						window.Destroy ();
 						break;
@@ -100,8 +100,11 @@ namespace GLiveMsgr.Gui
 			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
 				foreach (ConversationWindow window in windows) {
 					if (window.Conversation == sender) {
-						window.Show ();
-						window.Present ();
+						if (!window.Visible) {
+							window.Show ();
+						}
+						if (!window.IsActive)
+							window.UrgencyHint = true;
 					}
 				}
 			});

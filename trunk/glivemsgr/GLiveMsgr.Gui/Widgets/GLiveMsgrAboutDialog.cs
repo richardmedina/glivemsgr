@@ -24,14 +24,15 @@ namespace GLiveMsgr.Gui
 			base.Version = "0.1a";
 			base.Website = "http://messenger.dana-ide.org";
 			base.Comments =
-				"Windows Live Messenger is a clone for *nix, MacOS X and " +
-				"MS Windows platforms written in C# and using Mono " +
+				"GNOME Live Messenger is a *nix, MacOS X and " +
+				"MS Windows cross-platforms of Windows Live Messenger written in C# and using Mono " +
 				"Framework, Gtk# and System.Net.Protocols.Msnp library";
 			
 			
 			base.License = "GNU/GPL";
 			
-			base.LogoIconName = Stock.GoUp;
+			//base.LogoIconName = Stock.GoUp;
+			base.Logo = Gdk.Pixbuf.LoadFromResource ("messenger.png");
 		}
 	}
 }

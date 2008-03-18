@@ -34,11 +34,14 @@
     <File name="MsnpCommandHandler.cs" subtype="Code" buildaction="Compile" />
     <File name="MsnpCommand.cs" subtype="Code" buildaction="Compile" />
     <File name="MessageQueue.cs" subtype="Code" buildaction="Compile" />
+    <File name="MsnpObject.cs" subtype="Code" buildaction="Compile" />
+    <File name="MsnpObjectHeader.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <ProjectReference type="Project" localcopy="True" refto="System.Net.Protocols" />
     <ProjectReference type="Project" localcopy="True" refto="RickiLib" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   </References>
 </Project>

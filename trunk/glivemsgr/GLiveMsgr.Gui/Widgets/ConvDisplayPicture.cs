@@ -47,10 +47,13 @@ namespace GLiveMsgr.Gui
 			
 			base.HeightRequest = displayPicture.Image.Pixbuf.Height + 40;
 			
+			// White
 			eventbox.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (System.Drawing.Color.White));
+				Theme.GdkColorFromCairo (Theme.BaseColor));
+			
+			//Conversation Background
 			base.ModifyBg (StateType.Normal, 
-				Theme.GetGdkColor (Theme.ConversationBackground));
+				Theme.GdkColorFromCairo (Theme.BgColor));
 		}
 		
 		public DisplayPictureWidget PictureWidget {

@@ -63,6 +63,10 @@ namespace System.Net.Protocols.Msnp
 			 	command.Type = MsnpCommandType.LST;
 			 	startIndex = 1; 
 			 }
+			 else if (pieces [0] == "PNG") {
+			 	command.Type = MsnpCommandType.PNG;
+			 	startIndex = 1;
+			 }
 			 else if (pieces [0] == "CHG")
 			 	command.Type = MsnpCommandType.CHG;
 			 else if (pieces [0] == "FLN")

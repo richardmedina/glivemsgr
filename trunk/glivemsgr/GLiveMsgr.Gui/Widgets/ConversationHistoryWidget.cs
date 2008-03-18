@@ -26,8 +26,12 @@ namespace GLiveMsgr.Gui
 			view.Buffer.InsertText += view_Buffer_InsertText;
 			//view.SizeAllocated += view_SizeAllocated;
 			
-			base.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (Theme.ConversationBackground));
+			//ConversationBackground
+			view.ModifyBg (StateType.Normal,
+				Theme.GdkColorFromCairo (Theme.BaseColor));
+				
+			//base.ModifyFg (StateType.Normal,
+			//	Theme.GdkColorFromCairo (Theme.BgColor));
 			
 			base.Add (view);
 			this.conversation.DataSent += conversation_DataSent;

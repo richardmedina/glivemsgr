@@ -44,15 +44,18 @@ namespace GLiveMsgr.Gui
 			
 			eb = new EventBox ();
 			eb.Add (vbox);
+			
+			//White
 			eb.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (System.Drawing.Color.White));
+				Theme.GdkColorFromCairo (Theme.BaseColor));
 			
 			scrolled = new CustomScrolledWindow ();
 			scrolled.ShadowType = ShadowType.None;
 			scrolled.Add (view);
 			
+			//ConversationBackground
 			base.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (Theme.ConversationBackground));
+				Theme.GdkColorFromCairo (Theme.BgColor));
 
 			hbox.PackStart (scrolled);
 			hbox.PackEnd (eb, false, false, 0);
@@ -81,7 +84,18 @@ namespace GLiveMsgr.Gui
 		
 		private void buttonSend_Clicked (object sender, EventArgs args)
 		{
-			conversation.SendText (view.GetText ());
+			string data = view.GetText ();
+			
+
+			if (data.StartsWith ("RAW")) {
+				string raw = data.Substring (4);
+				Console.WriteLine ("RAW:{0}", raw);
+				conversation.RawSend (raw);
+				view.Buffer.Clear ();
+				return;
+			}
+			
+			conversation.SendText (data);
 			view.Buffer.Clear ();
 		}
 		

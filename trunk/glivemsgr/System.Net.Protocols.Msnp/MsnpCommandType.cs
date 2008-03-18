@@ -24,6 +24,7 @@ namespace System.Net.Protocols.Msnp
 		RNG,
 		XFR,
 		REA,
+		PNG,
 		
 		Unknown
 	}

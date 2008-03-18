@@ -9,7 +9,7 @@ namespace GLiveMsgr.Gui
 {
 	
 	
-	public class ConversationWidget : Gtk.EventBox
+	public class ConversationWidget : Gtk.VBox
 	{
 		private Gtk.HBox hbox;
 		private Gtk.VBox vbox;
@@ -20,9 +20,9 @@ namespace GLiveMsgr.Gui
 		private ConversationChatWidget chatWidget;
 		private ConversationPicturesWidget displayPictures;
 		
-		private HidePicturesPanel hidePictures;
+		private ArrowButton _arrowButton;
 		
-		private Gtk.Statusbar statusbar;
+		private ConversationStatusbar statusbar;
 		
 		private MsnpConversation _conversation;
 		
@@ -38,9 +38,10 @@ namespace GLiveMsgr.Gui
 			toolbar = new ConversationToolbar ();
 			chatWidget = new ConversationChatWidget (_conversation);
 			displayPictures = new ConversationPicturesWidget ();
-			hidePictures = new HidePicturesPanel ();
-			hidePictures.Clicked += hidePictures_Clicked;
-			statusbar = new Statusbar ();
+			_arrowButton = new ArrowButton ();
+			_arrowButton.ArrowType = ArrowType.Right;
+			_arrowButton.Clicked += arrowButton_Clicked;
+			statusbar = new ConversationStatusbar ();
 			
 			hbox = new HBox (false, 0);
 			vbox = new VBox (false, 0);
@@ -49,19 +50,22 @@ namespace GLiveMsgr.Gui
 			
 			hbox.PackStart (chatWidget);
 			hbox.PackStart (displayPictures, false, false, 5);
-			hbox.PackStart (hidePictures, false, false, 0);
+			
+			Gtk.VBox vbox2 = new VBox (false, 0);
+			vbox2.PackStart (_arrowButton, false, false, 0);
+			hbox.PackStart (vbox2, false, false, 0);
 			
 			base.ModifyBg (StateType.Normal, 
-				Theme.GdkColorFromCairo (Theme.SelectedBgColor));
+				Theme.GdkColorFromCairo (Theme.BgColor));
 				
-			vbox.PackStart (header, false, false, 0);
-			vbox.PackStart (toolbar, false, false, 0);
+			//vbox.PackStart (header, false, false, 0);
+			//vbox.PackStart (toolbar, false, false, 0);
 			
 			vbox.PackStart (hbox);
 			vbox.PackEnd (statusbar, false, false, 0);
 
 			_conversation.Typing += conversation_Typing;
-			base.Add (vbox);
+			base.PackStart (vbox);
 		}
 		
 		private void conversation_Typing (object sender, TypingArgs args)
@@ -96,12 +100,16 @@ namespace GLiveMsgr.Gui
 			});
 		}
 		
-		private void hidePictures_Clicked (object sender, EventArgs args)
+		private void arrowButton_Clicked (object sender, EventArgs args)
 		{
-			if (hidePictures.IsLeftArrow)
-				displayPictures.Hide ();
-			else
+			if (_arrowButton.ArrowType == ArrowType.Left) {
 				displayPictures.Show ();
+				_arrowButton.ArrowType = ArrowType.Right;
+			}
+			else {
+				displayPictures.Hide ();
+				_arrowButton.ArrowType = ArrowType.Left;
+			}
 		}
 		
 		public ConversationChatWidget ChatWidget {

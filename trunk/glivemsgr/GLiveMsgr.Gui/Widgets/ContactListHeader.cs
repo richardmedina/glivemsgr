@@ -18,7 +18,7 @@ namespace GLiveMsgr.Gui
 		
 		
 		private EditableLabelButton elbMsg;
-		private EditableLabelButton elbAlias;
+		private AliasChangeButton _aliasButton;
 		
 		private MsnpAccount account;
 		
@@ -33,7 +33,8 @@ namespace GLiveMsgr.Gui
 			
 			displayPic = new Gtk.Image (pixbuf);
 			
-			//aliasButton = new AliasChangeButton ();
+			_aliasButton = new AliasChangeButton ();
+			
 			elbMsg = new EditableLabelButton ();
 			
 			elbMsg.HBox.PackStart (
@@ -55,6 +56,7 @@ namespace GLiveMsgr.Gui
 			
 			vbox = new VBox ();
 			vbox.BorderWidth = 10;
+			vbox.PackStart (_aliasButton, false, false, 10);
 			vbox.PackEnd (elbMsg, false, false, 0);
 
 			hbox.PackStart (vbox);
@@ -62,6 +64,14 @@ namespace GLiveMsgr.Gui
 			vbox.HeightRequest = 85;
 			
 			PackStart (hbox);
+		}
+		
+		public AliasChangeButton AliasButton {
+			get { return _aliasButton; }
+		}
+		
+		public EditableLabelButton CustomMessage {
+			get { return elbMsg; }
 		}
 		
 		public MsnpAccount Account {

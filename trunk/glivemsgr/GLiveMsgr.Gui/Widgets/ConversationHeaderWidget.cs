@@ -1,8 +1,6 @@
 
 using System;
 using Gtk;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using RickiLib.Widgets;
 
 //using Cairo;
@@ -15,7 +13,7 @@ namespace GLiveMsgr.Gui
 	
 	public class ConversationHeaderWidget : RickiLib.Widgets.DrawingAreaGDI
 	{	
-		private System.Drawing.Brush brush;
+		//private System.Drawing.Brush brush;
 		
 		private string _remoteUser;
 		private string _remoteAlias;
@@ -33,6 +31,8 @@ namespace GLiveMsgr.Gui
 			
 			//init ();
 		}
+		
+		// TODO: The top bar must be decorated with Cairo..
 		/*
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
@@ -60,6 +60,7 @@ namespace GLiveMsgr.Gui
 		}
 
 		*/
+		/*
 		protected override void OnPaint (Graphics graphics)
 		{
 			brush = new LinearGradientBrush (
@@ -102,5 +103,6 @@ namespace GLiveMsgr.Gui
 				fbrush,
 				30, 15);
 		}
+		*/
 	}
 }

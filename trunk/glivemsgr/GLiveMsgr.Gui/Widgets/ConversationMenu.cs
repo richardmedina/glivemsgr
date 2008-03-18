@@ -2,8 +2,6 @@
 using System;
 using Gtk;
 using RickiLib.Widgets;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace GLiveMsgr.Gui
 {
@@ -29,6 +27,9 @@ namespace GLiveMsgr.Gui
 				menus [i] = new CustomMenu (menu_labels [i]);
 				base.Append (menus [i]);
 			}
+			
+			ModifyBg (StateType.Normal,
+				Theme.GdkColorFromCairo (Theme.BgColor));
 		}
 	}
 }

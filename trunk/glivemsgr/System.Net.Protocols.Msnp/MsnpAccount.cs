@@ -22,8 +22,6 @@ namespace System.Net.Protocols.Msnp
 		private MsnpGroupCollection groups;
 		private MsnpConversationCollection conversations;
 		
-		//private MsnpConversationCollection bconversations;
-		
 		private MsnpPassportInfo passport;
 		
 		private MsnpConversation _nextConversation;
@@ -36,6 +34,8 @@ namespace System.Net.Protocols.Msnp
 		
 		private event MsnpCommandHandler command;
 		
+		private MsnpObject _msnpObject;
+		
 		private readonly string [] loginCommands = {
 			"VER {0} MSNP8 MSNP9 CVR0",
 			"CVR {0} 0x0C0A winnt 5.1 i386 MSNMSGR 6.0.0602 " +
@@ -43,6 +43,8 @@ namespace System.Net.Protocols.Msnp
 			"USR {0} TWN I {1}",
 			"USR {0} TWN S {1}"
 		};
+		
+		private System.IO.StreamWriter writer;
 		
 		public MsnpAccount () : 
 			this (string.Empty, string.Empty)
@@ -55,7 +57,6 @@ namespace System.Net.Protocols.Msnp
 			passport = new MsnpPassportInfo ();
 			buddies = new BuddyCollection ();
 			conversations = new MsnpConversationCollection ();
-			//bconversations = new MsnpConversationCollection ();
 
 			State = MsnpContactState.Offline;
 			groups = new MsnpGroupCollection ();
@@ -63,6 +64,7 @@ namespace System.Net.Protocols.Msnp
 			ConversationRequest = onConversationRequest;
 			command = onMsnpCommand;
 			createNextConversation ();
+			//writer = new StreamWriter ("/home/ricki/Desktop/object.txt");
 		}
 		
 		//Return values
@@ -80,6 +82,8 @@ namespace System.Net.Protocols.Msnp
 			groups.Clear ();
 			groups.Add (noGroup);
 			conversations.Clear ();
+			
+			_msnpObject = MsnpObject.Create (this.Username, "/home/ricki/me.png");
 			
 			Debug.WriteLine ("Debug enable");
 			// Notification server
@@ -196,6 +200,7 @@ namespace System.Net.Protocols.Msnp
 		{
 			Console.WriteLine ("Preparing to close {0} conversations",
 				conversations.Count);
+			//writer.Close ();
 			foreach (Conversation conv in conversations)
 				conv.Close ();
 			
@@ -211,8 +216,6 @@ namespace System.Net.Protocols.Msnp
 			
 		}
 		
-		//FIXME:This procedure must show the window and later
-		// perform operations with connection handler
 		public void StartConversation (MsnpContact contact)
 		{	
 			
@@ -244,7 +247,7 @@ namespace System.Net.Protocols.Msnp
 		
 		public void ChangeAlias (string newalias)
 		{
-			dispatchServer.Send ("REA {0} {1} {2}",
+			dispatchServer.Send ("REA {0} {1} 805306468 {2}",
 				TrId,
 				Username,
 				Utils.UrlEncode (newalias));
@@ -252,9 +255,10 @@ namespace System.Net.Protocols.Msnp
 		
 		public void ChangeState (MsnpContactState state)
 		{
-			dispatchServer.Send ("CHG {0} {1}",
+			dispatchServer.Send ("CHG {0} {1} {2}",
 				TrId,
-				Utils.ContactStateToString (state));
+				Utils.ContactStateToString (state),
+				_msnpObject.ToString ());
 		}
 		
 		internal void SendCommand (string command, params object [] objs)
@@ -369,7 +373,7 @@ namespace System.Net.Protocols.Msnp
 		private void processCommand (MsnpCommand cmd)
 		{
 			string msnpcommand = cmd.RawString;
-			//Console.WriteLine ("MsnpAccount.processCommand>{0}<=", msnpcommand);
+			Console.WriteLine ("MsnpAccount.processCommand>{0}<=", msnpcommand);
 			//Console.WriteLine ("Type: {0}", cmd.Type.ToString ());
 			
 			if (msnpcommand == string.Empty) {
@@ -487,6 +491,8 @@ namespace System.Net.Protocols.Msnp
 					int username_index = state_index + 1;
 					int alias_index = state_index + 2;
 					
+					//writer.WriteLine (Utils.UrlDecode (msnpcommand));
+					
 					if (command [alias_index] == Username) {
 						Alias =  Utils.UrlDecode (
 							command [alias_index]);
@@ -541,6 +547,10 @@ namespace System.Net.Protocols.Msnp
 						createNextConversation ();
 					}
 					//_nextConversation._account_Command (this, new MsnpCommandArgs (cmd));
+				break;
+				
+				case MsnpCommandType.PNG:
+					Console.WriteLine ("Receiving PNG Command");
 				break;
 				/*
 				// FIXME: Find a nice way to perform that..
