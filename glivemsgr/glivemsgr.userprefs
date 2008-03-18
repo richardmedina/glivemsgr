@@ -15,7 +15,6 @@
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
         <Node name="Glivemsgr" expanded="True">
-          <Node name="Widgets" expanded="True" />
           <Node name="MainWidget.cs" selected="True" />
         </Node>
       </Node>
@@ -24,9 +23,9 @@
       <Node expanded="True">
         <Option id="ShowProjects" value="True" />
         <Option id="NestedNamespaces" value="True" />
-        <Option id="GroupByAccess" value="True" />
         <Option id="PublicApiOnly" value="False" />
         <Option id="GroupByType" value="True" />
+        <Option id="GroupByAccess" value="True" />
       </Node>
     </ViewMemento>
     <ViewMemento id="MonoDevelop.NUnit.TestPad">
