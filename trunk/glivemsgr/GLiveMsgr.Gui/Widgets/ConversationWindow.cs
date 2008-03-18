@@ -22,6 +22,7 @@ namespace GLiveMsgr.Gui
 		public ConversationWindow (MsnpConversation conv)
 		{
 			Decorated = false;
+			LogoVisible = false;
 			conversation = conv;
 			conversation.DataGet += conversation_DataGet; 
 			

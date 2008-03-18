@@ -32,6 +32,8 @@ namespace GLiveMsgr.Gui
 			
 			WindowPosition = Gtk.WindowPosition.Center;
 			
+			LogoVisible = true;
+			
 			account = new MsnpAccount ();
 			account.ConversationRequest += account_ConversationRequest;
 			
