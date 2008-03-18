@@ -3,14 +3,16 @@
     <File name="GLiveMsgr.Gui/Widgets/PopupWindow.cs" line="184" column="25" />
     <File name="GLiveMsgr.Gui/MainWindow.cs" line="35" column="23" />
     <File name="GLiveMsgr.Gui/Widgets/ConversationWindow.cs" line="25" column="24" />
+    <File name="System.Net.Protocols.Msnp/MsnpAccount.cs" line="376" column="6" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
         <Node name="Glivemsgr" expanded="True">
-          <Node name="Widgets" expanded="True">
-            <Node name="PopupWindow.cs" selected="True" />
-          </Node>
+          <Node name="Widgets" expanded="True" />
+        </Node>
+        <Node name="System.Net.Protocols.Msnp" expanded="True">
+          <Node name="MsnpAccount.cs" selected="True" />
         </Node>
       </Node>
     </ViewMemento>
@@ -18,9 +20,9 @@
       <Node expanded="True">
         <Option id="ShowProjects" value="True" />
         <Option id="NestedNamespaces" value="True" />
+        <Option id="GroupByAccess" value="True" />
         <Option id="PublicApiOnly" value="False" />
         <Option id="GroupByType" value="True" />
-        <Option id="GroupByAccess" value="True" />
       </Node>
     </ViewMemento>
     <ViewMemento id="MonoDevelop.NUnit.TestPad">
@@ -28,7 +30,7 @@
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Widgets/PopupWindow.cs" />
+    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/System.Net.Protocols.Msnp/MsnpAccount.cs" />
     <Property key="ActiveConfiguration" value="Debug" />
   </Properties>
 </UserCombinePreferences>

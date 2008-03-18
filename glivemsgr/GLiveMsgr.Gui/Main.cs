@@ -10,16 +10,16 @@ namespace GLiveMsgr.Gui
 	class MainClass
 	{
 	
-		private static string xmldata = "<msnobj Creator=\"karl113@hotmail.com\" Size=\"15045\"	Type=\"3\" Location=\"amsn.tmp\" Friendly=\"AAA=\" SHA1D=\"n42ExCY45hQyzyZ39AC7aZmP3j8=\" SHA1C=\"exiHARLx1BqTCBnT2KT0A6bogH0=\" />";
+		//private static string xmldata = "<msnobj Creator=\"karl113@hotmail.com\" Size=\"15045\"	Type=\"3\" Location=\"amsn.tmp\" Friendly=\"AAA=\" SHA1D=\"n42ExCY45hQyzyZ39AC7aZmP3j8=\" SHA1C=\"exiHARLx1BqTCBnT2KT0A6bogH0=\" />";
 
 		public static void Main(string[] args)
-		{		
+		{	/*	
 			Console.WriteLine (xmldata);
 			
 			MsnpObject obj = MsnpObject.Create ("Ricki", "/home/ricki/image.bmp");
 			
 			Console.WriteLine (obj);
-			/*
+			
 			if (MsnpObject.Parse ("1", xmldata, out obj)) {
 				Console.WriteLine ("ClientIdentificationNumber: {0}", obj.ClientIdNumber);
 				Console.WriteLine ("Creator : {0}", obj.Creator);
@@ -33,14 +33,14 @@ namespace GLiveMsgr.Gui
 			} else {
 				Console.WriteLine ("No pude obtener informacion");
 			}
-			*/
+			
 			
 			
 			MsnpObjectHeader head = new MsnpObjectHeader ();
 			head.SessionId = 10;
 			
 			Console.WriteLine ("Head is:{0}", head);
-			
+			*/
 			Application.Init ();
 			MainWindow window = new MainWindow ();
 			window.ShowAll ();

@@ -54,10 +54,12 @@ namespace GLiveMsgr.Gui
 			//comboState = new ComboMsnState ();
 			//comboState.ModifyBase (StateType.Normal, new Gdk.Color (255, 0, 0));
 			buttonConnect = new Button ("Login");
+			buttonConnect.Relief = ReliefStyle.None;
 			
 			buttonConnect.ModifyBg (StateType.Active,
-				Theme.GdkColorFromCairo (Theme.BaseColor));
-			
+			          Theme.GdkColorFromCairo (Theme.BaseColor));
+			buttonConnect.ModifyBg (StateType.Prelight,
+			          Theme.GdkColorFromCairo (Theme.BgColor));
 			// LogonEntryForeground
 			buttonConnect.ModifyText (StateType.Active,
 				Theme.GdkColorFromCairo (Theme.TextColor));
