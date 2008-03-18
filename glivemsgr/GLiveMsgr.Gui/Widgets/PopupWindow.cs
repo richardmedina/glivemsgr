@@ -13,6 +13,7 @@ namespace GLiveMsgr.Gui
 	
 	public class PopupWindow : Gtk.Window
 	{
+		private bool _logoVisible;
 		
 		public PopupWindow () : base (string.Empty)
 		{
@@ -21,6 +22,7 @@ namespace GLiveMsgr.Gui
 			Resize (200, 150);
 			ModifyBg (StateType.Normal,
 				Theme.GdkColorFromCairo (Theme.BaseColor));
+				
 		}
 		
 		protected override void OnRealized ()
@@ -82,13 +84,14 @@ namespace GLiveMsgr.Gui
 				context.Pattern = grad;
 			
 				context.Fill ();
-						
-				Cairo.ImageSurface imageSurf = 
-					new Cairo.ImageSurface ("gnome-logo.png");
+				if (LogoVisible) {		
+					Cairo.ImageSurface imageSurf = 
+						new Cairo.ImageSurface ("gnome-logo.png");
 			
-				imageSurf.Show (context,
-					Allocation.Width - imageSurf.Width - 5,
-					Allocation.Height - imageSurf.Height - 5);
+					imageSurf.Show (context,
+						Allocation.Width - imageSurf.Width - 5,
+						Allocation.Height - imageSurf.Height - 5);
+				}
 
 				double lw = 2;
 			
@@ -173,6 +176,14 @@ namespace GLiveMsgr.Gui
 			
 			ShapeCombineMask (pixmap, 0, 0);
 			pixmap.Dispose ();
+		}
+		
+		public bool LogoVisible {
+			get { return _logoVisible; }
+			set { 
+				_logoVisible = value;
+				QueueDraw ();
+			}
 		}
 	}
 }
