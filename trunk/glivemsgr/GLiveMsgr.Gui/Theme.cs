@@ -54,8 +54,8 @@ namespace GLiveMsgr.Gui
 				(byte) (color.B * 255));
 			
 			//Console.WriteLine (gdk_color);
-			Console.WriteLine ("From cairo : {0:X},{1:X},{2:X}", 
-				(int) (color.R * 255), (int) (color.G * 255), (int) (color.B * 255));
+			//Console.WriteLine ("From cairo : {0:X},{1:X},{2:X}", 
+			//	(int) (color.R * 255), (int) (color.G * 255), (int) (color.B * 255));
 			
 			return gdk_color;
 		}
@@ -93,8 +93,8 @@ namespace GLiveMsgr.Gui
 			
 			//foreach (Gdk.Color color in gtkstyle.BaseColors)
 			Gdk.Color color = GdkColorFromCairo (Theme.BaseColor);
-				Console.WriteLine ("Selected : {0}, {1:X},{2:X}",
-					(byte) color.Red, (byte) color.Green, (byte) color.Blue);
+				//Console.WriteLine ("Selected : {0}, {1:X},{2:X}",
+				//	(byte) color.Red, (byte) color.Green, (byte) color.Blue);
 		}
 		
 		private static Cairo.Color fgColor;

@@ -36,6 +36,10 @@ namespace GLiveMsgr.Gui
 			_aliasButton = new AliasChangeButton ();
 			
 			elbMsg = new EditableLabelButton ();
+			elbMsg.ModifyBg (StateType.Prelight,
+			          Theme.GdkColorFromCairo (Theme.BaseColor));
+			elbMsg.ModifyBg (StateType.Active,
+			          Theme.GdkColorFromCairo (Theme.BgColor));
 			
 			elbMsg.HBox.PackStart (
 				new Arrow (ArrowType.Down, ShadowType.None), 

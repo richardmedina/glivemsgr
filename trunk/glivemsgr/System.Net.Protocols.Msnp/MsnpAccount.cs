@@ -373,7 +373,7 @@ namespace System.Net.Protocols.Msnp
 		private void processCommand (MsnpCommand cmd)
 		{
 			string msnpcommand = cmd.RawString;
-			Console.WriteLine ("MsnpAccount.processCommand>{0}<=", msnpcommand);
+			//Console.WriteLine ("MsnpAccount.processCommand>{0}<=", msnpcommand);
 			//Console.WriteLine ("Type: {0}", cmd.Type.ToString ());
 			
 			if (msnpcommand == string.Empty) {
