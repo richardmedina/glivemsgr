@@ -41,8 +41,8 @@ namespace GLiveMsgr.Gui
 			this.account = account;
 			comboEmail = new FixedComboBoxEntry (
 				new string [] {
-					"karl113@hotmail.com", 
-					"ricardo@innovaciontecnologica.com"
+					"email1@address.com",
+					"email2@address.com"
 				});
 			
 			comboEmail.Entry.Text = string.Empty;
