@@ -6,7 +6,7 @@ namespace GLiveMsgr.Gui
 {
 	
 	
-	public class ConversationPicturesWidget : Gtk.EventBox
+	public class ConversationPicturesWidget : Gtk.VBox
 	{
 		private Gtk.VBox vbox;
 		
@@ -23,10 +23,11 @@ namespace GLiveMsgr.Gui
 			vbox.PackStart (myDisplay, false, false, 0);
 			vbox.PackEnd (contactDisplay, false, false, 0);
 			
-			base.Add (vbox);
+			base.PackStart (vbox);
 			
+			//ConversationBackground
 			base.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (Theme.ConversationBackground));
+				Theme.GdkColorFromCairo (Theme.BgColor));
 		}
 	}
 }

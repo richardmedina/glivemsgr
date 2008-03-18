@@ -2,28 +2,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 using RickiLib.Widgets;
+using Cairo;
 
 namespace GLiveMsgr.Gui
 {
 	
 	
-	public class Toolbar : RickiLib.Widgets.DrawingAreaGDI
+	public class Toolbar : Gtk.DrawingArea
 	{
-		/*
-		private Gdk.Pixmap pixmap;
-		private System.Drawing.Graphics g;
-		private System.Drawing.Pen pen;
-		private System.Drawing.Brush brush;
-		*/
 		private ToolbarItemCollection items;
-		private Brush backgroundBrush;
+		private Cairo.Pattern pattern;
 		
 		public Toolbar ()
 		{
-			this.backgroundBrush = null;
 			base.HeightRequest = 30;
 			items = new ToolbarItemCollection ();
 			
@@ -32,51 +24,48 @@ namespace GLiveMsgr.Gui
 		
 		protected override bool OnConfigureEvent (Gdk.EventConfigure args)
 		{
-			if (backgroundBrush == null)
-				backgroundBrush = new LinearGradientBrush (
-					new Point (0, 0),
-					new Point (0, Allocation.Height),
-					Theme.ToolbarGradientStartColor,
-					Theme.ToolbarGradientEndColor
-				);
+			Cairo.Gradient gradient = new LinearGradient (
+				0, 0,
+				0, Allocation.Height);
+			
+			gradient.AddColorStop (0, Theme.BaseColor);
+			gradient.AddColorStop (1, Theme.BgColor);
+			gradient.AddColorStop (2, Theme.BaseColor);
+			
+			pattern = gradient;
 			
 			return base.OnConfigureEvent (args);
 		}
 
 		
-		protected override void OnPaint (Graphics graphics)
+		protected override bool OnExposeEvent (Gdk.EventExpose args)
 		{	
-			Pen border = new Pen (Color.LightBlue);
+			bool ret = false; //base.OnExposeEvent (args);
 			
-			graphics.FillRectangle (
-				BackgroundBrush,
-				0, 0,
-				this.Allocation.Width,
-				this.Allocation.Height
-			);
-			
-			int x = 5;
-			int hseparator = 2;
-			int vseparator = 2;
-			
-			//Debug.WriteLine ("Drawing buttons {0}", items.Count);
-			foreach (ToolbarButton button in items) {
-				button.Location = new Point (x, vseparator);
+			using (Cairo.Context context = 
+				Gdk.CairoHelper.Create (args.Window)) {
 				
-				if (button.HasMouseOver) {					
-						graphics.DrawRectangle (
-						border,
-						button.Location.X, 
-						button.Location.Y,
-						button.Image.Width, 
-						button.Image.Height);
+				context.Pattern = pattern;
+				context.Rectangle (0, 0, 
+					Allocation.Width, Allocation.Height);
+				context.Fill ();
+			
+			
+				float x = 5;
+				int hseparator = 2;
+				int vseparator = 2;
+			
+				foreach (ToolbarItem item in items) {
+					item.X = x;
+					item.Y = vseparator;
+					
+					item.Draw (context);
+
+					x += item.X + item.Width + hseparator;
 				}
-				
-				graphics.DrawImage (button.Image, button.Location);
-				x += button.Location.X + button.Image.Width + hseparator;
-				//y += button.Image.Height;
 			}
 		
+			return ret;
 		}
 		
 		
@@ -100,6 +89,25 @@ namespace GLiveMsgr.Gui
 			return base.OnLeaveNotifyEvent (args);
 		}
 		
+		protected override bool OnMotionNotifyEvent (Gdk.EventMotion args)
+		{
+			int mousex = (int) args.X;
+			int mousey = (int) args.Y;
+			
+			foreach (ToolbarItem item in items) {
+				item.SendMouseOut ();
+				if ((mousex >= item.X &&
+					mousex <= item.X + item.Width) &&
+					mousey >= item.Y &&
+					mousey <= item.Y + item.Height) {
+					item.SendMouseOver ();
+				}
+			}
+		
+			return base.OnMotionNotifyEvent (args);
+		}
+
+		
 		
 		private bool timer_enabled = false;
 		private bool timer_killed = true;
@@ -115,7 +123,7 @@ namespace GLiveMsgr.Gui
 			int x, y;
 			Gdk.ModifierType mask;
 			
-			this.GdkWindow.GetPointer (out x, out y, out mask);
+			GdkWindow.GetPointer (out x, out y, out mask);
 			
 			ToolbarItem item = selected_item;
 			
@@ -124,11 +132,11 @@ namespace GLiveMsgr.Gui
 					item.SendMouseOut ();
 				
 				selected_item.SendMouseOver ();
-				base.QueueResize ();
+				QueueResize ();
 			} else {
 				if (item != null) {
 					item.SendMouseOut ();
-					base.QueueResize ();
+					QueueResize ();
 				}
 			}
 			
@@ -139,10 +147,10 @@ namespace GLiveMsgr.Gui
 		{
 			i = null;
 			foreach (ToolbarItem item in items) {
-				if ((mousex >= item.Location.X &&
-					mousex <= item.Location.X + item.Size.Width) &&
-					mousey >= item.Location.Y &&
-					mousey <= item.Location.Y + item.Size.Height) {
+				if ((mousex >= item.X &&
+					mousex <= item.X + item.Width) &&
+					mousey >= item.Y &&
+					mousey <= item.Y + item.Height) {
 					i = item;
 					return true;
 				}
@@ -161,12 +169,12 @@ namespace GLiveMsgr.Gui
 			
 			return base.OnButtonReleaseEvent (args);
 		}
-
+/*
 		protected new virtual Brush BackgroundBrush {
 			get{ return backgroundBrush; }
 			set { backgroundBrush = value; }
 		}
-		
+*/		
 		public ToolbarItemCollection Items {
 			get {	
 				return items;

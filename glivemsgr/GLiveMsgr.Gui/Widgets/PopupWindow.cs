@@ -16,10 +16,11 @@ namespace GLiveMsgr.Gui
 		
 		public PopupWindow () : base (string.Empty)
 		{
-			BorderWidth = 10;
+			BorderWidth = 5;
+			AddEvents ((int) Gdk.EventMask.ButtonPressMask);
 			Resize (200, 150);
 			ModifyBg (StateType.Normal,
-				new Gdk.Color (255, 255, 255));
+				Theme.GdkColorFromCairo (Theme.BaseColor));
 		}
 		
 		protected override void OnRealized ()
@@ -27,62 +28,91 @@ namespace GLiveMsgr.Gui
 			base.OnRealized ();
 		}
 
+		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
+		{
+			if (evnt.Type == Gdk.EventType.TwoButtonPress &&
+				evnt.Button ==1) {
+				if (GdkWindow.State == Gdk.WindowState.Maximized ||
+					GdkWindow.State == Gdk.WindowState.Fullscreen) {
+					GdkWindow.Unmaximize ();
+					GdkWindow.Unfullscreen ();
+				} else {
+					GdkWindow.Maximize ();
+					if ((evnt.State & Gdk.ModifierType.ControlMask) > 0)
+						GdkWindow.Fullscreen ();
+				}
+			}
+			else if (evnt.X > Allocation.Width - 15 &&
+				evnt.Y > Allocation.Height - 15)
+				GdkWindow.BeginResizeDrag (Gdk.WindowEdge.SouthEast,
+					1, (int) evnt.XRoot, (int)  evnt.YRoot, evnt.Time);
+			else if (evnt.X > Allocation.Width - 15)
+				GdkWindow.BeginResizeDrag (Gdk.WindowEdge.East,
+					1, (int) evnt.XRoot, (int) evnt.YRoot, evnt.Time);
+			else if (evnt.Y > Allocation.Height - 15)
+				GdkWindow.BeginResizeDrag (Gdk.WindowEdge.South,
+					1, (int) evnt.XRoot, (int) evnt.YRoot, evnt.Time);
+			else
+				GdkWindow.BeginMoveDrag (1, (int) evnt.XRoot, (int) evnt.YRoot, evnt.Time);
+			
+			return base.OnButtonPressEvent (evnt);
+		}
 
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			
 			bool ret = base.OnExposeEvent (evnt);
 			
-			Cairo.Context context = Gdk.CairoHelper.Create (evnt.Window);
+			using (Cairo.Context context = 
+				Gdk.CairoHelper.Create (evnt.Window)) {
 			
-			context.Rectangle (1, 1, this.Allocation.Width -2, 55);
+				context.Rectangle (1, 1, 
+					Allocation.Width -2, Allocation.Height);
 			
-			Cairo.Gradient grad = new Cairo.LinearGradient (
-				0, 0,
-				0, 55);
+				Cairo.Gradient grad = new Cairo.LinearGradient (
+					0, 0,
+					0, Allocation.Height);
 			
-			grad.AddColorStop (0, 
-				Theme.BgColor);
+				grad.AddColorStop (0, 
+					Theme.BgColor);
 			
-			grad.AddColorStop (1,
-				Theme.BaseColor);
+				grad.AddColorStop (1,
+					Theme.BaseColor);
 			
-			context.Pattern = grad;
+				context.Pattern = grad;
 			
-			context.Fill ();
+				context.Fill ();
 						
-			Cairo.ImageSurface imageSurf = 
-				new Cairo.ImageSurface ("gnome-logo.png");
+				Cairo.ImageSurface imageSurf = 
+					new Cairo.ImageSurface ("gnome-logo.png");
 			
-			imageSurf.Show (context,
-				Allocation.Width - imageSurf.Width - 5,
-				Allocation.Height - imageSurf.Height - 5);
+				imageSurf.Show (context,
+					Allocation.Width - imageSurf.Width - 5,
+					Allocation.Height - imageSurf.Height - 5);
 
-			double lw = 2;
+				double lw = 2;
 			
-			context.NewPath ();
-			context.LineWidth = lw;
-			context.LineCap = Cairo.LineCap.Round;
-			context.LineJoin = Cairo.LineJoin.Bevel;
-			context.Color = Theme.BgColor;//new Cairo.Color (0.7f, 0.7f, 0.7f);
+				context.NewPath ();
+				context.LineWidth = lw;
+				context.LineCap = Cairo.LineCap.Round;
+				context.LineJoin = Cairo.LineJoin.Bevel;
+				context.Color = Theme.BgColor;
 			
-			double mx = 0 + (lw/2);
-			double my = 0 + (lw/2);
-			double mw = Allocation.Width - lw;
-			double mh = Allocation.Height - lw;
+				double mx = 0 + (lw/2);
+				double my = 0 + (lw/2);
+				double mw = Allocation.Width - lw;
+				double mh = Allocation.Height - lw;
 			
-			context.MoveTo (mx, my);
-			context.LineTo (mw, mx);
-			context.LineTo (mw, mh);
-			context.LineTo (mx, mh);
-			context.ClosePath ();
-			context.Stroke ();
-
+				context.MoveTo (mx, my);
+				context.LineTo (mw, mx);
+				context.LineTo (mw, mh);
+				context.LineTo (mx, mh);
+				context.ClosePath ();
+				context.Stroke ();
+			}			
 			
-			((IDisposable) context.Target).Dispose ();
-			((IDisposable) context).Dispose ();
+			Child.SendExpose (evnt);
 			
-			//Child.SendExpose (evnt);
 			return ret;
 		}
 
@@ -105,7 +135,6 @@ namespace GLiveMsgr.Gui
 				pixmap.DrawRectangle(gc, true, 
 					0, 0, 
 					allocation.Width, allocation.Height);
-				//pixmap.DrawRectangle (gc, true, 0, 20, w, 100);
 				
 				gc.Foreground = black;
 				

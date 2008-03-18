@@ -11,7 +11,7 @@ using System.Net.Protocols.Msnp;
 namespace GLiveMsgr.Gui
 {
 	
-	public class ConversationWindow : CustomWindow
+	public class ConversationWindow : PopupWindow
 	{
 		private MsnpConversation conversation;
 
@@ -21,9 +21,12 @@ namespace GLiveMsgr.Gui
 		
 		public ConversationWindow (MsnpConversation conv)
 		{
+			Decorated = false;
 			conversation = conv;
 			conversation.DataGet += conversation_DataGet; 
 			
+			Gtk.VBox VBox = new VBox (false, 0);
+			base.Add (VBox);
 			conversation.Buddies.Added += conversation_Buddies_Added;
 			
 			Title = "Conversation with ";
@@ -35,13 +38,20 @@ namespace GLiveMsgr.Gui
 			widget = new ConversationWidget (conv);
 			statusbar = new Statusbar ();
 			
-			VBox.PackStart (menu, false, false, 0);
+			VBox.PackStart (new ConversationButtonbar (), false, false, 0);
 			VBox.PackStart (widget);
 			VBox.ShowAll ();
-						
-			ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (Theme.ConversationBackground));
 			
+			// ConversationBackground
+			//ModifyBg (StateType.Normal,
+			//	Theme.GdkColorFromCairo (Theme.BgColor));
+			
+		}
+		
+		protected override void OnActivate () 
+		{
+			Console.WriteLine ("Removing urgency");
+			base.OnActivate ();
 		}
 		
 		protected override void OnShown ()
@@ -59,14 +69,16 @@ namespace GLiveMsgr.Gui
 		}
 		
 		private void conversation_DataGet (object sender, DataEventArgs args)
-		{
+		{/*
 			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
-				Present ();
-			});
+				if (!Visible)
+					Present ();
+			});*/
 		}
 		
 		private void conversation_Closed (object sender, EventArgs args)
 		{
+			
 			RickiLib.Widgets.Utils.RunOnGtkThread ( 
 			delegate {
 				statusbar.Push (1, "Conversation closed by remote user");

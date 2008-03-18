@@ -3,11 +3,7 @@ using System;
 using System.IO;
 using System.Collections;
 using Gtk;
-//using Gdk;
-//using Gtk.DotNet;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
 
 using RickiLib.Widgets;
 

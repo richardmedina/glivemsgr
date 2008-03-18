@@ -16,8 +16,9 @@ namespace GLiveMsgr.Gui
 		public EmoticonBox () : base (WindowType.Toplevel)
 		{
 			this.viewport = new Viewport ();
+			//ConversationBackground
 			this.viewport.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (Theme.ConversationBackground));
+				Theme.GdkColorFromCairo (Theme.BgColor));
 			
 			this.WindowPosition = WindowPosition.CenterOnParent;
 			

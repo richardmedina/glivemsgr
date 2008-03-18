@@ -35,16 +35,18 @@ namespace GLiveMsgr.Gui
 			vbox.PackStart (entry);
 			
 			Gtk.Viewport viewport = new Viewport ();
+			//ConversationBackground
 			viewport.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (Theme.ConversationBackground));
+				Theme.GdkColorFromCairo (Theme.BgColor));
+			
 			viewport.Add (vbox);
 			vpaned.Pack1 (history, true, true);
 			vpaned.Pack2 (viewport, false, false );
 			
 			base.Add (vpaned);
-			
+			//ConverationBackground
 			base.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (Theme.ConversationBackground));
+				Theme.GdkColorFromCairo (Theme.BgColor));
 		}
 		
 		private void EmoticonBox_Selected (object sender, EmoticonSelectedArgs args)

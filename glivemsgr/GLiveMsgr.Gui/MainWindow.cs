@@ -27,7 +27,6 @@ namespace GLiveMsgr.Gui
 		{
 			Title = "GNOME Live Messenger - by Ricki Medina";
 			Decorated = false;
-			AddEvents ((int) Gdk.EventMask.ButtonPressMask);
 			ModifyBg (StateType.Normal, 
 				Theme.GdkColorFromCairo (Theme.BaseColor));
 			
@@ -67,37 +66,6 @@ namespace GLiveMsgr.Gui
 				notification = new NotificationIcon (this);
 				_notifCreated = true;
 			}
-		}
-
-		
-		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
-		{
-			if (evnt.Type == Gdk.EventType.TwoButtonPress &&
-				evnt.Button ==1) {
-				if (GdkWindow.State == Gdk.WindowState.Maximized ||
-					GdkWindow.State == Gdk.WindowState.Fullscreen) {
-					GdkWindow.Unmaximize ();
-					GdkWindow.Unfullscreen ();
-				} else {
-					GdkWindow.Maximize ();
-					if ((evnt.State & Gdk.ModifierType.ControlMask) > 0)
-						GdkWindow.Fullscreen ();
-				}
-			}
-			else if (evnt.X > Allocation.Width - 15 &&
-				evnt.Y > Allocation.Height - 15)
-				GdkWindow.BeginResizeDrag (Gdk.WindowEdge.SouthEast,
-					1, (int) evnt.XRoot, (int)  evnt.YRoot, evnt.Time);
-			else if (evnt.X > Allocation.Width - 15)
-				GdkWindow.BeginResizeDrag (Gdk.WindowEdge.East,
-					1, (int) evnt.XRoot, (int) evnt.YRoot, evnt.Time);
-			else if (evnt.Y > Allocation.Height - 15)
-				GdkWindow.BeginResizeDrag (Gdk.WindowEdge.South,
-					1, (int) evnt.XRoot, (int) evnt.YRoot, evnt.Time);
-			else
-				GdkWindow.BeginMoveDrag (1, (int) evnt.XRoot, (int) evnt.YRoot, evnt.Time);
-			
-			return base.OnButtonPressEvent (evnt);
 		}
 		
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)

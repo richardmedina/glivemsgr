@@ -1,6 +1,6 @@
 
 using System;
-using System.Drawing;
+using Cairo;
 
 namespace GLiveMsgr.Gui
 {
@@ -8,43 +8,51 @@ namespace GLiveMsgr.Gui
 	
 	public abstract class ToolbarItem
 	{
-		private Point location;
-		private Size size;
-		private bool hasMouseOver;
+		//private Point location;
+		//private Size size;
 		
-		public event EventHandler MouseOut;
-		public event EventHandler MouseOver;
-		public event EventHandler Clicked;
+		private float _x;
+		private float _y;
+		private float _width;
+		private float _height;
+		
+		private bool _hasMouseOver;
+		
+		public event EventHandler _mouseOut;
+		public event EventHandler _mouseOver;
+		public event EventHandler _clicked;
 		
 		public ToolbarItem ()
 		{
-			location = new Point (0, 0);
-			location.X = 10;
+			//location = new Point (0, 0);
+			//location.X = 10;
+			X = 0;
+			Y = 10;
 			
-			MouseOut = onMouseOut;
-			MouseOver = onMouseOver;
-			Clicked = onClicked;
+			_mouseOut = onMouseOut;
+			_mouseOver = onMouseOver;
+			_clicked = onClicked;
 			
-			hasMouseOver = false;
+			_hasMouseOver = false;
 		}
 		
-		//public abstract void Draw (Graphics graphics);
+		public abstract void Draw (Cairo.Context context);
 		
 		internal void SendMouseOut ()
 		{
 			this.HasMouseOver = false;
-			MouseOut (this, EventArgs.Empty);
+			_mouseOut (this, EventArgs.Empty);
 		}
 		
 		internal void SendMouseOver ()
 		{
 			this.HasMouseOver = true;
-			MouseOver (this, EventArgs.Empty);
+			_mouseOver (this, EventArgs.Empty);
 		}
 		
 		internal void SendMouseClicked ()
 		{
-			Clicked (this, EventArgs.Empty);
+			_clicked (this, EventArgs.Empty);
 		}
 		
 		protected virtual void OnClicked ()
@@ -72,34 +80,52 @@ namespace GLiveMsgr.Gui
 		private void onMouseOver (object sender, EventArgs args)
 		{
 			OnMouseOver ();
-		} 
-		
-		public Point Location {
-			get {
-				return location;
-			}
-			set {
-				location = value;
-			}
 		}
 		
-		public virtual Size Size {
-			get { return size; }
-			set { size = value; }
+		public virtual float X {
+			get { return _x; }
+			set { _x= value; }
 		}
+		
+		public virtual float Y {
+			get { return _y; }
+			set { _y = value; }
+		}
+		
+		public virtual float Width {
+			get { return _width; }
+			set { _width = value; }
+		}
+		
+		public virtual float Height {
+			get { return _height; }
+			set { _height = value; }
+		}
+		
 		
 		public bool HasMouseOver {
-			get {
-				return hasMouseOver;
-			}
-			protected set {
-				hasMouseOver = value;
-			}
+			get { return _hasMouseOver; }
+			protected set { _hasMouseOver = value; }
 		}
 		
+		
+		public event EventHandler MouseOut {
+			add { _mouseOut += value; }
+			remove { _mouseOut -= value; }
+		}
+		
+		public event EventHandler MouseOver {
+			add { _mouseOver += value; }
+			remove { _mouseOver -= value; }
+		}
+		
+		public event EventHandler Clicked {
+			add { _clicked += value; }
+			remove { _clicked -= value; }
+		}
 //		public abstract System.Drawing.Image Image { get; }
 //		public abstract System.Drawing.Size Size { get; }
-		public abstract System.Drawing.Brush Brush { get; }
+		public abstract Cairo.Color Color { get; }
 		
 	}
 }

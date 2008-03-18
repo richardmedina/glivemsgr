@@ -17,7 +17,7 @@ namespace GLiveMsgr.Gui
 			//"State of the service",
 			//"Gets a Windows Live ID"
 			"Ricki's Blog",
-			"GNOME Live Messenger Home",
+			"Project Home",
 			"Mail me"
 		};
 		
@@ -35,6 +35,10 @@ namespace GLiveMsgr.Gui
 				links [i] = new LinkWidget (labels [i]);
 				links [i].ModifyBg (StateType.Normal,
 					Theme.GdkColorFromCairo (Theme.BaseColor));
+				links [i].ModifyText (StateType.Normal,
+					Theme.GdkColorFromCairo (Theme.BgColor));
+				links [i].ModifyFg (StateType.Normal,
+					Theme.GdkColorFromCairo (Theme.BgColor));
 				
 				links [i].Clicked += link_Clicked;
 				

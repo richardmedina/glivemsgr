@@ -24,9 +24,9 @@ namespace GLiveMsgr.Gui
 				);
 			
 			image = new Gtk.Image (pixbuf);
-			
+			//ConversationBackground
 			base.ModifyBg (StateType.Normal,
-				Theme.GetGdkColor (Theme.ConversationBackground));
+				Theme.GdkColorFromCairo (Theme.BgColor));
 			
 			base.Add (image);
 		}

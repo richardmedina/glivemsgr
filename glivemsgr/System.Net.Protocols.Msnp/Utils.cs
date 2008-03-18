@@ -57,7 +57,8 @@ namespace System.Net.Protocols.Msnp
 
 		public static string MD5Sum (string input)
 		{
-			MD5 md5 = MD5.Create ();
+			MD5 md5 = new MD5CryptoServiceProvider (); //MD5.Create ();
+			
 			byte [] bytes = Encoding.Default.GetBytes (input);
 			byte [] result = md5.ComputeHash (bytes);
 			
@@ -67,6 +68,18 @@ namespace System.Net.Protocols.Msnp
 				output += b.ToString ("x2");
 			
 			return output;
+		}
+		
+		public static byte [] SHA1 (byte [] input)
+		{
+			SHA1 sha1 = new SHA1CryptoServiceProvider ();
+			
+			return sha1.ComputeHash (input);
+		}
+
+		public static string Base64 (byte [] input)
+		{
+			return System.Convert.ToBase64String (input);
 		}
 	}
 }

@@ -13,7 +13,6 @@ namespace GLiveMsgr.Gui
 	{
 		private ContactListHeader header;
 		private ContactList list;
-		private AliasChangeButton aliasButton;
 		
 		private MsnpAccount _account;
 		
@@ -28,9 +27,9 @@ namespace GLiveMsgr.Gui
 			Spacing = 5;
 			
 			header = new ContactListHeader (_account);
-			aliasButton = new AliasChangeButton ();
-			aliasButton.EditableLabel.Changed += aliasButton_EditableLabel_Changed;
-			aliasButton.StateMenu.Changed += aliasButton_StateMenu_Changed;
+			//aliasButton = new AliasChangeButton ();
+			header.AliasButton.EditableLabel.Changed += aliasButton_EditableLabel_Changed;
+			header.AliasButton.StateMenu.Changed += aliasButton_StateMenu_Changed;
 			
 			list = new ContactList (_account);
 						
@@ -39,7 +38,7 @@ namespace GLiveMsgr.Gui
 			scrolled.Add (list);
 			
 			PackStart (header, false, false, 0);
-			PackStart (aliasButton, false, false, 0);
+			//PackStart (aliasButton, false, false, 0);
 			PackStart (scrolled);
 			ShowAll ();
 		}
@@ -47,7 +46,7 @@ namespace GLiveMsgr.Gui
 		private void account_AliasChanged (object sender, EventArgs args)
 		{
 			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
-				aliasButton.EditableLabel.Text = _account.Alias;
+				header.AliasButton.EditableLabel.Text = _account.Alias;
 			});
 		}
 		
@@ -62,13 +61,13 @@ namespace GLiveMsgr.Gui
 		
 		private void aliasButton_EditableLabel_Changed (object sender, EventArgs args)
 		{
-			_account.ChangeAlias (aliasButton.EditableLabel.Text);
+			_account.ChangeAlias (header.AliasButton.EditableLabel.Text);
 		}
 		
 		private void aliasButton_StateMenu_Changed (object sender, EventArgs args)
 		{
 			if (_account.Logged) {
-				_account.ChangeState (aliasButton.StateMenu.State);
+				_account.ChangeState (header.AliasButton.StateMenu.State);
 			}
 		}
 				

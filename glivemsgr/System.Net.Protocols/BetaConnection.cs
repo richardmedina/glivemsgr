@@ -10,17 +10,13 @@ namespace System.Net.Protocols
 {
 	
 	
-	public class Connection : System.Net.Sockets.TcpClient
+	public class BetaConnection : System.Net.Sockets.TcpClient
 	{
 	
 		private string hostname;
 		private int port;
 		private StreamWriter writer;
 		private StreamReader reader;
-		
-		private System.Collections.Generic.List<Socket> rfd;
-		private System.Collections.Generic.List<Socket> wfd;
-		private System.Collections.Generic.List<Socket> efd;
 		
 		public event DataArrivedHandler DataArrived;
 		public event EventHandler Disconnected;
@@ -29,7 +25,7 @@ namespace System.Net.Protocols
 		private Thread thread;
 		private bool isAsynchronousReading;
 		
-		public Connection (string hostname, int port)
+		public BetaConnection (string hostname, int port)
 		{
 			this.hostname = hostname;
 			this.port = port;
@@ -38,10 +34,7 @@ namespace System.Net.Protocols
 			this.DataArrived = onDataArrived;
 			this.Disconnected = onDisconnected;
 			
-			rfd = new List <Socket> ();
-			wfd = new List <Socket> ();
-			efd = new List <Socket> ();
-			
+
 			thread = new Thread (thread_callback);
 			thread.IsBackground = false;
 		}
@@ -143,8 +136,11 @@ namespace System.Net.Protocols
 				
 		private void thread_callback ()
 		{
-			while (select ())
-				Thread.Sleep (100);
+			//while ()
+			//	Thread.Sleep (100);
+			//if (reader.Read
+				
+			//}
 		}
 		
 		private bool select ()
@@ -152,18 +148,18 @@ namespace System.Net.Protocols
 			
 //			Debug.WriteLine ("waiting select");
 			if (this.Active) {
-				rfd.Add (this.Client);
-				wfd.Add (this.Client);
-				efd.Add (this.Client);
+//				rfd.Add (this.Client);
+//				wfd.Add (this.Client);
+//				efd.Add (this.Client);
 
-				Socket.Select (rfd, null, null, 1);
+//				Socket.Select (rfd, null, null, 1);
 //			Debug.WriteLine ("Select exited");
 			
-				if (rfd.Count > 0) {
-					string data = Read ();
-					if (data.Length > 0)
-						OnDataArrived (data);
-				}
+//				if (rfd.Count > 0) {
+//					string data = Read ();
+//					if (data.Length > 0)
+//						OnDataArrived (data);
+//				}
 			} else return false;
 			
 			return true;

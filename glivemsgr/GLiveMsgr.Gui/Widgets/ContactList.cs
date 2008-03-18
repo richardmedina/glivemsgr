@@ -100,8 +100,12 @@ namespace GLiveMsgr.Gui
 			MsnpGroup empty_group = new MsnpGroup ("Empty Group", 3);
 			GroupAdd (empty_group);
 			*/
-			base.ModifyBase (StateType.Normal,
-				Theme.GetGdkColor (System.Drawing.Color.White));
+			// White
+			ModifyBase (StateType.Normal,
+				Theme.GdkColorFromCairo (Theme.BaseColor));
+			
+			ModifyBase (StateType.Selected,
+				Theme.GdkColorFromCairo (Theme.SelectedBgColor));
 		}
 		
 		public ContactListItem GetItem (Gtk.TreeIter iter)

@@ -57,9 +57,10 @@ namespace GLiveMsgr.Gui
 			
 			buttonConnect.ModifyBg (StateType.Active,
 				Theme.GdkColorFromCairo (Theme.BaseColor));
-				
+			
+			// LogonEntryForeground
 			buttonConnect.ModifyText (StateType.Active,
-				Theme.GetGdkColor (Theme.LogonEntryForeground));
+				Theme.GdkColorFromCairo (Theme.TextColor));
 			
 			buttonConnect.Clicked += buttonConnect_Clicked;
 			
