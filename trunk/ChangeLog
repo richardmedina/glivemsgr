@@ -2,4 +2,7 @@
 23/11/2007 - Ricki Medina <ricki@dana-ide.org>
 	* ChangeLog Creation
 	* Project is now allocated over google code hosting
+20/03/2008 - Ricardo Medina <ricki@dana-ide.org>
+	* ContactCard feature was added
+	* When loggin username and password entry is unsensitive
 

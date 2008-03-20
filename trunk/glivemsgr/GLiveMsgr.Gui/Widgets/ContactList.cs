@@ -1,6 +1,7 @@
 
 using System;
 using Gtk;
+using Gdk;
 using System.Net.Protocols;
 using System.Net.Protocols.Msnp;
 
@@ -33,6 +34,8 @@ namespace GLiveMsgr.Gui
 		private static readonly string group_nogroup_name = "No Group";
 		private static readonly string group_empty_message = 
 			"Drag and drop your contacts here";
+		
+		private ContactCardPopup cardPopup;
 		
 		public ContactList (MsnpAccount account)
 		{
@@ -101,10 +104,14 @@ namespace GLiveMsgr.Gui
 			GroupAdd (empty_group);
 			*/
 			// White
+			
+			cardPopup = new ContactCardPopup ();
 			ModifyBase (StateType.Normal,
 				Theme.GdkColorFromCairo (Theme.BaseColor));
 			
 			ModifyBase (StateType.Selected,
+				Theme.GdkColorFromCairo (Theme.SelectedBgColor));
+			ModifyBase (StateType.Active,
 				Theme.GdkColorFromCairo (Theme.SelectedBgColor));
 		}
 		
@@ -147,7 +154,167 @@ namespace GLiveMsgr.Gui
 			
 			return false;
 		}
+				
+		public void PopulateList ()
+		{
+			store.Clear ();
+			
+			foreach (MsnpGroup group in this.account.Groups) {
+				Gtk.TreeIter iter = store.AppendValues (
+					null, 
+					group.Name, 
+					new ContactListItem (group));
+				
+				int i = 0;
+				
+					
+				foreach (MsnpContact c in this.account.Buddies) {
+					//if (c.State == MsnpContactState.Offline)
+					//	continue;
+					
+					if (contactIsInGroup (c, group)) {
+						store.AppendValues (
+							iter, 
+							pixbufState [(int) c.State],
+							c.Alias,
+							new ContactListItem (c));
+						Debug.WriteLine ("\tContact {0} ({1})", 
+							c.Alias,
+							Utils.ContactStateToString (c.State));
+							i ++;
+					}
+				}
+				if (i == 0) {
+					store.AppendValues (iter, null, 
+						group_empty_message,
+						new ContactListItem (group_empty_message));
+				}
+			}
+		}
+
+
+		public void ContactAdd (MsnpContact contact)
+		{
+			contact.StateChanged += contact_StateChanged;
+			contact.AliasChanged += contact_AliasChanged;
+						
+			bool added = false;
+			
+			foreach (MsnpGroup group in contact.Groups) {
+				Gtk.TreeIter iter;
+				if (GetIterFromGroup (group, out iter)) {
+					if (store.IterNChildren (iter) == 1) {
+						Gtk.TreeIter iter_child;
+						
+						if (store.IterChildren (out iter_child, iter)) {
+							ContactListItem item = 
+								(ContactListItem) store.GetValue (iter_child, 2);
+							
+							if (item.Type == ContactListItemType.Message)
+								store.Remove (ref iter_child);
+						}
+					}
+					
+					iter = store.AppendValues (iter, 
+						pixbufState [(int) contact.State], 
+						contact.Alias,
+						new ContactListItem (contact));
+					
+					contactIters.Add (iter);
+					added = true;
+				}
+			}
+		}
 		
+		public bool GetIterFromGroup (MsnpGroup group, out Gtk.TreeIter iter)
+		{
+			iter = TreeIter.Zero;
+			
+			foreach (Gtk.TreeIter i in groupIters) {
+				ContactListItem item = 
+					(ContactListItem) store.GetValue (i, 2);
+				
+				if (item.Obj.Equals (group)) {
+					iter = i;
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		public TreeIterCollection GetItersFromContact (MsnpContact contact)
+		{
+			TreeIterCollection iters = new TreeIterCollection ();
+			
+			foreach (Gtk.TreeIter iter in contactIters) {
+				ContactListItem item =
+					(ContactListItem) store.GetValue (iter, 2);
+				
+				if (item.Obj.Equals (contact)) {
+					iters.Add (iter);
+				}
+			}
+			
+			return iters;
+		}
+		
+		public bool GroupExists (MsnpGroup group)
+		{
+			Gtk.TreeIter iter;
+			return GetIterFromGroup (group, out iter);
+		}
+		
+		public void GroupAdd (MsnpGroup group)
+		{
+			if (!GroupExists (group)) {
+				Gtk.TreeIter iter = store.AppendValues ( 
+					null, 
+					group.Name, 
+					new ContactListItem (group)); 
+				store.AppendValues (iter, 
+					null,
+					group_empty_message,
+					new ContactListItem (group_empty_message));
+			
+				groupIters.Add (iter);
+			}
+	
+		}
+		
+		protected override bool OnLeaveNotifyEvent (EventCrossing evnt)
+		{
+			cardPopup.Hide ();
+			return base.OnLeaveNotifyEvent (evnt);
+		}
+
+		
+		protected override bool OnMotionNotifyEvent (EventMotion args)
+		{
+			Gtk.TreePath path;
+			Gtk.TreeIter iter;
+			
+			if (GetPathAtPos ((int) args.X, (int)args.Y, out path)) {
+				if (store.GetIterFromString (out iter, path.ToString ())) {
+					ContactListItem item = 
+						(ContactListItem) store.GetValue (iter, 2);
+					
+					if (item.Type == ContactListItemType.Buddy) {
+						cardPopup.Contact = 
+							(MsnpContact) item.Obj;
+						
+						cardPopup.Flash (
+							(int)args.XRoot, 
+							(int) args.YRoot);
+					} else 
+						cardPopup.Hide ();
+				}
+			}
+		
+			return base.OnMotionNotifyEvent (args);
+		}
+
+
 		protected override bool OnButtonPressEvent (Gdk.EventButton args)
 		{
 			Gtk.TreeIter iter;
@@ -167,12 +334,7 @@ namespace GLiveMsgr.Gui
 			
 			return base.OnButtonPressEvent (args);
 		}
-		
-		private void OpenBetaChat ()
-		{
-			//account.StartConversation 
-		}
-				
+						
 		protected virtual int OnTreeIterCompare (Gtk.TreeModel model,
 			Gtk.TreeIter iter1,
 			Gtk.TreeIter iter2)
@@ -230,42 +392,11 @@ namespace GLiveMsgr.Gui
 			return 0;
 				
 		}
-		
-		public void PopulateList ()
+				
+		protected override void OnShown ()
 		{
-			store.Clear ();
-			
-			foreach (MsnpGroup group in this.account.Groups) {
-				Gtk.TreeIter iter = store.AppendValues (
-					null, 
-					group.Name, 
-					new ContactListItem (group));
-				
-				int i = 0;
-				
-					
-				foreach (MsnpContact c in this.account.Buddies) {
-					//if (c.State == MsnpContactState.Offline)
-					//	continue;
-					
-					if (contactIsInGroup (c, group)) {
-						store.AppendValues (
-							iter, 
-							pixbufState [(int) c.State],
-							c.Alias,
-							new ContactListItem (c));
-						Debug.WriteLine ("\tContact {0} ({1})", 
-							c.Alias,
-							Utils.ContactStateToString (c.State));
-							i ++;
-					}
-				}
-				if (i == 0) {
-					store.AppendValues (iter, null, 
-						group_empty_message,
-						new ContactListItem (group_empty_message));
-				}
-			}
+			base.OnShown ();
+			//GLib.Timeout.Add (500, findIconMouseOver);
 		}
 		
 		private bool contactIsInGroup (MsnpContact contact, 
@@ -279,13 +410,7 @@ namespace GLiveMsgr.Gui
 			
 			return false;
 		}
-				
-		protected override void OnShown ()
-		{
-			base.OnShown ();
-			//GLib.Timeout.Add (500, findIconMouseOver);
-		}
-		
+
 		private void contactListMenu_OpenConv_activated (object sender,
 			EventArgs args)
 		{
@@ -392,96 +517,6 @@ namespace GLiveMsgr.Gui
 			
 			contactIters.Add (iter);
 		}
-		
-		public void ContactAdd (MsnpContact contact)
-		{
-			contact.StateChanged += contact_StateChanged;
-			contact.AliasChanged += contact_AliasChanged;
-						
-			bool added = false;
-			
-			foreach (MsnpGroup group in contact.Groups) {
-				Gtk.TreeIter iter;
-				if (GetIterFromGroup (group, out iter)) {
-					if (store.IterNChildren (iter) == 1) {
-						Gtk.TreeIter iter_child;
-						
-						if (store.IterChildren (out iter_child, iter)) {
-							ContactListItem item = 
-								(ContactListItem) store.GetValue (iter_child, 2);
-							
-							if (item.Type == ContactListItemType.Message)
-								store.Remove (ref iter_child);
-						}
-					}
-					
-					iter = store.AppendValues (iter, 
-						pixbufState [(int) contact.State], 
-						contact.Alias,
-						new ContactListItem (contact));
-					
-					contactIters.Add (iter);
-					added = true;
-				}
-			}
-		}
-		
-		public bool GetIterFromGroup (MsnpGroup group, out Gtk.TreeIter iter)
-		{
-			iter = TreeIter.Zero;
-			
-			foreach (Gtk.TreeIter i in groupIters) {
-				ContactListItem item = 
-					(ContactListItem) store.GetValue (i, 2);
-				
-				if (item.Obj.Equals (group)) {
-					iter = i;
-					return true;
-				}
-			}
-			
-			return false;
-		}
-		
-		public TreeIterCollection GetItersFromContact (MsnpContact contact)
-		{
-			TreeIterCollection iters = new TreeIterCollection ();
-			
-			foreach (Gtk.TreeIter iter in contactIters) {
-				ContactListItem item =
-					(ContactListItem) store.GetValue (iter, 2);
-				
-				if (item.Obj.Equals (contact)) {
-					iters.Add (iter);
-				}
-			}
-			
-			return iters;
-		}
-		
-		public bool GroupExists (MsnpGroup group)
-		{
-			Gtk.TreeIter iter;
-			return GetIterFromGroup (group, out iter);
-		}
-		
-		public void GroupAdd (MsnpGroup group)
-		{
-			if (!GroupExists (group)) {
-				Gtk.TreeIter iter = store.AppendValues ( 
-					null, 
-					group.Name, 
-					new ContactListItem (group)); 
-				store.AppendValues (iter, 
-					null,
-					group_empty_message,
-					new ContactListItem (group_empty_message));
-			
-				groupIters.Add (iter);
-			}
-	
-		}
-
 
 		public new Gtk.TreeStore Model {
 			get {

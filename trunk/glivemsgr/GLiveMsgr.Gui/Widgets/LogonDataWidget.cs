@@ -46,9 +46,11 @@ namespace GLiveMsgr.Gui
 				});
 			
 			comboEmail.Entry.Text = string.Empty;
+			comboEmail.Entry.Activated += comboEmail_Activated;
 			
 			entryPassword = new FixedEntry ();
 			entryPassword.Entry.Visibility = false;
+			entryPassword.Entry.Activated += entryPassword_Activated;
 			
 			entryPassword.Entry.Text = string.Empty;
 			//comboState = new ComboMsnState ();
@@ -184,15 +186,28 @@ namespace GLiveMsgr.Gui
 		
 		private void buttonConnect_Clicked (object sender, EventArgs args)
 		{
+		
+			if (comboEmail.Entry.Text.Trim ().Length == 0) {
+				comboEmail.Entry.GrabFocus ();
+				return;
+			}
+				
+			if (entryPassword.Entry.Text.Trim ().Length == 0)
+				return;
+				
 			if (connecting) {
+			//Cancel login
 				ShowChild (1);
-				//Cancel login
 			}
 			else {
 				ShowChild (0);
 				account.Username = this.EntryEmail.Text;
 				account.Password = this.EntryPassword.Text;
 				account.State = MsnpContactState.Online;
+				comboEmail.Sensitive = false;
+				entryPassword.Sensitive = false;
+				
+				
 				new Thread ((ThreadStart)delegate {
 					int ret = account.Login ();
 					new ThreadNotify (delegate {
@@ -206,6 +221,8 @@ namespace GLiveMsgr.Gui
 								"<b>Error</b>\nError iniciando sesion.");
 							d.Run ();
 							d.Destroy ();
+						comboEmail.Sensitive = true;
+						entryPassword.Sensitive = true;
 						}
 					}).WakeupMain ();
 				}).Start ();
@@ -215,6 +232,17 @@ namespace GLiveMsgr.Gui
 			
 			connecting = !connecting;
 
+		}
+		
+		private void comboEmail_Activated (object sender, EventArgs args)
+		{
+			if (comboEmail.Entry.Text.Trim ().Length > 0)
+				entryPassword.Entry.GrabFocus ();
+		}
+		
+		private void entryPassword_Activated (object sender, EventArgs args)
+		{
+			buttonConnect.Click ();
 		}
 		
 		public Gtk.Button ButtonConnect {

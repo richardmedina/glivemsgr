@@ -27,6 +27,8 @@ namespace GLiveMsgr.Gui
 		{
 			Title = "GNOME Live Messenger - by Ricki Medina";
 			Decorated = false;
+			Icon = Gdk.Pixbuf.LoadFromResource ("messenger_icon.png");
+			
 			ModifyBg (StateType.Normal, 
 				Theme.GdkColorFromCairo (Theme.BaseColor));
 			
@@ -98,12 +100,21 @@ namespace GLiveMsgr.Gui
 			return ret;
 		}
 
-
 		protected override bool OnDeleteEvent (Gdk.Event args)
 		{
 			Hide ();
 			return true;
 		}
+		
+		protected override bool OnKeyPressEvent (Gdk.EventKey args)
+		{
+			//if (args.Key == Gdk.Key.Alt_L) {
+				// Show/Hide WM Decorations and Menubar
+				//Decorated = !Decorated;
+			//}
+			return base.OnKeyPressEvent (args);
+		}
+
 
 		private void account_ConversationRequest (object sender,
 			ConversationRequestArgs args)
@@ -128,7 +139,6 @@ namespace GLiveMsgr.Gui
 					Console.WriteLine ("Conversation found"); 
 			}
 		}
-
 		
 		public MsnpAccount Account {
 			get { return account; }
