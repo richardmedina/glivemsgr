@@ -1,17 +1,19 @@
 ﻿<UserCombinePreferences version="1.0" filename="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/glivemsgr.mds">
   <Files>
     <File name="Welcome" />
-    <File name="GLiveMsgr.Gui/Widgets/PopupWindow.cs" line="184" column="25" />
+    <File name="GLiveMsgr.Gui/Widgets/PopupWindow.cs" line="30" column="60" />
     <File name="GLiveMsgr.Gui/Widgets/ContactListHeader.cs" line="41" column="11" />
     <File name="GLiveMsgr.Gui/Widgets/AliasChangeButton.cs" line="39" column="55" />
-    <File name="GLiveMsgr.Gui/Widgets/LogonDataWidget.cs" line="61" column="46" />
-    <File name="GLiveMsgr.Gui/Main.cs" line="45" column="12" />
+    <File name="GLiveMsgr.Gui/Widgets/LogonDataWidget.cs" line="206" column="6" />
+    <File name="GLiveMsgr.Gui/Main.cs" line="44" column="1" />
+    <File name="GLiveMsgr.Gui/Widgets/ContactCardPopup.cs" line="73" column="44" />
+    <File name="GLiveMsgr.Gui/MainWindow.cs" line="30" column="62" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
-      <Node expanded="True">
+      <Node expanded="True" selected="True">
         <Node name="Glivemsgr" expanded="True">
-          <Node name="Main.cs" selected="True" />
+          <Node name="Widgets" expanded="True" />
         </Node>
       </Node>
     </ViewMemento>
@@ -29,7 +31,7 @@
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Main.cs" />
+    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Widgets/LogonDataWidget.cs" />
     <Property key="ActiveConfiguration" value="Debug" />
   </Properties>
 </UserCombinePreferences>

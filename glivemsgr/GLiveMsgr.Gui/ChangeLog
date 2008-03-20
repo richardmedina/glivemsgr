@@ -1,0 +1,6 @@
+20/03/2008	Ricardo Medina <ricki@dana-ide.org>
+	* ChangeLog Added
+	* ContactCardPopup added for MsnpContact deployment
+	* LoginDataWidget. When connect button is clicked
+	username and password entries are unsensitives
+

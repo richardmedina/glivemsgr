@@ -15,14 +15,26 @@ namespace GLiveMsgr.Gui
 	{
 		private bool _logoVisible;
 		
-		public PopupWindow () : base (string.Empty)
+		public PopupWindow () : this (string.Empty, WindowType.Toplevel)
 		{
+		}
+		
+		public PopupWindow (string title) : this (title, WindowType.Toplevel)
+		{
+		}
+		
+		public PopupWindow (WindowType type) : this (string.Empty, type)
+		{
+		}
+		
+		public PopupWindow (string title, WindowType type) : base (type)
+		{
+			Title = title;
 			BorderWidth = 5;
 			AddEvents ((int) Gdk.EventMask.ButtonPressMask);
 			Resize (200, 150);
 			ModifyBg (StateType.Normal,
 				Theme.GdkColorFromCairo (Theme.BaseColor));
-				
 		}
 		
 		protected override void OnRealized ()
