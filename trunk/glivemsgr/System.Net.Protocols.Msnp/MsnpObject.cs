@@ -11,7 +11,6 @@ using System.Xml;
 namespace System.Net.Protocols.Msnp
 {
 	
-	
 	public class MsnpObject
 	{
 		private long _clientIdNumber;
@@ -62,23 +61,17 @@ namespace System.Net.Protocols.Msnp
 			FileStream s = new FileStream (filename, FileMode.Open);
 			byte [] bytes = new byte [s.Length];
 			
-			s.Read (bytes, 0, (int) s.Length);
+			s.Read (bytes, 0, (int) bytes.Length);
 			
 			// Now we have data in memory determinated by 'bytes'
-			
-			// Just for testing..
-			//using (FileStream fs = new FileStream (
-			//	"/home/ricki/Desktop/file.txt", FileMode.Create)) {
-			//	fs.Write (bytes, 0, bytes.Length);
-			//}
-			
+						
 			obj.Creator = creator;
-			obj.Size = s.Length;
+			obj.Size = bytes.Length;
 			obj.Type = 3; //DisplayPicture
 			obj.Location = "test.tmp";
 			obj.Friendly = "AAA=";
 			
-			obj._sha1d = Utils.Base64 (Utils.SHA1 (bytes));
+			obj.SHA1D = Utils.Base64 (Utils.SHA1 (bytes));
 			
 			string data = String.Format("Creator{0}Size{1}Type{2}Location{3}Friendly{4}SHA1D{5}",
           			obj.Creator,

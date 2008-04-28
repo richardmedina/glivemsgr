@@ -7,18 +7,18 @@ namespace System.Net.Protocols
 	public abstract class Account : Buddy
 	{
 		
-		private string password;
-		private bool logged;
+		private string _password;
+		private bool _logged;
 		
-		private event EventHandler started;
-		private event EventHandler terminated;
+		private event EventHandler _started;
+		private event EventHandler _terminated;
 		
 		public Account (string username, string password) : base (username)
 		{
-			started = onStarted;
-			terminated = onTerminated;
-			logged = false;
-			this.password = password;
+			_started = onStarted;
+			_terminated = onTerminated;
+			_logged = false;
+			_password = password;
 		}
 		
 		// When success, must be return zero or else any non-zero value 
@@ -38,14 +38,14 @@ namespace System.Net.Protocols
 				
 		protected virtual void OnStarted ()
 		{
-			logged = true;
-			started (this, EventArgs.Empty);
+			_logged = true;
+			_started (this, EventArgs.Empty);
 		}
 		
 		protected virtual void OnTerminated ()
 		{
-			logged = false;
-			terminated (this, EventArgs.Empty);
+			_logged = false;
+			_terminated (this, EventArgs.Empty);
 		}
 		
 		private void onStarted (object sender, EventArgs args)
@@ -57,25 +57,25 @@ namespace System.Net.Protocols
 		}
 		
 		public string Password {
-			get { return password; }
-			set { password = value; }
+			get { return _password; }
+			set { _password = value; }
 		}
 		
 		public bool Logged {
-			get { return logged; }
-			protected set { logged = value; }
+			get { return _logged; }
+			protected set { _logged = value; }
 		}
 		
 		public abstract ProtocolType Protocol { get; }
 		
 		public event EventHandler Started {
-			add { started += value; }
-			remove { started -= value; }
+			add { _started += value; }
+			remove { _started -= value; }
 		}
 		
 		public event EventHandler Terminated {
-			add { terminated += value; }
-			remove { terminated -= value; }
+			add { _terminated += value; }
+			remove { _terminated -= value; }
 		}
 	}
 }

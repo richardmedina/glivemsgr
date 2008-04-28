@@ -5,6 +5,7 @@
 //
 
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Net.Protocols;
 
@@ -16,7 +17,7 @@ namespace System.Net.Protocols.Msnp
 	public class MsnpConversation : Conversation
 	{
 		
-		private Connection _connection;
+		public Connection _connection;
 		
 		private MsnpAccount _account;
 		
@@ -47,6 +48,7 @@ namespace System.Net.Protocols.Msnp
 		
 		public void Open (MsnpContact contact)
 		{
+			Debug.WriteLine ("MsnpConversation.Open ()");
 			OnActivated ();
 			_remoteContact = contact;
 			_id = _account.TrId;
@@ -61,9 +63,33 @@ namespace System.Net.Protocols.Msnp
 			base.Close ();
 		}
 
+		public void SendFile (string filename)
+		{
+			MsnpP2PMessage msg = new MsnpP2PMessage ();
+			msg.AppId = 2;
+			msg.BranchUID = "{33517CE4-02FC-4428-B6F4-39927229B722}";
+			msg.CallId = "{9D79AE57-1BD5-444B-B14E-3FC9BB2B5D58}";
+			msg.ContentType = "application/x-msnmsgr-sessionreqbody";
+			
+			msg.CSeq = 0;
+			msg.EufGUID = "{5D3E02AB-6190-11D3-BBBB-00C04F795683}";//"{5D3E02AB-6190-11D3-BBBB-00C04F795683}";
+			msg.MaxForwards = 0;
+			msg.MsnSLPVersion ="MSNSLP/1.0";
+			msg.Receiver = Buddies [0].Username;
+			msg.Sender = Account.Username;
+			msg.SessionId = 10;
+			MsnpObject msnpobj = MsnpObject.Create (msg.Sender, 
+				filename);
+			
+			msg.Context = System.Net.Protocols.Msnp.Utils.Base64 (
+				Encoding.Default.GetBytes (msnpobj.ToString ()));
+			
+			_connection.RawSend ("{0}", msg.ToString ());
+		}
 		
 		public void Invite (MsnpContact contact)
 		{
+			Debug.WriteLine ("MsnpConversation.Invite ()");
 			if (_connection.Connected)
 				_connection.RawSend ("CAL 1 {0}\r\n", 
 					contact.Username);
@@ -76,7 +102,9 @@ namespace System.Net.Protocols.Msnp
 		{
 			Connection connection = new Connection (hostname, port);
 			connection.DataArrived += _connection_DataArrived;
+			Console.WriteLine ("Opening conversation");
 			connection.Open ();
+			Console.WriteLine ("Done.");
 			
 			return connection;
 		}
@@ -102,7 +130,7 @@ namespace System.Net.Protocols.Msnp
 		
 		public void RawSend (string data)
 		{
-			_connection.RawSend (data);
+			_connection.RawSend ("{0}", data);
 		}
 		
 		public override void SendText (string text)
@@ -176,6 +204,7 @@ namespace System.Net.Protocols.Msnp
 						Buddies.Add (buddy);
 						Debug.WriteLine ("Added {0} to conversation", buddy.Username);
 						sendQueuedMessages ();
+						
 						if (Buddies.Count >= 2)
 							_isChat = true;
 					}
@@ -193,6 +222,7 @@ namespace System.Net.Protocols.Msnp
 						if (Buddies.Count > 1)
 							_isChat = true;
 						sendQueuedMessages ();
+						
 						OnActivated ();
 					}
 				} break;

@@ -48,13 +48,15 @@ namespace GLiveMsgr.Gui
 			this.account = account;
 			this.account.Buddies.Added += account_Buddies_Added;
 			this.account.Groups.Added += account_Groups_Added;
+			this.account.Terminated += account_Terminated;
 			
 			store = new TreeStore (
 				typeof (Gdk.Pixbuf), // pixbuf
 				typeof (string), // text
 				typeof (ContactListItem)); // element
 			base.Model = store;
-			base.HeadersVisible = false;
+			HeadersVisible = false;
+			
 			store.DefaultSortFunc = OnTreeIterCompare;
 			store.SetSortFunc (2, OnTreeIterCompare);
 			store.SetSortColumnId (2, SortType.Ascending);
@@ -423,7 +425,13 @@ namespace GLiveMsgr.Gui
 				}
 			}
 		}
-
+		
+		private void account_Terminated (object sender, EventArgs args)
+		{
+			groupIters.Clear ();
+			iterNoGroup = TreeIter.Zero;
+			store.Clear ();
+		}
 
 		private void col1_cellDataFunc (
 			TreeViewColumn column, 

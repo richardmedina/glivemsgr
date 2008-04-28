@@ -51,7 +51,6 @@ namespace GLiveMsgr.Gui
 		
 		protected override void OnActivate () 
 		{
-			Console.WriteLine ("Removing urgency");
 			base.OnActivate ();
 		}
 		

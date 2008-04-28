@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,73 +12,70 @@ namespace System.Net.Protocols
 	public class Connection : System.Net.Sockets.TcpClient
 	{
 	
-		private string hostname;
-		private int port;
-		private StreamWriter writer;
-		private StreamReader reader;
-		
-		private System.Collections.Generic.List<Socket> rfd;
-		private System.Collections.Generic.List<Socket> wfd;
-		private System.Collections.Generic.List<Socket> efd;
-		
-		public event DataArrivedHandler DataArrived;
-		public event EventHandler Disconnected;
+		private string _hostname;
+		private int _port;
+		private StreamWriter _writer;
+		private StreamReader _reader;
+				
+		private event DataArrivedHandler _dataArrived;
+		private event EventHandler _disconnected;
 		
 		
-		private Thread thread;
-		private bool isAsynchronousReading;
+		private Thread _thread;
+		private bool _isAsynchronousReading;
 		
 		public Connection (string hostname, int port)
 		{
-			this.hostname = hostname;
-			this.port = port;
-			this.isAsynchronousReading = false;
+			this._hostname = hostname;
+			this._port = port;
+			this._isAsynchronousReading = false;
 			
-			this.DataArrived = onDataArrived;
-			this.Disconnected = onDisconnected;
-			
-			rfd = new List <Socket> ();
-			wfd = new List <Socket> ();
-			efd = new List <Socket> ();
-			
-			thread = new Thread (thread_callback);
-			thread.IsBackground = false;
+			_dataArrived = onDataArrived;
+			_disconnected = onDisconnected;
+						
+			_thread = new Thread (thread_callback);
+			_thread.IsBackground = false;
 		}
 		
 		public void Open ()
 		{
-			base.Connect (hostname, port);
+			base.Connect (_hostname, _port);
 			
-			writer = new StreamWriter (base.GetStream ());
-			reader = new StreamReader (base.GetStream ());
+			_writer = new StreamWriter (base.GetStream ());
+			_reader = new StreamReader (base.GetStream ());
+		}
+		
+		public new void Close ()
+		{
+			base.Close ();
+			//OnDisconnected ();
 		}
 		
 		public void StartAsynchronousReading ()
 		{
-			thread.Start ();
-			this.isAsynchronousReading = true;
+			_thread.Start ();
+			this._isAsynchronousReading = true;
 		}
 		
 		public void Send (string format, params object [] objs)
 		{
-			writer.WriteLine (format, objs);
-			writer.Flush ();
+			_writer.WriteLine (format, objs);
+			_writer.Flush ();
 		}
 		
 		public void RawSend (string format, params object [] objs)
 		{
-			writer.Write (format, objs);
-			writer.Flush ();
+			_writer.Write (format, objs);
+			_writer.Flush ();
 		}
 		
 		public string Read ()
 		{
-			
 			string text = null;
 			bool excep = false;
 			
 			try {
-				text = reader.ReadLine ();
+				text = _reader.ReadLine ();
 			} catch (Exception e1) {
 				Debug.WriteLine (e1.ToString ());
 				excep = true;
@@ -90,7 +86,7 @@ namespace System.Net.Protocols
 				Debug.WriteLine ("Throw Disconnected");
 				if (IsAsynchronousReading) {
 					try {
-						thread.Abort ();
+						_thread.Abort ();
 					} catch (Exception e) {
 						Debug.WriteLine ("Aborted: {0}", e.Message);
 						Close ();
@@ -115,7 +111,7 @@ namespace System.Net.Protocols
 			string str = string.Empty;
 			
 			for (int i = 0; i < length; i ++) {
-				char c = (char) reader.Read (); 
+				char c = (char) _reader.Read (); 
 				str += c.ToString ();
 			}
 			
@@ -124,12 +120,12 @@ namespace System.Net.Protocols
 				
 		protected virtual void OnDataArrived (string data)
 		{
-			DataArrived (this, new DataArrivedArgs (data));
+			_dataArrived (this, new DataArrivedArgs (data));
 		}
 		
 		protected virtual void OnDisconnected ()
 		{
-			this.Disconnected (this, EventArgs.Empty);
+			_disconnected (this, EventArgs.Empty);
 		}
 		
 		private void onDataArrived (object sender, DataArrivedArgs args)
@@ -138,53 +134,53 @@ namespace System.Net.Protocols
 		
 		private void onDisconnected (object sender, EventArgs args)
 		{
-			OnDisconnected ();
 		}
-				
+		
 		private void thread_callback ()
 		{
 			while (select ())
 				Thread.Sleep (100);
+			
+			OnDisconnected ();
 		}
 		
 		private bool select ()
 		{
-			
 //			Debug.WriteLine ("waiting select");
 			if (this.Active) {
-				rfd.Add (this.Client);
-				wfd.Add (this.Client);
-				efd.Add (this.Client);
-
-				Socket.Select (rfd, null, null, 1);
-//			Debug.WriteLine ("Select exited");
-			
-				if (rfd.Count > 0) {
+				if (Client.Poll (1, SelectMode.SelectError))
+					return false;
+				if (Client.Poll (1, SelectMode.SelectRead)) {
 					string data = Read ();
 					if (data.Length > 0)
 						OnDataArrived (data);
 				}
-			} else return false;
+			} else 
+				return false;
 			
 			return true;
 		}
 		
 		public string Hostname {
-			get {
-				return hostname;
-			}
+			get { return _hostname; }
 		}
 		
 		public int Port {
-			get {
-				return port;
-			}
+			get { return _port; }
 		}
 		
 		public bool IsAsynchronousReading {
-			get {
-				return isAsynchronousReading;
-			}
+			get { return _isAsynchronousReading; }
+		}
+		
+		public event DataArrivedHandler DataArrived {
+			add { _dataArrived += value; }
+			remove { _dataArrived -= value; }
+		}
+		
+		public event EventHandler Disconnected {
+			add { _disconnected += value; }
+			remove { _disconnected -= value; }
 		}
 	}
 }
