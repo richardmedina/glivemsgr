@@ -3,4 +3,5 @@
 	* ContactCardPopup added for MsnpContact deployment
 	* LoginDataWidget. When connect button is clicked
 	username and password entries are unsensitives
-
+23/03/2008	Ricardo Medina <ricki@dana-ide.org>
+	* Removed Urgency feature in conversation windows

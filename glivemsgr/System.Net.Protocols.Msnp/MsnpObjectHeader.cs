@@ -12,25 +12,24 @@ namespace System.Net.Protocols.Msnp
 	
 	public class MsnpObjectHeader
 	{
-		// DWORD 4 bytes. uint
-		// QWord 8 bytes. ulong
+		// DWORD 4 bytes (32 bits). uint
+		// QWord 8 bytes (64 bits). ulong
 		
-		uint _sessionId;
 		// DWORD SessionID
+		uint _sessionId;
 		
-		uint _baseId;
 		// DWORD BaseIdentifier
+		uint _baseId;
 		
-		ulong _offset;
 		// QWORD offset pointing to current offset of data sent
+		ulong _offset;
 		
-		ulong _filesize;
 		// QWORD File size
+		ulong _filesize;
 		
-		uint _size;
 		// DWORD Size of self message
+		uint _chunkSize; // Dont exceed 1202  bytes
 		
-		uint _flags;
 		// DWORD Flags
 		/*
 			0x00 - No flags
@@ -44,20 +43,20 @@ namespace System.Net.Protocols.Msnp
 			0x80 - Bye ack (He who sent BYE)
 			0x1000030 - Data for FT
 		*/
+		uint _flags;
 		
-		uint _prevBaseId;
 		// DWORD BaseID previous message
+		uint _prevBaseId;
 		
+		// DWORD Seventh value of previuos message (_prevBaseId from precious message)
 		uint _prevPrevBaseId;
-		// DWORD Seventh value of previuos message
 		
-		ulong _prevFilesize;
 		// QWORD fourth value of previous message
+		ulong _prevFilesize;
 		
+		// QWORD. data size to send in these message
 		ulong _dataSizeToSend;
-		// DWORD. data size to send in these message
 		
-		uint _sendType;
 		/*
 		This DWord comes AFTER the data, and therefore it’s the Footer. 
 		The DWord is written in Little Endian order! This DWord contains 
@@ -67,6 +66,10 @@ namespace System.Net.Protocols.Msnp
 		 
 		Other values will be given on the Transfer pages if needed.
 		*/
+		// Is the footer
+		uint _sendType;
+		
+		
 		
 		public MsnpObjectHeader () :
 			this (10, 50, 10000, 50000, 1050, 2, 0, 0, 0, 1000, 3)
@@ -77,7 +80,7 @@ namespace System.Net.Protocols.Msnp
 			uint baseId,
 			ulong offset,
 			ulong filesize,
-			uint size,
+			uint chunkSize,
 			uint flags,
 			uint prevBaseId,
 			uint prevPrevBaseId,
@@ -88,24 +91,82 @@ namespace System.Net.Protocols.Msnp
 			BaseId= baseId;
 			Offset = offset;
 			Filesize = filesize;
-			Size = size;
+			ChunkSize = chunkSize;
 			Flags= flags;
-			prevBaseId = prevBaseId;
+			PrevBaseId = prevBaseId;
 			PrevPrevBaseId = prevPrevBaseId;
-			PrevFilesize = prevFilesize;
 			DataSizeToSend = dataSizeToSend;
 			SendType = sendType;
+			
+		}
+		
+		public MsnpObject Create (string filename, 
+			uint sessionId)
+		{
+			return null;
+		}
+		
+		public byte [] ToByteArray ()
+		{
+			byte [] bytes = new byte [100];
+			int index = 0;
+			
+			index = SaveToBuffer (bytes, index, SessionId);
+			index = SaveToBuffer (bytes, index, BaseId);
+			
+			index = SaveToBuffer (bytes, index, Offset);
+			index = SaveToBuffer (bytes, index, Filesize);
+			
+			index = SaveToBuffer (bytes, index, ChunkSize);
+			index = SaveToBuffer (bytes, index, Flags);
+			
+			index = SaveToBuffer (bytes, index, PrevBaseId);
+			index = SaveToBuffer (bytes, index, PrevPrevBaseId);
+			
+			//index = SaveToBuffer (bytes, index, PrevFilesize);
+			index = SaveToBuffer (bytes, index, DataSizeToSend);
+			// This field belong to footer data
+			//index = SaveToBuffer (bytes, index, SendType);
+			
+
+			Console.WriteLine ("Index is : {0}", index);
+			//foreach (byte b in bytes)
+			//	Console.Write ("{0} ", b.ToString ("X2"));
+			
+			return bytes;
+		}
+		
+		private int SaveToBuffer (byte [] buffer, int index, ulong val)
+		{
+			byte [] bytes = BitConverter.GetBytes (val);
+			return SaveToBuffer (buffer, index, bytes);
+		}
+		
+		private int SaveToBuffer (byte [] buffer, int index, uint val)
+		{
+			byte [] bytes = BitConverter.GetBytes (val);
+			return SaveToBuffer (buffer, index, bytes);
+		}
+		
+		private int SaveToBuffer (byte [] buffer, int index, byte [] bytes)
+		{
+			for (int i = 0; i < bytes.Length; i ++)
+				buffer [index + i] = bytes [i];
+			Console.WriteLine ("Added {0} bytes, Index = {1}",
+				bytes.Length, index + bytes.Length);
+			return index + bytes.Length;
 		}
 		
 		public override string ToString ()
 		{
 			//return base.ToString ();
+			
 			return string.Format ("{0}-{1}-{2}-{3}-{4}-{5}",
 				SessionId.ToString ("X2"),
 				BaseId.ToString ("X2"),
 				Offset.ToString ("X4"),
 				Filesize.ToString ("X4"),
-				Size.ToString ("X2"),
+				ChunkSize.ToString ("X2"),
 				Flags.ToString ("X2"),
 				PrevBaseId.ToString ("X2"),
 				PrevPrevBaseId.ToString ("X2"),
@@ -136,9 +197,9 @@ namespace System.Net.Protocols.Msnp
 			set { _filesize = value; }
 		}
 		
-		public uint Size {
-			get { return _size; }
-			set { _size = value; }
+		public uint ChunkSize {
+			get { return _chunkSize; }
+			set { _chunkSize = value; }
 		}
 		
 		public uint Flags {

@@ -23,11 +23,13 @@ namespace GLiveMsgr.Gui
 		{
 			_account = account;
 			_account.Started += account_Started;
+			_account.Terminated += account_Terminated;
 			
 			windows = new WindowCollection ();
 			//account.ConversationRequest += account_ConversationRequest;
 			_account.Conversations.Added += account_ConversationAdded;
 			_account.Conversations.Removed += account_ConversationRemoved;
+			
 			_notebook = new Notebook ();
 			_notebook.ShowBorder = false;
 			_notebook.ShowTabs = false;
@@ -88,6 +90,7 @@ namespace GLiveMsgr.Gui
 		private void account_Terminated (object sender, EventArgs args)
 		{
 			RickiLib.Widgets.Utils.RunOnGtkThread (delegate {
+				_logonWidget.LogonData.Reset ();
 				_notebook.Page = 0;
 			});
 		}
@@ -103,8 +106,6 @@ namespace GLiveMsgr.Gui
 						if (!window.Visible) {
 							window.Show ();
 						}
-						if (!window.IsActive)
-							window.UrgencyHint = true;
 					}
 				}
 			});

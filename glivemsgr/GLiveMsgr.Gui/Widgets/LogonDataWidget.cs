@@ -104,25 +104,18 @@ namespace GLiveMsgr.Gui
 			base.PackStart (vbox, true, false, 0);
 		
 		}
-		/*
-		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
-		{
-			
 		
-			
-			
-			Cairo.Context c = Gdk.CairoHelper.Create (evnt.Window);
-			
-			c.Rectangle (10, 100, 200, 100);
-			c.Color = new Cairo.Color (1, 0, 0);
-			c.Stroke ();
-			
-			((IDisposable)c.Target).Dispose ();
-			((IDisposable)c).Dispose ();
-			bool ret =  base.OnExposeEvent (evnt);
-			return ret;
+		public void Reset ()
+		{
+			comboEmail.Sensitive  = true;
+			comboEmail.Entry.Text = string.Empty;
+			entryPassword.Entry.Text = string.Empty;
+			entryPassword.Sensitive = true;
+			comboEmail.GrabFocus ();
+			ShowChild (1);
+			connecting = false;
 		}
-		*/
+		
 		
 		private void ShowChild (int i)
 		{
@@ -197,9 +190,12 @@ namespace GLiveMsgr.Gui
 				
 			if (connecting) {
 			//Cancel login
+				buttonConnect.Label = "_Login";
 				ShowChild (1);
+				connecting = false;
 			}
 			else {
+				connecting = true;
 				ShowChild (0);
 				account.Username = this.EntryEmail.Text;
 				account.Password = this.EntryPassword.Text;
@@ -207,6 +203,7 @@ namespace GLiveMsgr.Gui
 				comboEmail.Sensitive = false;
 				entryPassword.Sensitive = false;
 				
+				buttonConnect.Label = "_Cancel";
 				
 				new Thread ((ThreadStart)delegate {
 					int ret = account.Login ();
@@ -221,16 +218,13 @@ namespace GLiveMsgr.Gui
 								"<b>Error</b>\nError iniciando sesion.");
 							d.Run ();
 							d.Destroy ();
-						comboEmail.Sensitive = true;
-						entryPassword.Sensitive = true;
+							Reset ();
 						}
 					}).WakeupMain ();
 				}).Start ();
 			}
 			
 			//buttonConnect.Label = flag?"_Login":"_Cancel";
-			
-			connecting = !connecting;
 
 		}
 		

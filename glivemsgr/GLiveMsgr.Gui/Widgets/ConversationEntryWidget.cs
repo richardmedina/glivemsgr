@@ -1,5 +1,7 @@
 
 using System;
+using System.Text;
+using System.IO;
 using Gtk;
 using RickiLib.Widgets;
 
@@ -23,7 +25,7 @@ namespace GLiveMsgr.Gui
 		private CustomScrolledWindow scrolled;
 		
 		private MsnpConversation conversation;
-
+		
 		public ConversationEntryWidget (MsnpConversation conv)
 		{
 			this.conversation = conv;
@@ -82,20 +84,28 @@ namespace GLiveMsgr.Gui
 			}
 		}
 		
+		private void sendFile (string filename)
+		{
+			conversation.SendFile (filename);
+			//FileStream file = new FileStream (filename,
+			//	FileAccess.Read);
+			
+			
+			//Debug.WriteLine ("Data:\n{0}", msg.ToString ());
+			//conversation.RawSend (msg.ToString ());
+		}
+		
 		private void buttonSend_Clicked (object sender, EventArgs args)
 		{
 			string data = view.GetText ();
-			
-
-			if (data.StartsWith ("RAW")) {
-				string raw = data.Substring (4);
-				Console.WriteLine ("RAW:{0}", raw);
-				conversation.RawSend (raw);
-				view.Buffer.Clear ();
-				return;
+			Console.WriteLine ("Sending");
+			if (data.StartsWith ("SEND")) {
+				//string [] chunk = data.Split (" ".ToCharArray ());
+				sendFile ("/home/ricki/Desktop/wifi_spam.png");
+				
 			}
-			
-			conversation.SendText (data);
+			else					
+				conversation.SendText (data);
 			view.Buffer.Clear ();
 		}
 		

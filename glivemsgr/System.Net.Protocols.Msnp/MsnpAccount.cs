@@ -76,14 +76,16 @@ namespace System.Net.Protocols.Msnp
 		{
 			//Clear current data
 			trId = 0;
-			Debug.Enable = false;
+			Debug.Enable = true;
 			
 			buddies.Clear ();
 			groups.Clear ();
 			groups.Add (noGroup);
+			
 			conversations.Clear ();
 			
-			_msnpObject = MsnpObject.Create (this.Username, "/home/ricki/me.png");
+			//_msnpObject = MsnpObject.Create (Username, 
+			//	"/home/ricki/Desktop/wifi_spam.png");
 			
 			Debug.WriteLine ("Debug enable");
 			// Notification server
@@ -198,17 +200,35 @@ namespace System.Net.Protocols.Msnp
 		
 		public override void Logout ()
 		{
+			Console.WriteLine ("LoginOut");
+			if (dispatchServer != null) {
+				if (dispatchServer.Connected) {
+					dispatchServer.Close ();
+				}
+			}
+			
+			dispatchServer = null;
+		}
+		
+		protected override void OnTerminated ()
+		{
 			Console.WriteLine ("Preparing to close {0} conversations",
 				conversations.Count);
 			//writer.Close ();
-			foreach (Conversation conv in conversations)
+			
+			MsnpConversation [] convs = 
+				new MsnpConversation [conversations.Count];
+			
+			conversations.CopyTo (convs);
+			
+			foreach (Conversation conv in convs)
 				conv.Close ();
 			
-			if (dispatchServer != null)
-				if (dispatchServer.Connected)
-					dispatchServer.Close ();
-			
-			base.Logout ();
+			convs = null;
+			conversations.Clear ();
+						
+			Console.WriteLine ("MsnpAccount.OnTerminated");
+			base.OnTerminated ();
 		}
 		
 		public void OpenConversation (MsnpContact contact)
@@ -221,6 +241,9 @@ namespace System.Net.Protocols.Msnp
 			
 			MsnpConversation conv;
 			
+			if (contact.State == MsnpContactState.Offline)
+				return;
+				
 			if (!FindConversation (contact, out conv)) {
 				conv = _nextConversation;
 				createNextConversation ();
@@ -255,7 +278,7 @@ namespace System.Net.Protocols.Msnp
 		
 		public void ChangeState (MsnpContactState state)
 		{
-			dispatchServer.Send ("CHG {0} {1} {2}",
+			dispatchServer.Send ("CHG {0} {1}",
 				TrId,
 				Utils.ContactStateToString (state),
 				_msnpObject.ToString ());
@@ -316,11 +339,14 @@ namespace System.Net.Protocols.Msnp
 		
 		private string nexusLogin (string cockie)
 		{
+			Console.WriteLine ("Nexus");
 			WebRequest req;
 			WebResponse res;
 			try {
-				 req = WebRequest.Create ("https:nexus.passport.com/rdr/pprdr.asp");
+				 req = WebRequest.Create ("https://nexus.passport.com/rdr/pprdr.asp");
+				 Debug.Write ("WebConnecting to {0}...", req.RequestUri);
 				 res = req.GetResponse ();
+				 Debug.WriteLine ("DONE");
 			} catch (Exception e) {
 				Console.WriteLine (e.ToString ());
 				return string.Empty;
@@ -335,7 +361,9 @@ namespace System.Net.Protocols.Msnp
 			
 			for (int retry = 0; retry < 1; retry ++) {
 				try {
+					Debug.Write ("WebConnecting to {0}...", req.RequestUri);
 					res = req.GetResponse ();
+					Debug.WriteLine ("DONE");
 				} catch (Exception) {
 					return string.Empty;
 				}
@@ -553,7 +581,7 @@ namespace System.Net.Protocols.Msnp
 					Console.WriteLine ("Receiving PNG Command");
 				break;
 				/*
-				// FIXME: Find a nice way to perform that..
+				// FIXME: Find a nice way to perform that.. FIXED
 				case MsnpCommandType.RNG: { // Conversation request
 					string r1 = command [1];
 					string [] conn_info = command [2].Split (":".ToCharArray ());
@@ -711,7 +739,8 @@ namespace System.Net.Protocols.Msnp
 		private void dispatchServer_Disconnected (object sender,
 			EventArgs args)
 		{
-			Debug.WriteLine ("Connection was interrupted");
+			Debug.WriteLine ("distpachServer_Disconnected");
+			OnTerminated ();
 		}
 		
 		private void onConversationRequest (object sender, ConversationRequestArgs args)
