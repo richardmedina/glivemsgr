@@ -1,4 +1,4 @@
-#Summary of glivemsgr
+# Rediscover the Chat
 
 = Introduction =
 
