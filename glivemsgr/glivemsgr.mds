@@ -4,13 +4,15 @@
       <Entry build="True" name="Glivemsgr" configuration="Debug" />
       <Entry build="True" name="System.Net.Protocols" configuration="Debug" />
       <Entry build="True" name="System.Net.Protocols.Msnp" configuration="Debug" />
-      <Entry build="True" name="RickiLib" configuration="Debug" />
+      <Entry build="True" name="RickiLib.Widgets" configuration="Debug" />
+      <Entry build="True" name="RickiLib.Types" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
       <Entry build="True" name="Glivemsgr" configuration="Release" />
       <Entry build="True" name="System.Net.Protocols" configuration="Release" />
       <Entry build="True" name="System.Net.Protocols.Msnp" configuration="Release" />
-      <Entry build="True" name="RickiLib" configuration="Release" />
+      <Entry build="True" name="RickiLib.Widgets" configuration="Release" />
+      <Entry build="True" name="RickiLib.Types" configuration="Release" />
     </Configuration>
   </Configurations>
   <StartMode startupentry="Glivemsgr" single="True">
@@ -19,12 +21,15 @@
     <Execute type="None" entry="System.Net.Protocols.Msnp" />
     <Execute type="None" entry="RickiLib" />
     <Execute type="None" entry="RickiLib" />
+    <Execute type="None" entry="RickiLib.Widgets" />
+    <Execute type="None" entry="RickiLib.Types" />
   </StartMode>
   <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="UpdateNearestChangeLog" />
   <Entries>
     <Entry filename="GLiveMsgr.Gui/GLiveMsgr.mdp" />
     <Entry filename="System.Net.Protocols/System.Net.Protocols.mdp" />
     <Entry filename="System.Net.Protocols.Msnp/System.Net.Protocols.Msnp.mdp" />
-    <Entry filename="RickiLib/RickiLib.mdp" />
+    <Entry filename="RickiLib/RickiLib.Widgets/RickiLib.Widgets.mdp" />
+    <Entry filename="RickiLib/RickiLib.Types/RickiLib.Types.mdp" />
   </Entries>
 </Combine>
