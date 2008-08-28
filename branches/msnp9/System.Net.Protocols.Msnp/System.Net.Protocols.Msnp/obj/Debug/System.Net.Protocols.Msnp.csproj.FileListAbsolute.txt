@@ -1,0 +1,5 @@
+C:\Documents and Settings\RiCKi\Mis documentos\Visual Studio 2008\Projects\System.Net.Protocols.Msnp\System.Net.Protocols.Msnp\bin\Debug\System.Net.Protocols.Msnp.dll
+C:\Documents and Settings\RiCKi\Mis documentos\Visual Studio 2008\Projects\System.Net.Protocols.Msnp\System.Net.Protocols.Msnp\bin\Debug\System.Net.Protocols.Msnp.pdb
+C:\Documents and Settings\RiCKi\Mis documentos\Visual Studio 2008\Projects\System.Net.Protocols.Msnp\System.Net.Protocols.Msnp\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\RiCKi\Mis documentos\Visual Studio 2008\Projects\System.Net.Protocols.Msnp\System.Net.Protocols.Msnp\obj\Debug\System.Net.Protocols.Msnp.dll
+C:\Documents and Settings\RiCKi\Mis documentos\Visual Studio 2008\Projects\System.Net.Protocols.Msnp\System.Net.Protocols.Msnp\obj\Debug\System.Net.Protocols.Msnp.pdb
