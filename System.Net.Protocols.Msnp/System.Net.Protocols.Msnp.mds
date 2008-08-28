@@ -1,0 +1,20 @@
+<Combine name="System.Net.Protocols.Msnp" fileversion="2.0">
+  <Configurations active="Debug|Any CPU">
+    <Configuration name="Debug|Any CPU" ctype="CombineConfiguration">
+      <Entry build="True" name="MsnpTesting" configuration="Debug|Any CPU" />
+      <Entry build="True" name="System.Net.Protocols.Msnp" configuration="Debug|Any CPU" />
+    </Configuration>
+    <Configuration name="Release|Any CPU" ctype="CombineConfiguration">
+      <Entry build="True" name="MsnpTesting" configuration="Release|Any CPU" />
+      <Entry build="True" name="System.Net.Protocols.Msnp" configuration="Release|Any CPU" />
+    </Configuration>
+  </Configurations>
+  <StartMode startupentry="MsnpTesting" single="True">
+    <Execute type="None" entry="MsnpTesting" />
+    <Execute type="None" entry="System.Net.Protocols.Msnp" />
+  </StartMode>
+  <Entries>
+    <Entry filename="MsnpTesting/MsnpTesting.mdp" />
+    <Entry filename="System.Net.Protocols.Msnp/System.Net.Protocols.Msnp.mdp" />
+  </Entries>
+</Combine>

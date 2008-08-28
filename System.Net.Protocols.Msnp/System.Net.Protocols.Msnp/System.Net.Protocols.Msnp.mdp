@@ -1,0 +1,46 @@
+<Project name="System.Net.Protocols.Msnp" fileversion="2.0" DefaultNamespace="System.Net.Protocols.Msnp" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+  <Configurations active="Debug|Any CPU">
+    <Configuration name="Debug|Any CPU" ctype="DotNetProjectConfiguration">
+      <Output directory="bin/Debug/" assembly="System.Net.Protocols.Msnp" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="False" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+    <Configuration name="Release|Any CPU" ctype="DotNetProjectConfiguration">
+      <Output directory="bin/Release/" assembly="System.Net.Protocols.Msnp" />
+      <Build debugmode="True" target="Library" />
+      <Execution runwithwarnings="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <CodeGeneration compiler="Mcs" warninglevel="4" optimize="True" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="TRACE" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
+    </Configuration>
+  </Configurations>
+  <Contents>
+    <File name="Properties/AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/Connection.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/DataArrivedArgs.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpDispatch.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/ErrorEventHandler.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpCertificatePolicy.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpCommand.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpCommandType.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpContactState.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpEngine.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpNotification.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/NotificationSucessHandler.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/Switchboard.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/Utils.cs" subtype="Code" buildaction="Compile" />
+    <File name="MsnpAccount.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/SBSession.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/SBSessionCollection.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/IConnection.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/PassportArrivedHandler.cs" subtype="Code" buildaction="Compile" />
+    <File name="MsnpGroup.cs" subtype="Code" buildaction="Compile" />
+    <File name="MsnpContact.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpCommandArrived.cs" subtype="Code" buildaction="Compile" />
+  </Contents>
+  <References>
+    <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  </References>
+</Project>

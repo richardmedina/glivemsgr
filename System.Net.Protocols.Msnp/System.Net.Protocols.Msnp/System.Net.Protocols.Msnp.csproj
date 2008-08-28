@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7BE027C0-4154-4A89-8C49-B58AE797C398}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System.Net.Protocols.Msnp</RootNamespace>
+    <AssemblyName>System.Net.Protocols.Msnp</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Net.Protocols.Msnp</AssemblyName>
+    <RootNamespace>System.Net.Protocols.Msnp</RootNamespace>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Net.Protocols.Msnp</AssemblyName>
+    <DebugSymbols>true</DebugSymbols>
+    <RootNamespace>System.Net.Protocols.Msnp</RootNamespace>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Core\Connection.cs" />
+    <Compile Include="Core\DataArrivedArgs.cs" />
+    <Compile Include="Core\Dispatch.cs" />
+    <Compile Include="Core\ErrorEventHandler.cs" />
+    <Compile Include="Core\MsnpCertificatePolicy.cs" />
+    <Compile Include="Core\MsnpCommand.cs" />
+    <Compile Include="Core\MsnpCommandType.cs" />
+    <Compile Include="Core\MsnpContactState.cs" />
+    <Compile Include="Core\MsnpEngine.cs" />
+    <Compile Include="Core\Notification.cs" />
+    <Compile Include="Core\NotificationSucessHandler.cs" />
+    <Compile Include="Core\Switchboard.cs" />
+    <Compile Include="Core\Utils.cs" />
+    <Compile Include="MsnpAccount.cs" />
+    <Compile Include="Core\SBSession.cs" />
+    <Compile Include="Core\SBSessionCollection.cs" />
+    <Compile Include="Core\IConnection.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
