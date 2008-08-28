@@ -11,7 +11,7 @@ namespace GLiveMsgr.Gui
 {
 	
 	
-	public class ConversationHeaderWidget : RickiLib.Widgets.DrawingAreaGDI
+	public class ConversationHeaderWidget : DrawingArea
 	{	
 		//private System.Drawing.Brush brush;
 		

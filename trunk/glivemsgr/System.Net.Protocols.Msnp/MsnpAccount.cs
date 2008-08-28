@@ -137,7 +137,7 @@ namespace System.Net.Protocols.Msnp
 			string [] authserver_info = response_formatted [3].Split (
 				":".ToCharArray ());
 			
-			Debug.WriteLine ("Connecting to authentification server");
+			Debug.WriteLine ("Connecting to dispatch server");
 			
 			notificationServer.Close ();
 			

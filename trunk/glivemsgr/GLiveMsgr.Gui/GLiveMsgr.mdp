@@ -127,7 +127,8 @@
     <ProjectReference type="Project" localcopy="True" refto="System.Net.Protocols.Msnp" />
     <ProjectReference type="Gac" localcopy="True" refto="gconf-sharp, Version=2.16.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <ProjectReference type="Project" localcopy="True" refto="RickiLib" />
     <ProjectReference type="Gac" localcopy="True" refto="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <ProjectReference type="Project" localcopy="True" refto="RickiLib.Widgets" />
+    <ProjectReference type="Project" localcopy="True" refto="RickiLib.Types" />
   </References>
 </Project>

@@ -1,4 +1,4 @@
-﻿<UserCombinePreferences version="1.0" filename="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/glivemsgr.mds">
+﻿<UserCombinePreferences version="1.0" filename="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/glivemsgr.mds">
   <Files>
     <File name="Welcome" />
     <File name="System.Net.Protocols.Msnp/Utils.cs" line="75" column="14" />
@@ -7,35 +7,34 @@
     <File name="System.Net.Protocols.Msnp/MsnpConversation.cs" line="67" column="4" />
     <File name="System.Net.Protocols.Msnp/MsnpObjectHeaderFlags.cs" line="21" column="13" />
     <File name="System.Net.Protocols.Msnp/MsnpObjectHeader.cs" line="106" column="16" />
-    <File name="GLiveMsgr.Gui/Main.cs" line="35" column="28" />
+    <File name="GLiveMsgr.Gui/Main.cs" line="48" column="4" />
+    <File name="RickiLib/Widgets/HelpDialog.cs" line="120" column="6" />
+    <File name="RickiLib/Widgets/CustomDialog.cs" line="37" column="5" />
+    <File name="RickiLib/Widgets/AuthenticationDialog.cs" line="43" column="20" />
+    <File name="System.Net.Protocols/BuddyCollection.cs" line="6" column="7" />
+    <File name="System.Net.Protocols.Msnp/MsnpConversationCollection.cs" line="6" column="7" />
+    <File name="GLiveMsgr.Gui/Widgets/AliasChangeButton.cs" line="9" column="7" />
+    <File name="GLiveMsgr.Gui/Widgets/ConversationHeaderWidget.cs" line="14" column="53" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
-      <Node expanded="True">
-        <Node name="Glivemsgr" expanded="True">
-          <Node name="Main.cs" selected="True" />
-        </Node>
-        <Node name="System.Net.Protocols.Msnp" expanded="True" />
-      </Node>
+      <Node expanded="True" />
     </ViewMemento>
     <ViewMemento id="ClassPad">
       <Node expanded="True">
         <Option id="ShowProjects" value="True" />
         <Option id="NestedNamespaces" value="True" />
-        <Option id="GroupByAccess" value="True" />
         <Option id="PublicApiOnly" value="False" />
         <Option id="GroupByType" value="True" />
+        <Option id="GroupByAccess" value="True" />
       </Node>
-    </ViewMemento>
-    <ViewMemento id="ConnectionManagerPad">
-      <Node selected="True" />
     </ViewMemento>
     <ViewMemento id="MonoDevelop.NUnit.TestPad">
       <Node />
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/progros/CSharp/Projects/GLiveMsgr/svn/trunk/glivemsgr/GLiveMsgr.Gui/Main.cs" />
+    <Property key="ActiveWindow" value="Welcome" />
     <Property key="ActiveConfiguration" value="Debug" />
   </Properties>
 </UserCombinePreferences>
