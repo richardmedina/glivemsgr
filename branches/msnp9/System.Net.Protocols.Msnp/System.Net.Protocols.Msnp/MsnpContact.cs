@@ -17,9 +17,9 @@ namespace System.Net.Protocols.Msnp
 		private string _username;
 		private string _alias;
 		
-		private MsnpDispatch _dispatch;
+		private MsnpDispatchServer _dispatch;
 		
-		public MsnpContact (MsnpDispatch dispatch)
+		public MsnpContact (MsnpDispatchServer dispatch)
 		{
 			_dispatch = dispatch;
 		}
@@ -32,7 +32,7 @@ namespace System.Net.Protocols.Msnp
 			get { return _alias; }
 		}
 		
-		public MsnpDispatch DispatchServer {
+		public MsnpDispatchServer DispatchServer {
 			get { return _dispatch; }
 		}
 	}

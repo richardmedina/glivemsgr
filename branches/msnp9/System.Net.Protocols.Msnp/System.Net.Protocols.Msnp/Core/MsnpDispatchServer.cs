@@ -7,16 +7,15 @@ using System.Text.RegularExpressions;
 
 namespace System.Net.Protocols.Msnp.Core
 {
-	public class MsnpDispatch : Connection
+	public class MsnpDispatchServer : MsnpServer
 	{
 		private string _username;
 		private string _password;
 		private int _trId;
 		
 		private event PassportArrivedHandler _passportArrived;
-		private event MsnpCommandArrivedHandler _commandArrived;
 		
-		public MsnpDispatch () : 
+		public MsnpDispatchServer () : 
 			this (string.Empty, 
 				0, 
 				string.Empty, 
@@ -25,14 +24,16 @@ namespace System.Net.Protocols.Msnp.Core
 		{
 		}
 
-		public MsnpDispatch (string hostname, int port, string username, string password, int trId)
-			: base(hostname, port)
+		public MsnpDispatchServer (string hostname, int port, string username, string password, int trId)
+			: base(MsnpServerType.Dispatch)
 		{
 			_username = username;
 			_password = password;
 			_trId = trId;
 			_passportArrived = onPassportArrived;
-			_commandArrived = onCommandArrived;
+			
+			Hostname = hostname;
+			Port = port;
 			
 			AllowReconnect = false;
 			//ServicePointManager.CertificatePolicy = new 
@@ -60,41 +61,11 @@ namespace System.Net.Protocols.Msnp.Core
 	*/	
 		//private certificateValidation (
 		
-		protected virtual void OnCommandArrived (MsnpCommand command)
+		protected override void OnCommandArrived (MsnpCommand command)
 		{
-			processCommand (command);
-			_commandArrived (this, new MsnpCommandArrivedArgs (command));
-		}
-		
-		protected override void OnConnected ()
-		{
-			base.OnConnected ();
-			StartAsynchronousReading ();
-			
-			Console.WriteLine ("Dispatch. Connected!");
-			
-			Send ("VER {0} MSNP8 MSNP9 CVR0", TrId ++);
-		}
-
-		
-		protected override void OnDataArrived (string data)
-		{
-			MsnpCommand command = MsnpCommand.Parse (data);
-			OnCommandArrived (command);
-			
-			base.OnDataArrived (data);
-		}
-		
-		protected virtual void OnPassportArrived (string content)
-		{
-			_passportArrived (this, new PassportArrivedArgs (content));
-		}
-		
-		private void processCommand (MsnpCommand command)
-        {
-			Console.WriteLine ("Dispatch({0}):{1}", 
-				command.Type.ToString (),
-				command.RawString);
+//			Console.WriteLine ("Dispatch({0}):{1}", 
+	//			command.Type.ToString (),
+		//		command.RawString);
 			switch (command.Type) {
 				case MsnpCommandType.VER:
 					Send ("CVR {0} 0x0C0A winnt 5.1 i386 MSNMSGR 6.0.0602 " +
@@ -122,6 +93,10 @@ namespace System.Net.Protocols.Msnp.Core
 					if (command.Arguments [0] == "TWN") {
 						string cookie = formatCookie (command.Arguments [2]);
 						string ticket = nexusLogin (cookie);
+						if (ticket == string.Empty) {
+							Close ();
+							return;
+						}
 						Send ("USR {0} TWN S {1}", TrId ++, ticket);
 					} else if (command.Arguments [0] == "OK") {
 						//Console.WriteLine ("USR OK detected ..Lets read a line");
@@ -147,9 +122,38 @@ namespace System.Net.Protocols.Msnp.Core
 					}
 				break;
 			}
-		
+			base.OnCommandArrived (command);
+			
 			Console.WriteLine ("Dispatch: processCommand Ends");
-        	}
+		}
+		
+		protected override void OnConnected ()
+		{
+			base.OnConnected ();
+			StartAsynchronousReading ();
+			
+			Console.WriteLine ("Dispatch. Connected!");
+			
+			Send ("VER {0} MSNP8 MSNP9 CVR0", TrId ++);
+		}
+
+		/*
+		protected override void OnDataArrived (string data)
+		{
+			MsnpCommand command = MsnpCommand.Parse (data);
+			OnCommandArrived (command);
+			
+			base.OnDataArrived (data);
+		}
+		*/
+		protected virtual void OnPassportArrived (string content)
+		{
+			_passportArrived (this, new PassportArrivedArgs (content));
+		}
+		
+		private void processCommand (MsnpCommand command)
+        {
+        }
         	
 		private string formatCookie (string cookie)
 		{
@@ -178,7 +182,8 @@ namespace System.Net.Protocols.Msnp.Core
 				 res = req.GetResponse ();
 				 Console.WriteLine ("DONE");
 			} catch (Exception e) {
-				Console.WriteLine (e.ToString ());
+				//Console.WriteLine (e.ToString ());
+				Console.WriteLine ("ERROR");
 				return string.Empty;
 			}
 			
@@ -195,7 +200,8 @@ namespace System.Net.Protocols.Msnp.Core
 					res = req.GetResponse ();
 					Console.WriteLine ("DONE");
 				} catch (Exception e) {
-					Console.WriteLine (e);
+					//Console.WriteLine (e);
+					Console.WriteLine ("ERROR");
 					return string.Empty;
 				}
 				
@@ -229,9 +235,6 @@ namespace System.Net.Protocols.Msnp.Core
 			return string.Empty;
 		}
 		
-		private void onCommandArrived (object sender, MsnpCommandArrivedArgs args)
-		{
-		}
 		private void onPassportArrived (object sender, PassportArrivedArgs args)
 		{
 		}
@@ -262,11 +265,6 @@ namespace System.Net.Protocols.Msnp.Core
 		}
 		
 		// Events
-		
-		public event MsnpCommandArrivedHandler CommandArrived {
-			add { _commandArrived += value; }
-			remove { _commandArrived -= value; }
-		}
 		
 		public event PassportArrivedHandler PassportArrived {
 			add { _passportArrived += value; }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace System.Net.Protocols.Msnp.Core
 {
-    public class MsnpNotification : Connection
+    public class MsnpNotificationServer : MsnpServer
     {
         private const string _hostname = "messenger.hotmail.com";
         private const int _port = 1863;
@@ -13,17 +13,20 @@ namespace System.Net.Protocols.Msnp.Core
         
         private int _trId = 1;
         
-        private event NotificationSucessHandler _success;
+        private event NotificationSuccessHandler _success;
         //private event EventHandler _error;
         
-        public MsnpNotification () : this (string.Empty)
+        public MsnpNotificationServer () : this (string.Empty)
         {
         }
         
-        public MsnpNotification (string username) : base (_hostname, _port)
+        public MsnpNotificationServer (string username) : base (MsnpServerType.Notification)
         {
 			_success = onSuccess;
 			_username = username;
+			
+			Hostname = _hostname;
+			Port = _port;
         }
                 
         protected override void OnConnected ()
@@ -36,27 +39,23 @@ namespace System.Net.Protocols.Msnp.Core
 			Send ("VER {0} MSNP8 MSNP9 CVR0", TrId++);
         }
 
-
+/*
         protected override void OnDataArrived(string data)
         {
 			Console.WriteLine("DataArrived");
-			MsnpCommand command = MsnpCommand.Parse (data);
-			processCommand (command);
+			MsnpCommand command = MsnpCommand.Parse (ServerType, data);
+			//processCommand (command);
+			
 		
 			base.OnDataArrived(data);
         }
-        
-        protected virtual void OnSuccess (string hostname, int port)
+*/        
+        protected override void OnCommandArrived (MsnpCommand command)
         {
-			_success (this, 
-				new NotificationSuccessArgs (hostname, port));
-        }
-        
-        private void processCommand (MsnpCommand command)
-        {
-			Console.WriteLine ("Notification({0}):{1}", 
-				command.Type.ToString (),
-				command.RawString);
+
+		//	Console.WriteLine ("Notification({0}):{1}", 
+			//	command.Type.ToString (),
+				//command.RawString);
 				
 			switch (command.Type) {
 				case MsnpCommandType.VER:
@@ -80,8 +79,17 @@ namespace System.Net.Protocols.Msnp.Core
 			}
 		
 			Console.WriteLine ("Notification: processCommand Ends");
+			
+        	base.OnCommandArrived (command);
         }
+
         
+        protected virtual void OnSuccess (string hostname, int port)
+        {
+			_success (this, 
+				new NotificationSuccessArgs (hostname, port));
+        }
+                
         private void onSuccess (object sender, NotificationSuccessArgs args)
         {
         }
@@ -96,7 +104,7 @@ namespace System.Net.Protocols.Msnp.Core
 			set { _trId = value; }
 		}
 	
-		public event NotificationSucessHandler Success {
+		public event NotificationSuccessHandler Success {
 			add { _success += value; }
 			remove { _success -= value; }
 		}

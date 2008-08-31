@@ -4,7 +4,7 @@ using System.Text;
 
 namespace System.Net.Protocols.Msnp.Core
 {
-	public delegate void NotificationSucessHandler (object sender, 
+	public delegate void NotificationSuccessHandler (object sender, 
 		NotificationSuccessArgs args);
 		
 	public class NotificationSuccessArgs : System.EventArgs

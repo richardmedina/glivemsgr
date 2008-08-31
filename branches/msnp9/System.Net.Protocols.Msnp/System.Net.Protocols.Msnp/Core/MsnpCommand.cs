@@ -8,6 +8,7 @@ namespace System.Net.Protocols.Msnp.Core
 		private MsnpCommandType _type;
 		private int _trId;
 		private string [] _arguments;
+		private MsnpServerType _serverType;
 
 		private string _rawString;
 
@@ -30,10 +31,16 @@ namespace System.Net.Protocols.Msnp.Core
 			_arguments = arguments;
 			_rawString = rawString;
 		}
+		
+		public static MsnpCommand Parse (string command)
+		{
+			return Parse (MsnpServerType.Dispatch, command);
+		}
 
-		public static MsnpCommand Parse (string commandString)
+		public static MsnpCommand Parse (MsnpServerType server_type, string commandString)
 		{
 			MsnpCommand command = new MsnpCommand();
+			command._serverType = server_type;
 			command.RawString = commandString;
 
 			string[] pieces =
@@ -134,6 +141,10 @@ namespace System.Net.Protocols.Msnp.Core
 		{
 			get { return _rawString; }
 			private set { _rawString = value; }
+		}
+		
+		public MsnpServerType ServerType {
+			get { return _serverType; }
 		}
 	}
 }

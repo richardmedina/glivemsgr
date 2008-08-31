@@ -19,8 +19,8 @@ namespace MsnpTesting
 			
 			MsnpEngine engine = new MsnpEngine (
 				"ricardo@innovaciontecnologica.com", 
-				"09b9085a");
-			
+				"09b9085aa");
+			engine.CommandArrived += engineCommandArrived;
 			engine.Connect ();
 			
 			// This is a responsive application?
@@ -32,6 +32,12 @@ namespace MsnpTesting
 			*/
 			
 			Console.ReadLine ();
+		}
+		
+		private static void engineCommandArrived (object sender, MsnpCommandArrivedArgs args)
+		{
+			Console.WriteLine ("ENGINE ({0}).{1}",
+				args.Command.ServerType, args.Command.RawString);
 		}
 
 	}

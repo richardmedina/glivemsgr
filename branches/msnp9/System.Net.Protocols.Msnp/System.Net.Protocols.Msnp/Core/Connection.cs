@@ -46,13 +46,12 @@ namespace System.Net.Protocols.Msnp.Core
 		{
 			bool success = true;
 			int times = 1;
-			
-			
+			Console.WriteLine ("Openning connection");
 			
 			do {
 				success = true;
-				Console.WriteLine ("Attemping to connect (#{2}) to: {0}:{1}", 
-						_hostname, _port, times ++);
+				//Console.WriteLine ("Attemping to connect (#{2}) to: {0}:{1}", 
+				//		_hostname, _port, times ++);
 				try {
 					// For some reason if does not parse the host as IPAddress,
 					// the BeginConnect overload with hostname as string
@@ -73,7 +72,8 @@ namespace System.Net.Protocols.Msnp.Core
 			//	this.Active = false;
 			//}
 			//Active = false;
-			base.Close ();
+			//base.Close ();
+			base.Client.Disconnect (true);
 		}
 		
 		public void StartAsynchronousReading ()
@@ -100,6 +100,7 @@ namespace System.Net.Protocols.Msnp.Core
 			string text = null;
 			bool excep = false;
 			
+			//Console.WriteLine ("Read ()..");
 			try {
 				text = _reader.ReadLine ();
 			} catch {
@@ -111,7 +112,9 @@ namespace System.Net.Protocols.Msnp.Core
 				if (IsAsynchronousReading) {
 					try {
 						_thread.Abort ();
-					} catch {
+					} catch (Exception e) {
+				//		Console.WriteLine ("Read (): {0}", e);
+						
 						Close ();
 						
 						OnDisconnected ();
@@ -128,6 +131,7 @@ namespace System.Net.Protocols.Msnp.Core
 				OnDataArrived (text);
 			
 			//Debug.WriteLine (text);
+			//Console.WriteLine ("Read ()..END");
 
 			return text;
 		}
@@ -162,7 +166,7 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		private void endConnect (IAsyncResult iar)
 		{
-			Console.WriteLine ("endConnect Start..");
+//			Console.WriteLine ("endConnect Start..");
 			try {
 				if (iar.IsCompleted) {
 					_writer = new StreamWriter (base.GetStream ());
@@ -173,7 +177,7 @@ namespace System.Net.Protocols.Msnp.Core
 			} catch (Exception exc) {
 				Console.WriteLine ("Exception Getted : {0}", exc.Message);
 			}
-			Console.WriteLine ("endConnect End..");
+//			Console.WriteLine ("endConnect End..");
 		}
 		
 		private void onConnected (object sender, EventArgs args)
@@ -201,7 +205,7 @@ namespace System.Net.Protocols.Msnp.Core
 //			Debug.WriteLine ("waiting select");
 			//lock (this) {
 			
-			if (this.Active) {
+			if (Client.Connected) {
 				if (Client.Poll (1, SelectMode.SelectError))
 					return false;
 				
