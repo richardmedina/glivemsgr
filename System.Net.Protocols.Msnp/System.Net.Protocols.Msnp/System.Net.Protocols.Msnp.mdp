@@ -17,15 +17,15 @@
     <File name="Properties/AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/Connection.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/DataArrivedArgs.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpDispatch.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpDispatchServer.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/ErrorEventHandler.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCertificatePolicy.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommand.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommandType.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpContactState.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpEngine.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpNotification.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/NotificationSucessHandler.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpNotificationServer.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/NotificationSuccessHandler.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/Switchboard.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/Utils.cs" subtype="Code" buildaction="Compile" />
     <File name="MsnpAccount.cs" subtype="Code" buildaction="Compile" />
@@ -36,6 +36,9 @@
     <File name="MsnpGroup.cs" subtype="Code" buildaction="Compile" />
     <File name="MsnpContact.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommandArrived.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpServerType.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpServer.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/IMsnpCommandable.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

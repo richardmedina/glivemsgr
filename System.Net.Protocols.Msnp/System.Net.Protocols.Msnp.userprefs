@@ -1,24 +1,31 @@
 ﻿<UserCombinePreferences version="1.0" filename="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp.mds">
   <Files>
     <File name="Welcome" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpEngine.cs" line="84" column="3" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpDispatch.cs" line="28" column="36" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpCommand.cs" line="34" column="30" />
-    <File name="System.Net.Protocols.Msnp/MsnpAccount.cs" line="37" column="50" />
+    <File name="System.Net.Protocols.Msnp/Core/MsnpEngine.cs" line="83" column="34" />
+    <File name="System.Net.Protocols.Msnp/Core/MsnpNotificationServer.cs" line="32" column="30" />
+    <File name="System.Net.Protocols.Msnp/Core/MsnpDispatchServer.cs" line="97" column="17" />
+    <File name="System.Net.Protocols.Msnp/Core/Connection.cs" line="49" column="43" />
+    <File name="MsnpTesting/Program.cs" line="31" column="4" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
-      <Node expanded="True" selected="True" />
+      <Node expanded="True">
+        <Node name="MsnpTesting" expanded="True" />
+        <Node name="System.Net.Protocols.Msnp" expanded="True" />
+      </Node>
     </ViewMemento>
     <ViewMemento id="ClassPad">
-      <Node expanded="True" />
+      <Node expanded="True">
+        <Node name="MsnpTesting" expanded="True" />
+        <Node name="System.Net.Protocols.Msnp" expanded="True" />
+      </Node>
     </ViewMemento>
     <ViewMemento id="MonoDevelop.NUnit.TestPad">
       <Node />
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="Welcome" />
+    <Property key="ActiveWindow" value="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp/Core/MsnpEngine.cs" />
     <Property key="ActiveConfiguration" value="Debug|Any CPU" />
   </Properties>
 </UserCombinePreferences>

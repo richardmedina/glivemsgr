@@ -20,7 +20,113 @@ using System;
 
 namespace System.Net.Protocols.Msnp.Core
 {
+
+	public class MsnpEngine : IMsnpCommandable
+	{
+		private string _username;
+		private string _password;
+		
+		private MsnpNotificationServer _notification;
+		private MsnpDispatchServer _dispatch;
+		
+		private event MsnpCommandArrivedHandler _commandArrived;
 	
+		public MsnpEngine () : this (string.Empty, string.Empty)
+		{
+		}
+	
+		public MsnpEngine (string username, string password)
+		{
+			_username = username;
+			_password = password;
+			
+			_commandArrived = onCommandArrived;
+			
+			_notification = new MsnpNotificationServer ();
+			_dispatch = new MsnpDispatchServer ();
+			
+			_notification.CommandArrived += onAnyCommandArrived;
+			_notification.Success += notificationSuccess;
+			_notification.Disconnected += notificationDisconnected;
+			
+			_dispatch.CommandArrived += onAnyCommandArrived;
+			_dispatch.Disconnected += dispatchDisconnected;
+		}
+		
+		public void Connect ()
+		{
+			_notification.Username = Username;
+			_notification.Open ();
+		}
+		
+		protected virtual void OnCommandArrived (MsnpCommand command)
+		{
+			_commandArrived (this, new MsnpCommandArrivedArgs (command));
+		}
+		
+		private void notificationSuccess (object sender,
+			NotificationSuccessArgs args)
+		{
+			_notification.Close ();
+			
+			_dispatch.Username = _username;
+			_dispatch.Password = _password;
+			_dispatch.Hostname = args.Hostname;
+			_dispatch.Port = args.Port;
+			_dispatch.TrId = _notification.TrId;
+			
+			_dispatch.Open ();
+			
+			
+			Threading.Thread.Sleep (3000);
+			_dispatch.Close ();
+			Threading.Thread.Sleep (1000);
+			_dispatch.Open ();
+		}
+		
+		private void dispatchDisconnected (object sender,
+			EventArgs args)
+		{
+			Console.WriteLine ("Dispatch Disconnected");
+		}
+		
+		private void onAnyCommandArrived (object sender,
+			MsnpCommandArrivedArgs args)
+		{
+			OnCommandArrived (args.Command);
+		}
+		
+		private void onCommandArrived (object sender, 
+			MsnpCommandArrivedArgs args)
+		{
+		}
+		
+		private void notificationDisconnected (object sender,
+			EventArgs args)
+		{
+			Console.WriteLine ("Notification Disconnected......");
+		}
+		
+		public string Username {
+			get { return _username; }
+			set { _username = value; }
+		}
+		
+		public string Password {
+			get { return _password; }
+			set { _password = value; }
+		}
+		
+		// Signals
+		
+		public event MsnpCommandArrivedHandler CommandArrived {
+			add { _commandArrived += value; }
+			remove { _commandArrived -= value; }
+		}
+	
+	}
+
+/*	
 	
 	public class MsnpEngine
 	{
@@ -91,4 +197,5 @@ namespace System.Net.Protocols.Msnp.Core
 			remove { _success -= value; }
 		}
 	}
+	*/
 }
