@@ -22,36 +22,63 @@ using System.Net.Protocols.Msnp.Core;
 namespace System.Net.Protocols.Msnp
 {
 	
-	
-	public class MsnpAccount 
+	public class MsnpAccount : MsnpEngine
 	{
-		private MsnpEngine _engine;
 		
-		private string _alias;
+		private event EventHandler _loggedIn;
+		private event EventHandler _loggedOut;
 		
-		private EventHandler _connected;
-		private EventHandler _disconnected;
-		
-		public MsnpAccount (string username, string password)
+		public MsnpAccount () : this (string.Empty, string.Empty)
 		{
-			_engine = new MsnpEngine (username, password);
 		}
 		
-		public void Connect ()
+		public MsnpAccount (string username, string password) : 
+			base (username, password)
+		{	
+			_loggedIn = onLoggedIn;
+			_loggedOut = onLoggedOut;
+		}
+		
+		public void Login ()
 		{
-			_engine.Connect ();
+			Connect ();
+		}
+		
+		protected override void OnCommandArrived (MsnpCommand command)
+		{
+			if (command.ServerType == MsnpServerType.Dispatch) {
+				if (command.Type == MsnpCommandType.USR) {
+					if (command.Arguments [0] == "OK")
+						OnLoggedIn ();
+				}
+			}
 			
+			base.OnCommandArrived (command);
 		}
 		
-		public MsnpEngine Engine {
-			get { return _engine; }
+		protected virtual void OnLoggedIn ()
+		{
+			_loggedIn (this, EventArgs.Empty);
 		}
 		
-		// Events
+		protected virtual void OnLoggedout ()
+		{
+			_loggedOut (this, EventArgs.Empty);
+		}
+
+		private void onLoggedIn (object sender, EventArgs args)
+		{
+		}
+		
+		private void onLoggedOut (object sender, EventArgs args)
+		{
+		}
 				
-		public event EventHandler Connected {
-			add { }
-			remove { }
+		// Events
+		
+		public event EventHandler LoggedIn {
+			add { _loggedIn += value; }
+			remove { _loggedIn -= value; }
 		}
 	}
 }

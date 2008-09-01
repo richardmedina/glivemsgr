@@ -6,17 +6,19 @@
     <File name="System.Net.Protocols.Msnp/Core/MsnpDispatchServer.cs" line="97" column="17" />
     <File name="System.Net.Protocols.Msnp/Core/Connection.cs" line="49" column="43" />
     <File name="MsnpTesting/Program.cs" line="31" column="4" />
+    <File name="System.Net.Protocols.Msnp/MsnpAccount.cs" line="30" column="1" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
-        <Node name="MsnpTesting" expanded="True" />
-        <Node name="System.Net.Protocols.Msnp" expanded="True" />
+        <Node name="System.Net.Protocols.Msnp" expanded="True">
+          <Node name="Core" expanded="True" />
+          <Node name="MsnpAccount.cs" selected="True" />
+        </Node>
       </Node>
     </ViewMemento>
     <ViewMemento id="ClassPad">
       <Node expanded="True">
-        <Node name="MsnpTesting" expanded="True" />
         <Node name="System.Net.Protocols.Msnp" expanded="True" />
       </Node>
     </ViewMemento>
@@ -25,7 +27,7 @@
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp/Core/MsnpEngine.cs" />
+    <Property key="ActiveWindow" value="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp/MsnpAccount.cs" />
     <Property key="ActiveConfiguration" value="Debug|Any CPU" />
   </Properties>
 </UserCombinePreferences>

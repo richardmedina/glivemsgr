@@ -19,8 +19,18 @@ namespace System.Net.Protocols.Msnp
 		
 		private MsnpDispatchServer _dispatch;
 		
-		public MsnpContact (MsnpDispatchServer dispatch)
+		public MsnpContact (MsnpDispatchServer dispatch, string username) :
+			this (dispatch, username, string.Empty)
 		{
+		}
+		
+		public MsnpContact (
+			MsnpDispatchServer dispatch,
+			string username, 
+			string alias)
+		{
+			_username = username;
+			_alias = alias;
 			_dispatch = dispatch;
 		}
 		

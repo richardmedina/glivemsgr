@@ -45,8 +45,8 @@ namespace System.Net.Protocols.Msnp.Core
 		public void Open ()
 		{
 			bool success = true;
-			int times = 1;
-			Console.WriteLine ("Openning connection");
+			//int times = 1;
+			//Console.WriteLine ("Openning connection");
 			
 			do {
 				success = true;
@@ -113,7 +113,7 @@ namespace System.Net.Protocols.Msnp.Core
 					try {
 						_thread.Abort ();
 					} catch (Exception e) {
-				//		Console.WriteLine ("Read (): {0}", e);
+						Console.WriteLine ("Read (): {0}", e);
 						
 						Close ();
 						
@@ -169,9 +169,11 @@ namespace System.Net.Protocols.Msnp.Core
 //			Console.WriteLine ("endConnect Start..");
 			try {
 				if (iar.IsCompleted) {
+					base.EndConnect (iar);
+					
 					_writer = new StreamWriter (base.GetStream ());
 					_reader = new StreamReader (base.GetStream ());
-					base.EndConnect (iar);
+					
 					OnConnected ();
 				}
 			} catch (Exception exc) {

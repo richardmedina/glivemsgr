@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Net.Protocols.Msnp;
 using System.Net.Protocols.Msnp.Core;
-
 namespace MsnpTesting
 {
 	public class Program
@@ -16,13 +16,13 @@ namespace MsnpTesting
 			
 			//NetTest ();
 			//Console.WriteLine ("Main Thread: {0}", Thread.CurrentThread.Name);
-			
+		/*	
 			MsnpEngine engine = new MsnpEngine (
 				"ricardo@innovaciontecnologica.com", 
 				"09b9085aa");
 			engine.CommandArrived += engineCommandArrived;
 			engine.Connect ();
-			
+			*/
 			// This is a responsive application?
 			/*
 			while (true) {
@@ -31,14 +31,37 @@ namespace MsnpTesting
 			}
 			*/
 			
+			
+			MsnpAccount account = new MsnpAccount ();
+			account.Username = "ricardo@innovaciontecnologica.com";
+			account.Password = "09b9085a";
+			
+			account.LoggedIn += accountLoggedIn;
+			account.CommandArrived += accountCommandArrived;
+			
+			account.Login ();
+			Console.WriteLine ("Connecting ..");
 			Console.ReadLine ();
 		}
 		
+		private static void accountCommandArrived (object sender, MsnpCommandArrivedArgs args)
+		{
+		//	Console.WriteLine ("{0}({1}): {2}", 
+			//	args.Command.ServerType, 
+				//args.Command.Type, 
+				//args.Command.RawString);
+		}
+		
+		private static void accountLoggedIn (object sender, EventArgs args)
+		{
+			Console.WriteLine ("Logged!");
+		}
+/*		
 		private static void engineCommandArrived (object sender, MsnpCommandArrivedArgs args)
 		{
 			Console.WriteLine ("ENGINE ({0}).{1}",
 				args.Command.ServerType, args.Command.RawString);
 		}
-
+*/
 	}
 }
