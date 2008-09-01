@@ -47,10 +47,10 @@ namespace System.Net.Protocols.Msnp.Core
 			
 			_notification.CommandArrived += onAnyCommandArrived;
 			_notification.Success += notificationSuccess;
-			_notification.Disconnected += notificationDisconnected;
+		//	_notification.Disconnected += notificationDisconnected;
 			
 			_dispatch.CommandArrived += onAnyCommandArrived;
-			_dispatch.Disconnected += dispatchDisconnected;
+		//	_dispatch.Disconnected += dispatchDisconnected;
 		}
 		
 		public void Connect ()
@@ -76,20 +76,14 @@ namespace System.Net.Protocols.Msnp.Core
 			_dispatch.TrId = _notification.TrId;
 			
 			_dispatch.Open ();
-			
-			
-			Threading.Thread.Sleep (3000);
-			_dispatch.Close ();
-			Threading.Thread.Sleep (1000);
-			_dispatch.Open ();
 		}
-		
+/*		
 		private void dispatchDisconnected (object sender,
 			EventArgs args)
 		{
 			Console.WriteLine ("Dispatch Disconnected");
 		}
-		
+*/		
 		private void onAnyCommandArrived (object sender,
 			MsnpCommandArrivedArgs args)
 		{
@@ -100,13 +94,13 @@ namespace System.Net.Protocols.Msnp.Core
 			MsnpCommandArrivedArgs args)
 		{
 		}
-		
+/*		
 		private void notificationDisconnected (object sender,
 			EventArgs args)
 		{
 			Console.WriteLine ("Notification Disconnected......");
 		}
-		
+*/		
 		public string Username {
 			get { return _username; }
 			set { _username = value; }

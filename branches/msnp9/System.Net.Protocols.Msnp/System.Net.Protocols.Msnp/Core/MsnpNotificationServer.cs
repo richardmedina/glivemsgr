@@ -34,7 +34,7 @@ namespace System.Net.Protocols.Msnp.Core
         	base.OnConnected ();
 			StartAsynchronousReading ();
 		
-			Console.WriteLine ("Connected: Starting..");
+		//	Console.WriteLine ("Connected: Starting..");
 		
 			Send ("VER {0} MSNP8 MSNP9 CVR0", TrId++);
         }
@@ -78,7 +78,7 @@ namespace System.Net.Protocols.Msnp.Core
 				break;
 			}
 		
-			Console.WriteLine ("Notification: processCommand Ends");
+		//	Console.WriteLine ("Notification: processCommand Ends");
 			
         	base.OnCommandArrived (command);
         }

@@ -94,6 +94,8 @@ namespace System.Net.Protocols.Msnp.Core
 						string cookie = formatCookie (command.Arguments [2]);
 						string ticket = nexusLogin (cookie);
 						if (ticket == string.Empty) {
+							
+							base.OnCommandArrived (command);
 							Close ();
 							return;
 						}
@@ -124,7 +126,7 @@ namespace System.Net.Protocols.Msnp.Core
 			}
 			base.OnCommandArrived (command);
 			
-			Console.WriteLine ("Dispatch: processCommand Ends");
+		//	Console.WriteLine ("Dispatch: processCommand Ends");
 		}
 		
 		protected override void OnConnected ()
@@ -132,7 +134,7 @@ namespace System.Net.Protocols.Msnp.Core
 			base.OnConnected ();
 			StartAsynchronousReading ();
 			
-			Console.WriteLine ("Dispatch. Connected!");
+			//Console.WriteLine ("Dispatch. Connected!");
 			
 			Send ("VER {0} MSNP8 MSNP9 CVR0", TrId ++);
 		}
@@ -151,10 +153,6 @@ namespace System.Net.Protocols.Msnp.Core
 			_passportArrived (this, new PassportArrivedArgs (content));
 		}
 		
-		private void processCommand (MsnpCommand command)
-        {
-        }
-        	
 		private string formatCookie (string cookie)
 		{
 			cookie  = cookie.Replace ("USR 6 TWN S ", "");
@@ -173,17 +171,20 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		private string nexusLogin (string cookie)
 		{
-			Console.WriteLine ("Nexus");
+		//	Console.WriteLine ("Nexus");
 			WebRequest req;
 			WebResponse res;
+			
+			req = WebRequest.Create ("https://nexus.passport.com/rdr/pprdr.asp");
+			
 			try {
-				 req = WebRequest.Create ("https://nexus.passport.com/rdr/pprdr.asp");
-				 Console.Write ("WebConnecting to {0}...", req.RequestUri);
+				 //Console.Write ("WebConnecting to {0}...", req.RequestUri);
 				 res = req.GetResponse ();
-				 Console.WriteLine ("DONE");
+				 //Console.WriteLine ("DONE");
 			} catch (Exception e) {
 				//Console.WriteLine (e.ToString ());
-				Console.WriteLine ("ERROR");
+				Console.WriteLine ("Nexus.Error Connecting to {0}.{1}", 
+					req.RequestUri, e.Message);
 				return string.Empty;
 			}
 			
@@ -196,12 +197,13 @@ namespace System.Net.Protocols.Msnp.Core
 			
 			for (int retry = 0; retry < 1; retry ++) {
 				try {
-					Console.Write ("WebConnecting to {0}...", req.RequestUri);
+					//Console.Write ("WebConnecting to {0}...", req.RequestUri);
 					res = req.GetResponse ();
-					Console.WriteLine ("DONE");
+					//Console.WriteLine ("DONE");
 				} catch (Exception e) {
 					//Console.WriteLine (e);
-					Console.WriteLine ("ERROR");
+					Console.WriteLine ("Nexus.Error connecting to: {0}.{1}", 
+						req.RequestUri, e.Message);
 					return string.Empty;
 				}
 				
@@ -212,7 +214,7 @@ namespace System.Net.Protocols.Msnp.Core
 					info = res.Headers ["WWW-Authenticate"];
 				else if (res.Headers ["Authentication-Info"] != null)
 					info = res.Headers ["Authentication-Info"];
-				Console.WriteLine ("Info : {0}", info);
+			//	Console.WriteLine ("Info : {0}", info);
 				group = regex.Match (info).Groups;
 				
 				switch (group [1].Value) {
