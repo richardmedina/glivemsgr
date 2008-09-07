@@ -77,13 +77,7 @@ namespace System.Net.Protocols.Msnp.Core
 			
 			_dispatch.Open ();
 		}
-/*		
-		private void dispatchDisconnected (object sender,
-			EventArgs args)
-		{
-			Console.WriteLine ("Dispatch Disconnected");
-		}
-*/		
+		
 		private void onAnyCommandArrived (object sender,
 			MsnpCommandArrivedArgs args)
 		{
@@ -94,13 +88,7 @@ namespace System.Net.Protocols.Msnp.Core
 			MsnpCommandArrivedArgs args)
 		{
 		}
-/*		
-		private void notificationDisconnected (object sender,
-			EventArgs args)
-		{
-			Console.WriteLine ("Notification Disconnected......");
-		}
-*/		
+
 		public string Username {
 			get { return _username; }
 			set { _username = value; }
@@ -117,79 +105,13 @@ namespace System.Net.Protocols.Msnp.Core
 			add { _commandArrived += value; }
 			remove { _commandArrived -= value; }
 		}
-	
-	}
 
-/*	
+		protected MsnpDispatchServer Dispatch {
+			get { return _dispatch; }
+		}
 	
-	public class MsnpEngine
-	{
-		private MsnpNotification _notification;
-		private MsnpDispatch _dispatch;
-		
-		private string _username;
-		private string _password;
-		
-		private event EventHandler _success;
-		private event MsnpCommandArrivedHandler _commandArrived;
-//		private event EventHandler _error;
-		
-		public MsnpEngine (string username, string password)
-		{
-			_username = username;
-			_password = password;
-			
-			_notification = new MsnpNotification ();
-			_notification.Success += notification_Success;
-			
-			_dispatch = new MsnpDispatch ();
-			_dispatch.CommandArrived += dispatchCommandArrived;
-		}
-		
-		public void Connect ()
-		{
-			_notification.Username = _username;
-			
-			Console.WriteLine ("Starting with {0}:{1}",
-				_username,
-				_password);
-				
-			_notification.Open ();
-		}
-		
-		private void notification_Success (object sender,
-			NotificationSuccessArgs args)
-		{
-			_notification.Close ();
-			
-			_dispatch.Username = _username;
-			_dispatch.Password = _password;
-			_dispatch.Hostname = args.Hostname;
-			_dispatch.Port = args.Port;
-			_dispatch.TrId = _notification.TrId;
-			
-			_dispatch.Open ();
-		}
-		
-		// Handlers 
-		private void dispatchCommandArrived (object sender,
-			MsnpCommandArrivedArgs args)
-		{
-			
-			//if (args.Command.Type == MsnpCommandType.
-		}
-		
-		// Events
-		
-		public event MsnpCommandArrivedHandler CommandArrived {
-			add { _commandArrived += value; }
-			remove { _commandArrived -= value; }
-		}
-		
-		public event EventHandler Success {
-			add { _success += value; }
-			remove { _success -= value; }
+		protected MsnpNotificationServer Notification {
+			get { return _notification; }
 		}
 	}
-	*/
 }

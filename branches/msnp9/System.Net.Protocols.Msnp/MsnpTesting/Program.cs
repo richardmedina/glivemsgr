@@ -46,22 +46,17 @@ namespace MsnpTesting
 		
 		private static void accountCommandArrived (object sender, MsnpCommandArrivedArgs args)
 		{
-		//	Console.WriteLine ("{0}({1}): {2}", 
-			//	args.Command.ServerType, 
-				//args.Command.Type, 
-				//args.Command.RawString);
+			Console.WriteLine ("{0}({1}): {2}", 
+				args.Command.ServerType, 
+				args.Command.Type, 
+				args.Command.RawString);
 		}
 		
 		private static void accountLoggedIn (object sender, EventArgs args)
 		{
 			Console.WriteLine ("Logged!");
+			
+			((MsnpAccount) sender).SetState (MsnpContactState.Online);
 		}
-/*		
-		private static void engineCommandArrived (object sender, MsnpCommandArrivedArgs args)
-		{
-			Console.WriteLine ("ENGINE ({0}).{1}",
-				args.Command.ServerType, args.Command.RawString);
-		}
-*/
 	}
 }
