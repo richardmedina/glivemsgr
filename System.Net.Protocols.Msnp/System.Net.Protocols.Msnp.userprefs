@@ -1,25 +1,38 @@
 ﻿<UserCombinePreferences version="1.0" filename="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp.mds">
   <Files>
     <File name="Welcome" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpEngine.cs" line="83" column="34" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpNotificationServer.cs" line="32" column="30" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpDispatchServer.cs" line="97" column="17" />
-    <File name="System.Net.Protocols.Msnp/Core/Connection.cs" line="49" column="43" />
-    <File name="MsnpTesting/Program.cs" line="31" column="4" />
-    <File name="System.Net.Protocols.Msnp/MsnpAccount.cs" line="30" column="1" />
+    <File name="System.Net.Protocols.Msnp/Core/MsnpEngine.cs" line="64" column="18" />
+    <File name="System.Net.Protocols.Msnp/Core/MsnpNotificationServer.cs" line="75" column="4" />
+    <File name="System.Net.Protocols.Msnp/Core/MsnpDispatchServer.cs" line="208" column="6" />
+    <File name="MsnpTesting/Program.cs" line="38" column="4" />
+    <File name="System.Net.Protocols.Msnp/MsnpAccount.cs" line="51" column="28" />
+    <File name="System.Net.Protocols.Msnp/MsnpContact.cs" line="27" column="11" />
+    <File name="System.Net.Protocols.Msnp/MsnpContactState.cs" line="36" column="5" />
+    <File name="System.Net.Protocols.Msnp/Core/Connection.cs" line="116" column="5" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
         <Node name="System.Net.Protocols.Msnp" expanded="True">
-          <Node name="Core" expanded="True" />
-          <Node name="MsnpAccount.cs" selected="True" />
+          <Node name="Core" expanded="True">
+            <Node name="PassportArrivedHandler.cs" selected="True" />
+          </Node>
         </Node>
       </Node>
     </ViewMemento>
     <ViewMemento id="ClassPad">
       <Node expanded="True">
-        <Node name="System.Net.Protocols.Msnp" expanded="True" />
+        <Node name="System.Net.Protocols.Msnp" expanded="True">
+          <Node name="System" expanded="True">
+            <Node name="Net" expanded="True">
+              <Node name="Protocols" expanded="True">
+                <Node name="Msnp" expanded="True">
+                  <Node name="PassportArrivedArgs" selected="True" />
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </Node>
       </Node>
     </ViewMemento>
     <ViewMemento id="MonoDevelop.NUnit.TestPad">
@@ -27,7 +40,7 @@
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp/MsnpAccount.cs" />
+    <Property key="ActiveWindow" value="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp/MsnpContact.cs" />
     <Property key="ActiveConfiguration" value="Debug|Any CPU" />
   </Properties>
 </UserCombinePreferences>

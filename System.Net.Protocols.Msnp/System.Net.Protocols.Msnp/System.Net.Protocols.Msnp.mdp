@@ -39,7 +39,9 @@
     <File name="Core/MsnpServerType.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpServer.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/IMsnpCommandable.cs" subtype="Code" buildaction="Compile" />
-    <File name="MsnpContactState.cs" subtype="Code" buildaction="Compile" />
+    <File name="MsnpContactState.cs" subtype="Code" buildaction="Nothing" />
+    <File name="Core/MsnpSwitchboard.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpSbSession.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

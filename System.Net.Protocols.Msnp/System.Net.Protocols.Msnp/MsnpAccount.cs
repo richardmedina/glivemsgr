@@ -44,6 +44,13 @@ namespace System.Net.Protocols.Msnp
 			Connect ();
 		}
 		
+		public void SetState (MsnpContactState state)
+		{
+			Dispatch.Send ("CHG {0} {1}",
+				Dispatch.TrId ++,
+				Utils.ContactStateToString (state));
+		}
+		
 		protected override void OnCommandArrived (MsnpCommand command)
 		{
 			if (command.ServerType == MsnpServerType.Dispatch) {
