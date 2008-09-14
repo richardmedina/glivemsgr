@@ -13,6 +13,7 @@
     <Execute type="None" entry="MsnpTesting" />
     <Execute type="None" entry="System.Net.Protocols.Msnp" />
   </StartMode>
+  <MonoDevelop.ChangeLogAddIn.ChangeLogInfo policy="OneChangeLogInEachDirectory" />
   <Entries>
     <Entry filename="MsnpTesting/MsnpTesting.mdp" />
     <Entry filename="System.Net.Protocols.Msnp/System.Net.Protocols.Msnp.mdp" />

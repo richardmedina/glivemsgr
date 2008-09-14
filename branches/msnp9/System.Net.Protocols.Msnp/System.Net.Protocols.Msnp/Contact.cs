@@ -12,19 +12,20 @@ namespace System.Net.Protocols.Msnp
 {
 	
 	
-	public class MsnpContact
+	public class Contact
 	{
 		private string _username;
 		private string _alias;
 		
 		private MsnpDispatchServer _dispatch;
+		private ListType _lists;
 		
-		public MsnpContact (MsnpDispatchServer dispatch, string username) :
+		public Contact (MsnpDispatchServer dispatch, string username) :
 			this (dispatch, username, string.Empty)
 		{
 		}
 		
-		public MsnpContact (
+		public Contact (
 			MsnpDispatchServer dispatch,
 			string username, 
 			string alias)
@@ -44,6 +45,11 @@ namespace System.Net.Protocols.Msnp
 		
 		public MsnpDispatchServer DispatchServer {
 			get { return _dispatch; }
+		}
+		
+		public ListType Lists {
+			get { return _lists; }
+			set { _lists = value; }
 		}
 	}
 }

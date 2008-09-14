@@ -19,19 +19,19 @@ namespace System.Net.Protocols.Msnp.Core
 			"HDN"
 		};
 
-		public static string ContactStateToString(MsnpContactState state)
+		public static string ContactStateToString(int state)
 		{
-			return states[(int)state];
+			return states [state];
 		}
 
-		public static MsnpContactState StringToContactState(string state)
+		public static int StringToContactState(string state)
 		{
 			for (int i = 0; i < states.Length; i++)
 				if (state == states[i])
-					return (MsnpContactState)i;
+					return i;
 
 			Console.WriteLine("{0} not found!", state);
-			return MsnpContactState.Offline;
+			return states.Length -1;
 		}
 
 		// TODO: This will be necesary

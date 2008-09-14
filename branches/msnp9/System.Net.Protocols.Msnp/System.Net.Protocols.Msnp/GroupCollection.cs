@@ -1,4 +1,4 @@
-// MsnpContactState.cs
+// MsnpGroupCollection.cs
 //
 // Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
 //
@@ -22,22 +22,26 @@
 //
 //
 
-
 using System;
+using System.Collections.Generic;
 
 namespace System.Net.Protocols.Msnp
 {
 	
 	
-	public enum MsnpContactState
+	public class GroupCollection : ObservedCollection<Group>
 	{
-		Online	= 0,
-		Bussy	= 1,
-		Idle	= 1,
-		Brb		= 2,
-		Away	= 3,
-		Phone	= 4,
-		Lunch	= 5,
-		Offline	= 6
+	
+		public bool GetById (int id, out Group group)
+		{
+			group = null;
+			
+			foreach (Group g in this)
+				if (g.Id == id) {
+					group = g;
+					return true;
+				}
+			return false;
+		}
 	}
 }

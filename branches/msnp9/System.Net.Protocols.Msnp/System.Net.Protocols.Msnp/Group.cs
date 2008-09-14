@@ -11,18 +11,37 @@ namespace System.Net.Protocols.Msnp
 {
 	
 	
-	public class MsnpGroup : System.Collections.Generic.List <MsnpContact>
+	public class Group : ObservedCollection <Contact>
 	{
 		private int _id;
 		private string _name;
 		private string _description;
 		
-		public MsnpGroup ()
+		public Group () : this (0, string.Empty, string.Empty)
 		{
-			_id = 0;
-			_name = string.Empty;
-			_description = string.Empty;
 		}
+		
+		public Group (string name) : this (0, name, string.Empty)
+		{
+		}
+		
+		public Group (int id, string name) : 
+			this (id, name, string.Empty)
+		{
+		}
+		
+		public Group (int id, string name, string description)
+		{
+			_id = id;
+			_name = name;
+			_description = description;
+		}
+		
+		protected override void OnAdded (Contact instance)
+		{
+			base.OnAdded (instance);
+		}
+
 		
 		public int Id {
 			get { return _id; }

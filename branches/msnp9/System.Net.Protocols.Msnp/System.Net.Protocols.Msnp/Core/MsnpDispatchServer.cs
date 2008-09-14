@@ -190,7 +190,8 @@ namespace System.Net.Protocols.Msnp.Core
 			
 			Regex regex = new Regex ("dalogin=([^,]+)", RegexOptions.IgnoreCase);
 			
-			GroupCollection group = regex.Match (res.Headers ["PassportURLs"]).Groups;
+			System.Text.RegularExpressions.GroupCollection group = 
+				regex.Match (res.Headers ["PassportURLs"]).Groups;
 			
 			req = WebRequest.Create ("https://" + group [1].Value.TrimEnd ());
 			req.Headers.Add ("Authorization", cookie);

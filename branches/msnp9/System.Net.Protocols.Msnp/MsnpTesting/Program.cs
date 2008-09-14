@@ -32,12 +32,16 @@ namespace MsnpTesting
 			*/
 			
 			
-			MsnpAccount account = new MsnpAccount ();
-			account.Username = "ricardo@innovaciontecnologica.com";
-			account.Password = "09b9085a";
+			Account account = new Account ();
+			Console.Write ("Username: ");
+			account.Username = Console.ReadLine ();
+			Console.Write ("Password: ");
+			account.Password = Console.ReadLine ();
 			
 			account.LoggedIn += accountLoggedIn;
-			account.CommandArrived += accountCommandArrived;
+			//account.CommandArrived += accountCommandArrived;
+			account.GroupsLoaded += accountGroupsLoaded;
+			account.ContactsLoaded += accountContactsLoaded;
 			
 			account.Login ();
 			Console.WriteLine ("Connecting ..");
@@ -56,7 +60,20 @@ namespace MsnpTesting
 		{
 			Console.WriteLine ("Logged!");
 			
-			((MsnpAccount) sender).SetState (MsnpContactState.Online);
+			((Account) sender).SetState (ContactState.Online);
+		}
+		
+		private static void accountGroupsLoaded (object sender, EventArgs args)
+		{
+			Console.WriteLine ("{0} Groups Loaded..", ((Account) sender).Groups.Count);
+			foreach (Group group in ((Account)sender).Groups)
+				Console.WriteLine ("   Name:{0} id:{1}",
+					group.Name, group.Id);
+		}
+		
+		private static void accountContactsLoaded (object sender, EventArgs args)
+		{
+			Console.WriteLine ("Contacts Loaded");
 		}
 	}
 }

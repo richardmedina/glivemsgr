@@ -1,4 +1,4 @@
-// MsnpSbSession.cs
+// ObservedCollectionEvent.cs
 //
 // Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
 //
@@ -24,22 +24,24 @@
 
 using System;
 
-namespace System.Net.Protocols.Msnp.Core
+namespace System.Net.Protocols.Msnp
 {
 	
+	public delegate void ObservedCollectionAction<T> (object sender, 
+		ObservedCollectionActionArgs<T> args);
 	
-	public class MsnpSbSession
+	public class ObservedCollectionActionArgs<T> : System.EventArgs
 	{
-		private string _creator;
-		private Connection _connection;
 		
-		public MsnpSbSession()
+		private T _instance;
+		
+		public ObservedCollectionActionArgs (T instance)
 		{
-			
+			_instance = instance;
 		}
 		
-		public Connection Connection {
-			get { return _connection; }
+		public T Instance {
+			get { return _instance; }
 		}
 	}
 }
