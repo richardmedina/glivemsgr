@@ -54,11 +54,13 @@ namespace System.Net.Protocols.Msnp.Core
 				//		_hostname, _port, times ++);
 				try {
 					// For some reason if does not parse the host as IPAddress,
-					// the BeginConnect overload with hostname as string
+					// the BeginConnect with hostname as string
 					// fails.
-					IPHostEntry hostentry = Dns.Resolve (_hostname);
+					IPHostEntry hostentry = 
+						Dns.Resolve (_hostname);
 					
-					BeginConnect (hostentry.AddressList [0], _port, endConnect, null);
+					BeginConnect (hostentry.AddressList [0], 
+						_port, endConnect, null);
 				} catch (Exception exception) {
 					if (!AllowReconnect)
 						throw exception;
@@ -68,12 +70,7 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		public new void Close ()
 		{
-			//lock (this) {
-			//	this.Active = false;
-			//}
-			//Active = false;
-			//base.Close ();
-			base.Client.Disconnect (true);
+			Client.Disconnect (true);
 		}
 		
 		public void StartAsynchronousReading ()
@@ -169,10 +166,10 @@ namespace System.Net.Protocols.Msnp.Core
 //			Console.WriteLine ("endConnect Start..");
 			try {
 				if (iar.IsCompleted) {
-					base.EndConnect (iar);
+					EndConnect (iar);
 					
-					_writer = new StreamWriter (base.GetStream ());
-					_reader = new StreamReader (base.GetStream ());
+					_writer = new StreamWriter (GetStream ());
+					_reader = new StreamReader (GetStream ());
 					
 					OnConnected ();
 				}

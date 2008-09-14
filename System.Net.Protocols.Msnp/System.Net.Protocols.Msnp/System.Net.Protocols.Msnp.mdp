@@ -22,26 +22,30 @@
     <File name="Core/MsnpCertificatePolicy.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommand.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommandType.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpContactState.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpContactState.cs" subtype="Code" buildaction="Nothing" />
     <File name="Core/MsnpEngine.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpNotificationServer.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/NotificationSuccessHandler.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/Switchboard.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/Utils.cs" subtype="Code" buildaction="Compile" />
-    <File name="MsnpAccount.cs" subtype="Code" buildaction="Compile" />
+    <File name="Account.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/SBSession.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/SBSessionCollection.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/IConnection.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/PassportArrivedHandler.cs" subtype="Code" buildaction="Compile" />
-    <File name="MsnpGroup.cs" subtype="Code" buildaction="Compile" />
-    <File name="MsnpContact.cs" subtype="Code" buildaction="Compile" />
+    <File name="Group.cs" subtype="Code" buildaction="Compile" />
+    <File name="Contact.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommandArrived.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpServerType.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpServer.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/IMsnpCommandable.cs" subtype="Code" buildaction="Compile" />
-    <File name="MsnpContactState.cs" subtype="Code" buildaction="Nothing" />
+    <File name="ContactState.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpSwitchboard.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpSbSession.cs" subtype="Code" buildaction="Compile" />
+    <File name="GroupCollection.cs" subtype="Code" buildaction="Compile" />
+    <File name="ObservedCollection.cs" subtype="Code" buildaction="Compile" />
+    <File name="ObservedCollectionAction.cs" subtype="Code" buildaction="Compile" />
+    <File name="ListType.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

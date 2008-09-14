@@ -1,4 +1,4 @@
-// MsnpSbSession.cs
+// MsnpContactState.cs
 //
 // Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
 //
@@ -22,24 +22,22 @@
 //
 //
 
+
 using System;
 
-namespace System.Net.Protocols.Msnp.Core
+namespace System.Net.Protocols.Msnp
 {
 	
 	
-	public class MsnpSbSession
+	public enum ContactState
 	{
-		private string _creator;
-		private Connection _connection;
-		
-		public MsnpSbSession()
-		{
-			
-		}
-		
-		public Connection Connection {
-			get { return _connection; }
-		}
+		Online	= 0,
+		Bussy	= 1,
+		Idle	= 1,
+		Brb	= 2,
+		Away	= 3,
+		Phone	= 4,
+		Lunch	= 5,
+		Offline	= 6
 	}
 }

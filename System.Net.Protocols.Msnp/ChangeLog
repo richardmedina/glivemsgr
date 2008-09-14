@@ -1,0 +1,6 @@
+2008-09-14  Ricardo Medina <ricki@dana-ide.org> 
+	Current status of Msnp protocol implementation is:
+		* Capablility to start a session.
+		* Load Groups
+		* Organize contacts inside its corresponding groups..
+
