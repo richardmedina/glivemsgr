@@ -1,25 +1,23 @@
 ﻿<UserCombinePreferences version="1.0" filename="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp.mds">
   <Files>
     <File name="Welcome" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpEngine.cs" line="64" column="18" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpNotificationServer.cs" line="75" column="4" />
-    <File name="System.Net.Protocols.Msnp/Core/MsnpDispatchServer.cs" line="72" column="6" />
-    <File name="MsnpTesting/Program.cs" line="65" column="77" />
-    <File name="System.Net.Protocols.Msnp/Core/Connection.cs" line="116" column="5" />
-    <File name="System.Net.Protocols.Msnp/ObservedCollection.cs" line="41" column="27" />
-    <File name="System.Net.Protocols.Msnp/ObservedCollectionAction.cs" line="30" column="50" />
-    <File name="System.Net.Protocols.Msnp/Account.cs" line="88" column="14" />
-    <File name="System.Net.Protocols.Msnp/GroupCollection.cs" line="34" column="20" />
-    <File name="System.Net.Protocols.Msnp/Group.cs" line="37" column="30" />
+    <File name="System.Net.Protocols.Msnp/Account.cs" line="1" column="1" />
+    <File name="System.Net.Protocols.Msnp/Contact.cs" line="78" column="50" />
+    <File name="System.Net.Protocols.Msnp/Core/MsnpEngine.cs" line="33" column="17" />
+    <File name="System.Net.Protocols.Msnp/Core/LoginErrorHandler.cs" line="27" column="41" />
+    <File name="System.Net.Protocols.Msnp/Core/PassportArrivedHandler.cs" line="28" column="41" />
+    <File name="System.Net.Protocols.Msnp/Conversation.cs" line="23" column="1" />
+    <File name="System.Net.Protocols.Msnp/ConversationArrived.cs" line="18" column="30" />
+    <File name="System.Net.Protocols.Msnp/Core/Switchboard.cs" line="15" column="48" />
   </Files>
   <Views>
     <ViewMemento id="ProjectPad">
       <Node expanded="True">
-        <Node name="MsnpTesting" expanded="True">
-          <Node name="Program.cs" selected="True" />
-        </Node>
+        <Node name="MsnpTesting" expanded="True" />
         <Node name="System.Net.Protocols.Msnp" expanded="True">
-          <Node name="Core" expanded="True" />
+          <Node name="Core" expanded="True">
+            <Node name="Switchboard.cs" selected="True" />
+          </Node>
         </Node>
       </Node>
     </ViewMemento>
@@ -31,7 +29,7 @@
     </ViewMemento>
   </Views>
   <Properties>
-    <Property key="ActiveWindow" value="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/MsnpTesting/Program.cs" />
+    <Property key="ActiveWindow" value="/home/ricki/programming/progros/CSharp/Projects/GLiveMsgr/svn/branches/msnp9/System.Net.Protocols.Msnp/System.Net.Protocols.Msnp/Core/Switchboard.cs" />
     <Property key="ActiveConfiguration" value="Debug|Any CPU" />
   </Properties>
 </UserCombinePreferences>

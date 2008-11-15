@@ -28,8 +28,9 @@ namespace System.Net.Protocols.Msnp
 		private event EventHandler _loggedIn;
 		private event EventHandler _loggedOut;
 		
-		
 		private GroupCollection _groups;
+		
+		private ContactState _contactState;
 		
 		private int _contactListVersion = 0;
 		private int _totalGroups = 0;
@@ -38,6 +39,7 @@ namespace System.Net.Protocols.Msnp
 		
 		private event EventHandler _groupsLoaded;
 		private event EventHandler _contactsLoaded;
+		private event EventHandler _stateChanged;
 		
 		public Account () : this (string.Empty, string.Empty)
 		{
@@ -49,9 +51,11 @@ namespace System.Net.Protocols.Msnp
 			_loggedIn = onLoggedIn;
 			_loggedOut = onLoggedOut;
 			_groups = new GroupCollection ();
+			_contactState = ContactState.Offline;
 			
 			_groupsLoaded += onGroupsLoaded;
 			_contactsLoaded += onContactsLoaded;
+			_stateChanged = onStateChanged;
 		}
 		
 		public void Login ()
@@ -77,7 +81,7 @@ namespace System.Net.Protocols.Msnp
 				if (command.Type == MsnpCommandType.RNG) {
 					Console.WriteLine 
 						("Someone wants to chat with you..");
-					processRNG ();
+					processRNG (command);
 				}
 				
 				if (command.Type == MsnpCommandType.SYN)
@@ -88,6 +92,11 @@ namespace System.Net.Protocols.Msnp
 				
 				if (command.Type == MsnpCommandType.LST)
 					processLST (command);
+				if (command.Type == MsnpCommandType.CHG)
+					processCHG (command);
+				
+				//if (command.Type == MsnpCommandType.MSG)
+				//	processMSG (command);
 			}
 			
 			base.OnCommandArrived (command);
@@ -113,6 +122,21 @@ namespace System.Net.Protocols.Msnp
 			_loggedOut (this, EventArgs.Empty);
 		}
 		
+		protected virtual void OnStateChanged ()
+		{
+			_stateChanged (this, EventArgs.Empty);
+		}
+		
+		private void processCHG (MsnpCommand command)
+		{
+			
+			int state = Utils.StringToContactState 
+				(command.Arguments [0]);
+			
+			_contactState = (ContactState) state;
+			
+			OnStateChanged ();
+		}
 		
 		private void processLSG (MsnpCommand command)
 		{
@@ -139,7 +163,7 @@ namespace System.Net.Protocols.Msnp
 				throw new ArgumentException ("processLST");
 						
 			Contact contact = new Contact (
-				Dispatch,
+				this,
 				command.Arguments [0], 
 				command.Arguments [1]);
 			
@@ -180,13 +204,24 @@ namespace System.Net.Protocols.Msnp
 			}
 			
 			_currentContacts ++;
-			
+			Console.WriteLine ("Loaded Contacts {0}/{1}",
+				_currentContacts, _totalContacts);
 			if (_currentContacts == _totalContacts)
 				OnContactsLoaded ();
 		}
 		
-		private void processRNG ()
+		private void processMSG (MsnpCommand command)
 		{
+			if (command.Type != MsnpCommandType.MSG)
+				//throw new ArgumentException ("processMSG");
+			
+			printCommandArgs (command);
+		}
+		
+		private void processRNG (MsnpCommand command)
+		{
+			// an incomming message
+			//printCommandArgs (command);
 		}
 		
 		private void processSYN (MsnpCommand command)
@@ -200,6 +235,14 @@ namespace System.Net.Protocols.Msnp
 					throw new ArgumentException ("processSYN");
 			} else
 				throw new ArgumentException ("processSYN");
+		}
+		
+		private void printCommandArgs (MsnpCommand command)
+		{
+			Console.Write ("{0}({1}", command.Type, command.TrId);
+			foreach (string arg in command.Arguments)
+				Console.Write (" {0}", arg);
+			Console.WriteLine ();
 		}
 				
 		// Handlers
@@ -217,6 +260,10 @@ namespace System.Net.Protocols.Msnp
 		}
 		
 		private void onLoggedOut (object sender, EventArgs args)
+		{
+		}
+		
+		private void onStateChanged (object sender, EventArgs args)
 		{
 		}
 		
@@ -248,6 +295,15 @@ namespace System.Net.Protocols.Msnp
 		public event EventHandler GroupsLoaded {
 			add { _groupsLoaded += value; }
 			remove { _groupsLoaded -= value; }
+		}
+		
+		public event EventHandler StateChanged {
+			add { _stateChanged += value; }
+			remove { _stateChanged -= value; }
+		}
+		
+		public ContactState State {
+			get { return _contactState; }
 		}
 	}
 }

@@ -1,4 +1,4 @@
-// MsnpCommandArrived.cs
+// ConversationArrived.cs
 //
 // Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
 //
@@ -23,24 +23,31 @@
 //
 
 using System;
-using System.Net.Protocols.Msnp.Core;
 
-namespace System.Net.Protocols.Msnp.Core
+namespace System.Net.Protocols.Msnp
 {
-	public delegate void MsnpCommandArrivedHandler (object sender,
-		MsnpCommandArrivedArgs args);
 	
-	public class MsnpCommandArrivedArgs
+	public delegate void ConversationArrivedHandler (object sender,
+		ConversationArrivedArgs args);
+	
+	public class ConversationArrivedArgs
 	{
-		private MsnpCommand _command;
+		private Contact _owner;
+		private Conversation _conversation;
 		
-		public MsnpCommandArrivedArgs (MsnpCommand command)
+		public ConversationArrivedArgs (Contact owner, 
+			Conversation conversation)
 		{
-			_command = command;
+			_owner = owner;
+			_conversation = conversation;
 		}
 		
-		public MsnpCommand Command {
-			get { return _command; }
+		public Contact Owner {
+			get { return _owner; }
+		}
+		
+		public Conversation Conversation {
+			get { return _conversation; }
 		}
 	}
 }

@@ -24,14 +24,14 @@
 
 using System;
 
-namespace System.Net.Protocols.Msnp
+namespace System.Net.Protocols.Msnp.Core
 {
 	
 	
-	public class MsnpSwitchboard
+	public class MsnpSwitchboard //: Connection
 	{
 		
-		public MsnpSwitchboard()
+		public MsnpSwitchboard ()
 		{
 		}
 	}

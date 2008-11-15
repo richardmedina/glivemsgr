@@ -1,4 +1,4 @@
-// MsnpCommandArrived.cs
+// Conversation.cs
 //
 // Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
 //
@@ -23,24 +23,54 @@
 //
 
 using System;
-using System.Net.Protocols.Msnp.Core;
 
-namespace System.Net.Protocols.Msnp.Core
+namespace System.Net.Protocols.Msnp
 {
-	public delegate void MsnpCommandArrivedHandler (object sender,
-		MsnpCommandArrivedArgs args);
 	
-	public class MsnpCommandArrivedArgs
+	
+	public class Conversation
 	{
-		private MsnpCommand _command;
+		private string _hostname;
+		private int _port;
+		private Contact _requester;
 		
-		public MsnpCommandArrivedArgs (MsnpCommand command)
+		private string _auth_id1;
+		private string _auth_id2;
+		
+		private Account _account;
+		
+		public Conversation (Account account)
 		{
-			_command = command;
+			_account = account;
 		}
 		
-		public MsnpCommand Command {
-			get { return _command; }
+		public string Hostname {
+			get { return _hostname; }
+			set { _hostname = value; }
+		}
+		
+		public int Port {
+			get { return _port; }
+			set { _port = value; }
+		}
+		
+		public Contact Requester {
+			get { return _requester; }
+			set { _requester = value; }
+		}
+		
+		public string AuthId1 {
+			get { return _auth_id1; }
+			set { _auth_id1 = value; }
+		}
+		
+		public string AuthId2 {
+			get { return _auth_id2; }
+			set { _auth_id2 = value; }
+		}
+		
+		public Account Account {
+			get { return _account; }
 		}
 	}
 }

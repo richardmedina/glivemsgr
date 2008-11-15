@@ -1,4 +1,4 @@
-// MsnpCommandArrived.cs
+// LoginErrorHandler.cs
 //
 // Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
 //
@@ -23,24 +23,25 @@
 //
 
 using System;
-using System.Net.Protocols.Msnp.Core;
 
 namespace System.Net.Protocols.Msnp.Core
 {
-	public delegate void MsnpCommandArrivedHandler (object sender,
-		MsnpCommandArrivedArgs args);
 	
-	public class MsnpCommandArrivedArgs
+	public delegate void LoginErrorHandler (object sender,
+		LoginErrorArgs args);
+	
+	public class LoginErrorArgs
 	{
-		private MsnpCommand _command;
+		private int _errorCode;
+		//private string errorString;
 		
-		public MsnpCommandArrivedArgs (MsnpCommand command)
+		public LoginErrorArgs (int error_code)
 		{
-			_command = command;
+			_errorCode = error_code;
 		}
 		
-		public MsnpCommand Command {
-			get { return _command; }
+		public int ErrorCode {
+			get { return _errorCode; }
 		}
 	}
 }
