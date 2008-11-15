@@ -46,6 +46,9 @@
     <File name="ObservedCollection.cs" subtype="Code" buildaction="Compile" />
     <File name="ObservedCollectionAction.cs" subtype="Code" buildaction="Compile" />
     <File name="ListType.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/LoginErrorHandler.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConversationArrived.cs" subtype="Code" buildaction="Compile" />
+    <File name="Conversation.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

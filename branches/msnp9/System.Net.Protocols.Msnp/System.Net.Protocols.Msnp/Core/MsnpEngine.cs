@@ -29,7 +29,10 @@ namespace System.Net.Protocols.Msnp.Core
 		private MsnpNotificationServer _notification;
 		private MsnpDispatchServer _dispatch;
 		
+		private Switchboard _switchboard;
+		
 		private event MsnpCommandArrivedHandler _commandArrived;
+		private event LoginErrorHandler _loginError;
 	
 		public MsnpEngine () : this (string.Empty, string.Empty)
 		{
@@ -41,16 +44,19 @@ namespace System.Net.Protocols.Msnp.Core
 			_password = password;
 			
 			_commandArrived = onCommandArrived;
+			_loginError = onLoginError;
 			
 			_notification = new MsnpNotificationServer ();
 			_dispatch = new MsnpDispatchServer ();
 			
 			_notification.CommandArrived += onAnyCommandArrived;
 			_notification.Success += notificationSuccess;
+			
 		//	_notification.Disconnected += notificationDisconnected;
 			
 			_dispatch.CommandArrived += onAnyCommandArrived;
 		//	_dispatch.Disconnected += dispatchDisconnected;
+			_switchboard = new Switchboard (this);
 		}
 		
 		public void Connect ()
@@ -62,6 +68,11 @@ namespace System.Net.Protocols.Msnp.Core
 		protected virtual void OnCommandArrived (MsnpCommand command)
 		{
 			_commandArrived (this, new MsnpCommandArrivedArgs (command));
+		}
+		
+		protected virtual void OnLoginError (int error_code)
+		{
+			_loginError (this, new LoginErrorArgs (error_code));
 		}
 		
 		private void notificationSuccess (object sender,
@@ -88,6 +99,10 @@ namespace System.Net.Protocols.Msnp.Core
 			MsnpCommandArrivedArgs args)
 		{
 		}
+		
+		private void onLoginError (object sender, LoginErrorArgs args)
+		{
+		}
 
 		public string Username {
 			get { return _username; }
@@ -105,8 +120,13 @@ namespace System.Net.Protocols.Msnp.Core
 			add { _commandArrived += value; }
 			remove { _commandArrived -= value; }
 		}
+		
+		public event LoginErrorHandler LoginError {
+			add { _loginError += value; }
+			remove { _loginError -= value; }
+		}
 
-		protected MsnpDispatchServer Dispatch {
+		public MsnpDispatchServer Dispatch {
 			get { return _dispatch; }
 		}
 	

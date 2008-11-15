@@ -26,12 +26,14 @@ namespace System.Net.Protocols.Msnp.Core
 	{
 		private string _owner;
 		
+		private string [] users;
+		
 		public SBSession (string hostname, int port) :
 			base (hostname, port)
 		{
 		}
 		
-		public string Owner {
+		public string Creator {
 			get { return _owner; }
 			set { _owner =value; }
 		}

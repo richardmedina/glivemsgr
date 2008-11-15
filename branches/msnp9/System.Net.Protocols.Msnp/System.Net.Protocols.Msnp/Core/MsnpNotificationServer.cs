@@ -1,4 +1,28 @@
-﻿using System;
+// MsnpNotificationServer.cs
+//
+// Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+//
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,12 +33,12 @@ namespace System.Net.Protocols.Msnp.Core
         private const string _hostname = "messenger.hotmail.com";
         private const int _port = 1863;
 
-		private string _username;
+	private string _username;
         
         private int _trId = 1;
         
         private event NotificationSuccessHandler _success;
-        //private event EventHandler _error;
+        //private event EventHandler _error;	
         
         public MsnpNotificationServer () : this (string.Empty)
         {
@@ -22,21 +46,19 @@ namespace System.Net.Protocols.Msnp.Core
         
         public MsnpNotificationServer (string username) : base (MsnpServerType.Notification)
         {
-			_success = onSuccess;
-			_username = username;
-			
-			Hostname = _hostname;
-			Port = _port;
+		_success = onSuccess;
+		_username = username;
+		
+		Hostname = _hostname;
+		Port = _port;
         }
                 
         protected override void OnConnected ()
         {
         	base.OnConnected ();
-			StartAsynchronousReading ();
+		StartAsynchronousReading ();
 		
-		//	Console.WriteLine ("Connected: Starting..");
-		
-			Send ("VER {0} MSNP8 MSNP9 CVR0", TrId++);
+		Send ("VER {0} MSNP8 MSNP9 CVR0", TrId++);
         }
 
 /*

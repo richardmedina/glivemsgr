@@ -1,4 +1,4 @@
-<Combine name="System.Net.Protocols.Msnp" fileversion="2.0">
+<Combine name="msnp9" fileversion="2.0">
   <Configurations active="Debug|Any CPU">
     <Configuration name="Debug|Any CPU" ctype="CombineConfiguration">
       <Entry build="True" name="MsnpTesting" configuration="Debug|Any CPU" />
