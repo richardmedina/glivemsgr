@@ -63,7 +63,11 @@ namespace System.Net.Protocols.Msnp.Core
 		private void engineCommandArrived (object sender,
 			MsnpCommandArrivedArgs args)
 		{
-			Console.WriteLine ("");
+//			RNG 38695310 64.4.36.44:1863 CKI 20799108.88152118 karl113@hotmail.com Ricki.
+
+			if (args.Command.Type == MsnpCommandType.RNG) {
+				Console.WriteLine ("Switchboard. {0}", args.Command.RawString);
+			}
 		}
 	}
 }

@@ -64,7 +64,7 @@ namespace System.Net.Protocols.Msnp
 		private void dispatchCommandArrived (object sender, 
 			MsnpCommandArrivedArgs args)
 		{
-			if (args.Command.ServerType == MsnpServerType.Dispatch)
+			if (args.Command.ServerType == MsnpClientType.Dispatch)
 				if (args.Command.Type == MsnpCommandType.RNG) {
 					//Console.WriteLine (args.Command.RawString);
 				/*	Console.WriteLine ("{0} == {1}",
@@ -76,6 +76,7 @@ namespace System.Net.Protocols.Msnp
 							"Me ({0}) Wants to chat with you",
 							Username);
 						Console.WriteLine (args.Command.RawString);
+						
 					}
 				}
 		}

@@ -32,7 +32,7 @@ namespace System.Net.Protocols.Msnp.Core
 		private MsnpCommandType _type;
 		private int _trId;
 		private string [] _arguments;
-		private MsnpServerType _serverType;
+		private MsnpClientType _serverType;
 
 		private string _rawString;
 
@@ -58,10 +58,10 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		public static MsnpCommand Parse (string command)
 		{
-			return Parse (MsnpServerType.Dispatch, command);
+			return Parse (MsnpClientType.Dispatch, command);
 		}
 
-		public static MsnpCommand Parse (MsnpServerType server_type, string commandString)
+		public static MsnpCommand Parse (MsnpClientType server_type, string commandString)
 		{
 			MsnpCommand command = new MsnpCommand();
 			command._serverType = server_type;
@@ -81,23 +81,19 @@ namespace System.Net.Protocols.Msnp.Core
 				command.Type = MsnpCommandType.USR;
 			else if (pieces[0] == "SYN")
 				command.Type = MsnpCommandType.SYN;
-			else if (pieces[0] == "LSG")
-			{
+			else if (pieces[0] == "LSG") {
 				command.Type = MsnpCommandType.LSG;
 				startIndex = 1;
 			}
-			else if (pieces[0] == "MSG")
-			{
+			else if (pieces[0] == "MSG") {
 				command.Type = MsnpCommandType.MSG;
 				startIndex = 1;
 			}
-			else if (pieces[0] == "LST")
-			{
+			else if (pieces[0] == "LST") {
 				command.Type = MsnpCommandType.LST;
 				startIndex = 1;
 			}
-			else if (pieces[0] == "PNG")
-			{
+			else if (pieces[0] == "PNG") {
 				command.Type = MsnpCommandType.PNG;
 				startIndex = 1;
 			}
@@ -111,15 +107,13 @@ namespace System.Net.Protocols.Msnp.Core
 				command.Type = MsnpCommandType.NLN;
 			else if (pieces[0] == "CHL")
 				command.Type = MsnpCommandType.CHL;
-			else if (pieces[0] == "RNG")
-			{
+			else if (pieces[0] == "RNG") {
 				command.Type = MsnpCommandType.RNG;
 				startIndex = 1;
 			}
 			else if (pieces[0] == "REA")
 				command.Type = MsnpCommandType.REA;
-			else if (pieces[0] == "XFR")
-			{
+			else if (pieces[0] == "XFR") {
 				command.Type = MsnpCommandType.XFR;
 				int id;
 				if (int.TryParse(pieces[1], out id))
@@ -167,7 +161,7 @@ namespace System.Net.Protocols.Msnp.Core
 			private set { _rawString = value; }
 		}
 		
-		public MsnpServerType ServerType {
+		public MsnpClientType ServerType {
 			get { return _serverType; }
 		}
 	}

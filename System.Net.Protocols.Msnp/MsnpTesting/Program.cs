@@ -35,27 +35,6 @@ namespace MsnpTesting
 		
 		static void Main(string[] args)
 		{
-			//for (int i = 0; i < 10000; i ++)
-			//Test ();
-			
-			//NetTest ();
-			//Console.WriteLine ("Main Thread: {0}", Thread.CurrentThread.Name);
-		/*	
-			MsnpEngine engine = new MsnpEngine (
-				"ricardo@innovaciontecnologica.com", 
-				"09b9085aa");
-			engine.CommandArrived += engineCommandArrived;
-			engine.Connect ();
-			*/
-			// This is a responsive application?
-			/*
-			while (true) {
-				Console.WriteLine ("App Active..");
-				System.Threading.Thread.Sleep (1000);
-			}
-			*/
-			
-			
 			Account account = new Account ();
 			Console.Write ("Username: ");
 			account.Username = Console.ReadLine ();
@@ -64,7 +43,7 @@ namespace MsnpTesting
 			
 			account.LoggedIn += accountLoggedIn;
 			//account.CommandArrived += accountCommandArrived;
-			account.GroupsLoaded += accountGroupsLoaded;
+			//account.GroupsLoaded += accountGroupsLoaded;
 			account.ContactsLoaded += accountContactsLoaded;
 			account.StateChanged += accountStateChanged;
 			
@@ -98,14 +77,19 @@ namespace MsnpTesting
 		
 		private static void accountContactsLoaded (object sender, EventArgs args)
 		{
-			Console.WriteLine ("Contacts Loaded");
-			
+			Account account = (Account) sender; 
+			foreach (Group group in account.Groups) {
+				Console.WriteLine (group.Name);
+				foreach (Contact contact in group)
+					Console.WriteLine ("\t{0}",contact.Username);
+			}
+			//Console.WriteLine ("Contacts Loaded");
 		}
 		
 		private static void accountStateChanged (object sender, EventArgs args)
 		{
 			Console.WriteLine ("Your state is now {0}", 
-				Utils.ContactStateToString ((int) ((Account)sender).State ));
+				Utils.ContactStateToString ((int) ((Account)sender).State));
 		}
 	}
 }
