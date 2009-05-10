@@ -32,10 +32,10 @@ namespace System.Net.Protocols.Msnp.Core
 	{
 		private string _creator;
 		private Connection _connection;
+		private MsnpCommand _command;
 		
-		public MsnpSbSession()
+		public MsnpSbSession (MsnpCommand command)
 		{
-			
 		}
 		
 		public Connection Connection {

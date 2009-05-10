@@ -1,6 +1,6 @@
-// Conversation.cs
+// MsnpClientType.cs
 //
-// Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
+// Copyright (c) 2008 [copyright holders]
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,57 +24,14 @@
 
 using System;
 
-namespace System.Net.Protocols.Msnp
+namespace System.Net.Protocols.Msnp.Core
 {
 	
 	
-	public class Conversation
+	public enum MsnpClientType
 	{
-		private string _hostname;
-		private int _port;
-		private Contact _requester;
-		
-		private string _auth_id1;
-		private string _auth_id2;
-		
-		private Account _account;
-		
-		public Conversation (Account account)
-		{
-			_account = account;
-		}
-		
-		public void Identify (string id1, string id2)
-		{
-		}
-		
-		public string Hostname {
-			get { return _hostname; }
-			set { _hostname = value; }
-		}
-		
-		public int Port {
-			get { return _port; }
-			set { _port = value; }
-		}
-		
-		public Contact Requester {
-			get { return _requester; }
-			set { _requester = value; }
-		}
-		
-		public string AuthId1 {
-			get { return _auth_id1; }
-			set { _auth_id1 = value; }
-		}
-		
-		public string AuthId2 {
-			get { return _auth_id2; }
-			set { _auth_id2 = value; }
-		}
-		
-		public Account Account {
-			get { return _account; }
-		}
+		Notification,
+		Dispatch,
+		Switchboard
 	}
 }

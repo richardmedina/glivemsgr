@@ -1,6 +1,6 @@
-// Conversation.cs
+// MsnpClient.cs
 //
-// Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
+// Copyright (c) 2008 [copyright holders]
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,57 +24,49 @@
 
 using System;
 
-namespace System.Net.Protocols.Msnp
+namespace System.Net.Protocols.Msnp.Core
 {
 	
 	
-	public class Conversation
+	public class MsnpClient : Connection, IMsnpCommandable
 	{
-		private string _hostname;
-		private int _port;
-		private Contact _requester;
+		private MsnpClientType _serverType;
 		
-		private string _auth_id1;
-		private string _auth_id2;
+		private event MsnpCommandArrivedHandler _commandArrived;
 		
-		private Account _account;
-		
-		public Conversation (Account account)
+		public MsnpClient (MsnpClientType servertype) : base (string.Empty, 0)
 		{
-			_account = account;
+			_serverType = servertype;
+			
+			_commandArrived = onCommandArrived;
 		}
 		
-		public void Identify (string id1, string id2)
+		protected virtual void OnCommandArrived (MsnpCommand command)
+		{
+			_commandArrived (this, new MsnpCommandArrivedArgs (command));
+		}
+		
+		protected override void OnDataArrived (string data)
+		{
+			MsnpCommand command = MsnpCommand.Parse (ServerType, data);
+			OnCommandArrived (command);
+			base.OnDataArrived (data);
+		}
+		
+		private void onCommandArrived (object sender, MsnpCommandArrivedArgs args)
 		{
 		}
 		
-		public string Hostname {
-			get { return _hostname; }
-			set { _hostname = value; }
+		public MsnpClientType ServerType {
+			get { return _serverType; }
+			protected set { _serverType = value; }
 		}
 		
-		public int Port {
-			get { return _port; }
-			set { _port = value; }
-		}
+		// Signals..
 		
-		public Contact Requester {
-			get { return _requester; }
-			set { _requester = value; }
-		}
-		
-		public string AuthId1 {
-			get { return _auth_id1; }
-			set { _auth_id1 = value; }
-		}
-		
-		public string AuthId2 {
-			get { return _auth_id2; }
-			set { _auth_id2 = value; }
-		}
-		
-		public Account Account {
-			get { return _account; }
+		public event MsnpCommandArrivedHandler CommandArrived {
+			add { _commandArrived += value; }
+			remove { _commandArrived -= value; }
 		}
 	}
 }

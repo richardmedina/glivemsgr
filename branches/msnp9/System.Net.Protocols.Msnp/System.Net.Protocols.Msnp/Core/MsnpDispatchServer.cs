@@ -33,13 +33,15 @@ namespace System.Net.Protocols.Msnp.Core
 {
 
 
-	public class MsnpDispatchServer : MsnpServer
+	public class MsnpDispatchServer : MsnpClient
 	{
 		private string _username;
 		private string _password;
 		private int _trId;
+		private int _list_version = 0;
 		
 		private event PassportArrivedHandler _passportArrived;
+		private event MsnpMessageHandler _message_arrived;
 		
 		public MsnpDispatchServer () : 
 			this (string.Empty, 
@@ -51,12 +53,13 @@ namespace System.Net.Protocols.Msnp.Core
 		}
 
 		public MsnpDispatchServer (string hostname, int port, string username, string password, int trId)
-			: base(MsnpServerType.Dispatch)
+			: base(MsnpClientType.Dispatch)
 		{
 			_username = username;
 			_password = password;
 			_trId = trId;
 			_passportArrived = onPassportArrived;
+			_message_arrived = onMessageArrived;
 			
 			Hostname = hostname;
 			Port = port;
@@ -64,7 +67,6 @@ namespace System.Net.Protocols.Msnp.Core
 			AllowReconnect = false;
 			//ServicePointManager.CertificatePolicy = new 
 			//	MsnpCertificatePolicy ();
-			
 			
 			ServicePointManager.CertificatePolicy = new MsnpCertificatePolicy ();
  
@@ -94,13 +96,11 @@ namespace System.Net.Protocols.Msnp.Core
 		//		command.RawString);
 			switch (command.Type) {
 				case MsnpCommandType.VER:
-					Send ("CVR {0} 0x0C0A winnt 5.1 i386 MSNMSGR 6.0.0602 " +
-					"MSMSGS {1}", TrId ++, _username);
+					processVER (command);
 				break;
 			
 				case MsnpCommandType.CVR:
-					Send ("USR {0} TWN I {1}",
-						TrId ++, _username);
+					processCVR (command);
 				break;
 				/*
 				case MsnpCommandType.XFR:
@@ -113,43 +113,13 @@ namespace System.Net.Protocols.Msnp.Core
 				break;
 				*/
 				case MsnpCommandType.USR:
-					//Console.WriteLine ("Dispatch. Ticket: {0}",
-					//	command.Arguments [2]);
-					
-					if (command.Arguments [0] == "TWN") {
-						string cookie = formatCookie (command.Arguments [2]);
-						string ticket = nexusLogin (cookie);
-						if (ticket == string.Empty) {
-							
-							base.OnCommandArrived (command);
-							Close ();
-							return;
-						}
-						Send ("USR {0} TWN S {1}", TrId ++, ticket);
-					} else if (command.Arguments [0] == "OK") {
-						//Console.WriteLine ("USR OK detected ..Lets read a line");
-						Read ();
-						/*
-						MsnpCommand c = MsnpCommand.Parse (line);
-						int lenght;
-						
-						if (int.TryParse (c.Arguments [2], out lenght)) {
-							string passportcontent = Read (lenght);
-							OnPassportArrived (passportcontent);
-						} else throw new InvalidCastException ();
-						*/
-					}
+					processUSR (command);
 				break;
-				
 				case MsnpCommandType.MSG:
-					if (command.Arguments [0] == "Hotmail") {
-						int length;
-						if (int.TryParse (command.Arguments [2], out length))
-							OnPassportArrived (Read (length));
-							Send ("SYN {0} 0", TrId ++);
-					}
+					processMSG (command);
 				break;
 			}
+			
 			base.OnCommandArrived (command);
 			
 		//	Console.WriteLine ("Dispatch: processCommand Ends");
@@ -174,6 +144,14 @@ namespace System.Net.Protocols.Msnp.Core
 			base.OnDataArrived (data);
 		}
 		*/
+		
+		protected virtual void OnMessageArrived (MsnpMessage message)
+		{
+			if (message.Command.Arguments [0] == "Hotmail") {
+				Send ("SYN {0} {1}", TrId ++, _list_version);
+			}
+			_message_arrived (this, new MsnpMessageArgs (message));
+		}
 		protected virtual void OnPassportArrived (string content)
 		{
 			_passportArrived (this, new PassportArrivedArgs (content));
@@ -264,6 +242,47 @@ namespace System.Net.Protocols.Msnp.Core
 			return string.Empty;
 		}
 		
+		private void processMSG (MsnpCommand command)
+		{
+			int size;
+			
+			if (int.TryParse (command.Arguments [2], out size)) {
+				string buffer = Read (size);
+				MsnpMessage msg = new MsnpMessage (command, buffer);
+				
+				OnMessageArrived (msg);
+			}
+		}
+		
+		private void processUSR (MsnpCommand command)
+		{
+			if (command.Arguments [0] == "TWN") {
+				string cookie = formatCookie (command.Arguments [2]);
+				string ticket = nexusLogin (cookie);
+				if (ticket == string.Empty) {
+					base.OnCommandArrived (command);
+						Close ();
+						return;
+				}
+				Send ("USR {0} TWN S {1}", TrId ++, ticket);
+			}
+		}
+		
+		private void processVER (MsnpCommand command)
+		{
+			Send ("CVR {0} 0x0C0A winnt 5.1 i386 MSNMSGR 6.0.0602 " +
+				"MSMSGS {1}", TrId ++, _username);
+		}
+		
+		private void processCVR (MsnpCommand command)
+		{
+			Send ("USR {0} TWN I {1}",
+				TrId ++, _username);
+		}
+		
+		private void onMessageArrived (object sender, MsnpMessageArgs args)
+		{
+		}
 		private void onPassportArrived (object sender, PassportArrivedArgs args)
 		{
 		}
@@ -293,8 +312,17 @@ namespace System.Net.Protocols.Msnp.Core
 			set { _password = value; }
 		}
 		
+		public int ListVersion {
+			get { return _list_version; }
+			set { _list_version = value; }
+		}
+		
 		// Events
 		
+		public event MsnpMessageHandler MessageArrived {
+			add { _message_arrived += value; }
+			remove { _message_arrived -= value; }
+		}
 		public event PassportArrivedHandler PassportArrived {
 			add { _passportArrived += value; }
 			remove { _passportArrived -= value; }

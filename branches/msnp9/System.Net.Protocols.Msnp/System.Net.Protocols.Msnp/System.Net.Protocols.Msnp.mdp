@@ -36,8 +36,8 @@
     <File name="Group.cs" subtype="Code" buildaction="Compile" />
     <File name="Contact.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommandArrived.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpServerType.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpServer.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpClientType.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpClient.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/IMsnpCommandable.cs" subtype="Code" buildaction="Compile" />
     <File name="ContactState.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpSwitchboard.cs" subtype="Code" buildaction="Compile" />
@@ -49,6 +49,8 @@
     <File name="Core/LoginErrorHandler.cs" subtype="Code" buildaction="Compile" />
     <File name="ConversationArrived.cs" subtype="Code" buildaction="Compile" />
     <File name="Conversation.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpMessage.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpMessageHandler.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

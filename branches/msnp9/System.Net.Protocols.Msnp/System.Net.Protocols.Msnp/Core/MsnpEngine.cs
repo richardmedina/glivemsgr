@@ -17,6 +17,7 @@
 //
 
 using System;
+using System.Text;
 
 namespace System.Net.Protocols.Msnp.Core
 {
@@ -33,6 +34,7 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		private event MsnpCommandArrivedHandler _commandArrived;
 		private event LoginErrorHandler _loginError;
+		private event MsnpMessageHandler _message_arrived;
 	
 		public MsnpEngine () : this (string.Empty, string.Empty)
 		{
@@ -45,6 +47,7 @@ namespace System.Net.Protocols.Msnp.Core
 			
 			_commandArrived = onCommandArrived;
 			_loginError = onLoginError;
+			_message_arrived = onMessageArrived;
 			
 			_notification = new MsnpNotificationServer ();
 			_dispatch = new MsnpDispatchServer ();
@@ -55,6 +58,7 @@ namespace System.Net.Protocols.Msnp.Core
 		//	_notification.Disconnected += notificationDisconnected;
 			
 			_dispatch.CommandArrived += onAnyCommandArrived;
+			_dispatch.MessageArrived += dispatchMessageArrived;
 		//	_dispatch.Disconnected += dispatchDisconnected;
 			_switchboard = new Switchboard (this);
 		}
@@ -75,6 +79,11 @@ namespace System.Net.Protocols.Msnp.Core
 			_loginError (this, new LoginErrorArgs (error_code));
 		}
 		
+		protected virtual void OnMessageArrived (MsnpMessage message)
+		{
+			_message_arrived (this, new MsnpMessageArgs (message));
+		}
+		
 		private void notificationSuccess (object sender,
 			NotificationSuccessArgs args)
 		{
@@ -89,9 +98,17 @@ namespace System.Net.Protocols.Msnp.Core
 			_dispatch.Open ();
 		}
 		
+		private void dispatchMessageArrived (object sender,
+			MsnpMessageArgs args)
+		{
+			OnMessageArrived (args.Message);
+		}
+		
 		private void onAnyCommandArrived (object sender,
 			MsnpCommandArrivedArgs args)
 		{
+			//Console.WriteLine ("{0}:{1}", args.Command.Type, args.Command.RawString);
+			
 			OnCommandArrived (args.Command);
 		}
 		
@@ -101,6 +118,10 @@ namespace System.Net.Protocols.Msnp.Core
 		}
 		
 		private void onLoginError (object sender, LoginErrorArgs args)
+		{
+		}
+		
+		private void onMessageArrived (object sender, MsnpMessageArgs args)
 		{
 		}
 
@@ -114,6 +135,12 @@ namespace System.Net.Protocols.Msnp.Core
 			set { _password = value; }
 		}
 		
+		public int ListVersion {
+			get { return _dispatch.ListVersion; }
+			protected set { _dispatch.ListVersion = value; }
+		
+		}
+		
 		// Signals
 		
 		public event MsnpCommandArrivedHandler CommandArrived {
@@ -124,6 +151,11 @@ namespace System.Net.Protocols.Msnp.Core
 		public event LoginErrorHandler LoginError {
 			add { _loginError += value; }
 			remove { _loginError -= value; }
+		}
+		
+		public event MsnpMessageHandler MessageArrived {
+			add { _message_arrived += value; }
+			remove { _message_arrived -= value; }
 		}
 
 		public MsnpDispatchServer Dispatch {

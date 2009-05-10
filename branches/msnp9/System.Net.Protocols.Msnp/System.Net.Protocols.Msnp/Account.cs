@@ -28,8 +28,8 @@ namespace System.Net.Protocols.Msnp
 		private event EventHandler _loggedIn;
 		private event EventHandler _loggedOut;
 		
+		private bool _list_loaded;
 		private GroupCollection _groups;
-		
 		private ContactState _contactState;
 		
 		private int _contactListVersion = 0;
@@ -47,7 +47,7 @@ namespace System.Net.Protocols.Msnp
 		
 		public Account (string username, string password) : 
 			base (username, password)
-		{	
+		{
 			_loggedIn = onLoggedIn;
 			_loggedOut = onLoggedOut;
 			_groups = new GroupCollection ();
@@ -72,15 +72,16 @@ namespace System.Net.Protocols.Msnp
 		
 		protected override void OnCommandArrived (MsnpCommand command)
 		{
-			if (command.ServerType == MsnpServerType.Dispatch) {
+			if (command.ServerType == MsnpClientType.Dispatch) {
 				if (command.Type == MsnpCommandType.USR) {
 					if (command.Arguments [0] == "OK")
 						OnLoggedIn ();
 				}
 				
+				// buddy want to stablish a chat session
 				if (command.Type == MsnpCommandType.RNG) {
-					Console.WriteLine 
-						("Someone wants to chat with you..");
+					//Console.WriteLine 
+					//	("buddy wants to chat with you..");
 					processRNG (command);
 				}
 				
@@ -94,6 +95,9 @@ namespace System.Net.Protocols.Msnp
 					processLST (command);
 				if (command.Type == MsnpCommandType.CHG)
 					processCHG (command);
+				
+				//if (command.Type == MsnpCommandType.MSG)
+				//	processMSG (command);
 				
 				//if (command.Type == MsnpCommandType.MSG)
 				//	processMSG (command);
@@ -115,6 +119,21 @@ namespace System.Net.Protocols.Msnp
 		protected virtual void OnLoggedIn ()
 		{
 			_loggedIn (this, EventArgs.Empty);
+			//personal_msg ("Ricki hola");
+		}
+		
+		private void personal_msg (string msg)
+		{
+			
+			string message = "<Data><PSM>" + 
+				msg +
+				"</PSM><CurrentMedia></CurrentMedia></Data>";
+			
+			string final_msg = string.Format ("UUX {0} {1}\r\n{2}",
+				Dispatch.TrId ++, message.Length, message);
+			Console.WriteLine ("Setting message: {0}", final_msg);
+			Dispatch.Send (final_msg);
+			
 		}
 		
 		protected virtual void OnLoggedOut ()
@@ -159,6 +178,7 @@ namespace System.Net.Protocols.Msnp
 		
 		private void processLST (MsnpCommand command)
 		{
+			Console.WriteLine ("processLST");
 			if (command.Type != MsnpCommandType.LST)
 				throw new ArgumentException ("processLST");
 						
@@ -213,9 +233,11 @@ namespace System.Net.Protocols.Msnp
 		private void processMSG (MsnpCommand command)
 		{
 			if (command.Type != MsnpCommandType.MSG)
-				//throw new ArgumentException ("processMSG");
+				throw new ArgumentException ("processMSG");
 			
-			printCommandArgs (command);
+			//if (MSG
+			
+			//printCommandArgs (command);
 		}
 		
 		private void processRNG (MsnpCommand command)
@@ -285,6 +307,14 @@ namespace System.Net.Protocols.Msnp
 			get { return _groups; }
 		}
 		
+		public bool ListLoaded {
+			get { return _list_loaded; }
+		}
+		
+		public ContactState State {
+			get { return _contactState; }
+		}
+		
 		// Events
 		
 		public event EventHandler ContactsLoaded {
@@ -300,10 +330,6 @@ namespace System.Net.Protocols.Msnp
 		public event EventHandler StateChanged {
 			add { _stateChanged += value; }
 			remove { _stateChanged -= value; }
-		}
-		
-		public ContactState State {
-			get { return _contactState; }
 		}
 	}
 }
