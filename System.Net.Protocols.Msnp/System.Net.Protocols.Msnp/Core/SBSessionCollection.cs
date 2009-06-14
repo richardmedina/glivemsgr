@@ -24,11 +24,77 @@ namespace System.Net.Protocols.Msnp.Core
 	
 	
 	public class SBSessionCollection : 
-		System.Collections.Generic.Dictionary <string, SBSession>
+		System.Collections.Generic.List <MsnpSBSession>
 	{
+		
+		private event SBSessionCollectionEventHandler _added;
+		private event SBSessionCollectionEventHandler _removed;
+		// When session was clossed and require rebuild, commonly MsnpCommand is replaced
+		private event SBSessionCollectionEventHandler _activated;
 		
 		public SBSessionCollection ()
 		{
+			_added = onAdded;
+			_removed = onRemoved;
+			_activated = onActivated;
+		}
+		
+		public new void Add (MsnpSBSession session)
+		{
+			base.Add (session);
+			OnAdded (session);
+		}
+		
+		public new void Remove (MsnpSBSession session)
+		{
+			base.Remove (session);
+		}
+		
+		public void Activate (MsnpSBSession session)
+		{
+			OnActivated (session);
+		}
+		
+		protected void OnActivated (MsnpSBSession session)
+		{
+			_activated (this, new SBSessionCollectionEventArgs (session));
+		}
+		protected virtual void OnAdded (MsnpSBSession session)
+		{
+			_added (this, new SBSessionCollectionEventArgs (session));
+		}
+		
+		protected virtual void OnRemoved (MsnpSBSession session)
+		{
+			_removed (this, new SBSessionCollectionEventArgs (session));
+		}
+		
+		
+		private void onAdded (object sender, SBSessionCollectionEventArgs args)
+		{
+		}
+		
+		private void onRemoved (object sender, SBSessionCollectionEventArgs args)
+		{
+		}
+		
+		private void onActivated (object sender, SBSessionCollectionEventArgs args)
+		{
+		}
+		
+		public event SBSessionCollectionEventHandler Added {
+			add { _added += value; }
+			remove { _added -= value; }
+		}
+		
+		public event SBSessionCollectionEventHandler Removed {
+			add { _removed += value; }
+			remove { _removed -= value; }
+		}
+		
+		public event SBSessionCollectionEventHandler Activated {
+			add { _activated += value; }
+			remove { _activated -= value; }
 		}
 	}
 }

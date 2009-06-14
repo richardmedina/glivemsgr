@@ -44,6 +44,8 @@ namespace System.Net.Protocols.Msnp.Core
 		private event DataArrivedHandler _dataArrived;
 		private event EventHandler _disconnected;
 		
+		private int _select_request_delay = 100;
+		private int _poll_delay = 1000000;
 		
 		private Thread _thread;
 		private bool _isAsynchronousReading;
@@ -65,8 +67,8 @@ namespace System.Net.Protocols.Msnp.Core
 			_thread.IsBackground = false;
 		}
 		
-		// FIXME: DNS Resolving Errors 
-		public void Open ()
+		// FIXME: DNS Resolving Errors, using deprecated by missing implementation Dns methods 
+		public virtual void Open ()
 		{
 			bool success = true;
 			//int times = 1;
@@ -80,11 +82,13 @@ namespace System.Net.Protocols.Msnp.Core
 					// For some reason if does not parse the host as IPAddress,
 					// the BeginConnect with hostname as string
 					// fails.
-					IPHostEntry hostentry = 
-						Dns.Resolve (_hostname);
+					 //Dns.GetHostEntry (_hostname);
+						//Dns.Resolve (_hostname);
+						Dns.BeginResolve (_hostname, endResolve, null);
 					
-					BeginConnect (hostentry.AddressList [0], 
-						_port, endConnect, null);
+					//Dns.GetHostEntry
+					
+					
 				} catch (Exception exception) {
 					if (!AllowReconnect)
 						throw exception;
@@ -94,7 +98,10 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		public new void Close ()
 		{
-			Client.Disconnect (true);
+			Client.Shutdown (SocketShutdown.Both);
+			Client.Close ();
+			Console.WriteLine ("Disconnecting");
+			OnDisconnected ();
 		}
 		
 		public void StartAsynchronousReading ()
@@ -121,12 +128,14 @@ namespace System.Net.Protocols.Msnp.Core
 			string text = null;
 			bool excep = false;
 			
+			lock (_reader) {
+			
 			//Console.WriteLine ("Read ()..");
-			try {
-				text = _reader.ReadLine ();
-			} catch {
-				excep = true;
-			}
+			//try {
+			text = _reader.ReadLine ();
+		//	} catch {
+		//		excep = true;
+		//	}
 			
 			if (excep) {
 				text = string.Empty;
@@ -137,9 +146,6 @@ namespace System.Net.Protocols.Msnp.Core
 						Console.WriteLine ("Read (): {0}", e);
 						
 						Close ();
-						
-						OnDisconnected ();
-						//Disconnected (this, EventArgs.Empty);
 						return string.Empty;
 					}
 				}
@@ -150,10 +156,7 @@ namespace System.Net.Protocols.Msnp.Core
 			
 			if (text.Length > 0)
 				OnDataArrived (text);
-			
-			//Debug.WriteLine (text);
-			//Console.WriteLine ("Read ()..END");
-
+			}
 			return text;
 		}
 		// TODO: must read 'length' characters
@@ -161,18 +164,22 @@ namespace System.Net.Protocols.Msnp.Core
 		{
 			string str = string.Empty;
 			
+			//byte []
+			
 			for (int i = 0; i < length; i ++) {
 				char c = (char) _reader.Read ();
 				//console.WriteLine ("reading: {0}",c);
 				str += c.ToString ();
 			}
 			
+			
+			
 			return str;
 		}
 		
 		protected virtual void OnConnected ()
 		{
-			onConnected (this, EventArgs.Empty);
+			_connected (this, EventArgs.Empty);
 		}
 				
 		protected virtual void OnDataArrived (string data)
@@ -185,9 +192,21 @@ namespace System.Net.Protocols.Msnp.Core
 			_disconnected (this, EventArgs.Empty);
 		}
 		
+		private void endResolve (IAsyncResult iar)
+		{
+			try {
+				if (iar.IsCompleted) {
+					IPHostEntry hostentry = Dns.EndResolve (iar);
+					BeginConnect (hostentry.AddressList [0], 
+						_port, endConnect, null);
+				}
+			} catch (Exception e) {
+				Console.WriteLine (e);
+			}
+		}
+		
 		private void endConnect (IAsyncResult iar)
 		{
-//			Console.WriteLine ("endConnect Start..");
 			try {
 				if (iar.IsCompleted) {
 					EndConnect (iar);
@@ -198,9 +217,8 @@ namespace System.Net.Protocols.Msnp.Core
 					OnConnected ();
 				}
 			} catch (Exception exc) {
-				Console.WriteLine ("Exception Getted : {0}", exc.Message);
+				Console.WriteLine (exc);
 			}
-//			Console.WriteLine ("endConnect End..");
 		}
 		
 		private void onConnected (object sender, EventArgs args)
@@ -218,36 +236,33 @@ namespace System.Net.Protocols.Msnp.Core
 		private void thread_callback ()
 		{
 			while (select ())
-				Thread.Sleep (100);
+				Thread.Sleep (_select_request_delay);
 			
 			OnDisconnected ();
 		}
-		
+		//FIXME. some errors in reading
 		private bool select ()
 		{
-//			Debug.WriteLine ("waiting select");
-			//lock (this) {
-			
 			if (Client.Connected) {
-				if (Client.Poll (1, SelectMode.SelectError))
+				if (Client.Poll (_poll_delay, SelectMode.SelectError))
 					return false;
 				
-				if (Client.Poll (1, SelectMode.SelectRead))
+				if (Client.Poll (_poll_delay, SelectMode.SelectRead))
 					Read ();
 			} else 
 				return false;
-			//}
+			
 			return true;
 		}
 		
 		public string Hostname {
 			get { return _hostname; }
-			protected set { _hostname = value; }
+			set { _hostname = value; }
 		}
 		
 		public int Port {
 			get { return _port; }
-			protected set { _port=value; }
+			set { _port=value; }
 		}
 		
 		public bool IsAsynchronousReading {

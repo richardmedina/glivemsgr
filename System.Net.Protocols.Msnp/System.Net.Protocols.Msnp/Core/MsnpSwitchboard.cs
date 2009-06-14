@@ -23,16 +23,66 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace System.Net.Protocols.Msnp.Core
 {
 	
-	
-	public class MsnpSwitchboard //: Connection
+	public class MsnpSwitchboard : SBSessionCollection
 	{
+		private MsnpEngine _engine;
 		
-		public MsnpSwitchboard ()
+		private SBSessionCollection _sessions; 
+		
+		public MsnpSwitchboard (MsnpEngine engine)
 		{
+			_sessions = new SBSessionCollection ();
+			_engine = engine;
+			_engine.CommandArrived += engineCommandArrived;
+		}
+		
+		public bool GetSession (string username, out MsnpSBSession session)
+		{
+			session = null;
+			 foreach (MsnpSBSession sess in this) {
+			 	if (sess.Owner == username) {
+			 		session = sess;
+			 		return true;
+			 	}
+			 }
+			 return false;
+		}
+		
+		public MsnpSBSession CreateSession (MsnpCommand command)
+		{
+			
+			MsnpSBSession session = new MsnpSBSession (command);
+			
+			return session;
+		}
+		
+		
+		public SBSessionCollection Sessions {
+			get { return _sessions; }
+		}
+		
+		private void engineCommandArrived (object sender,
+			MsnpCommandArrivedArgs args)
+		{
+//			RNG 38695310 64.4.36.44:1863 CKI 20799108.88152118 karl113@hotmail.com Ricki.
+
+			if (args.Command.Type == MsnpCommandType.RNG) {
+				Console.WriteLine ("MsnpSwitchboard. {0}", args.Command.RawString);
+				MsnpSBSession session;
+				// Fourth argument contains the calling username
+				if (GetSession (args.Command.Arguments [4], out session))
+					Activate (session);
+				else {
+					session = CreateSession (args.Command);
+					Add (session);
+				}
+			}
 		}
 	}
 }

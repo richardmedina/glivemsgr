@@ -1,4 +1,7 @@
-<Project name="System.Net.Protocols.Msnp" fileversion="2.0" DefaultNamespace="System.Net.Protocols.Msnp" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+<Project name="System.Net.Protocols.Msnp" fileversion="2.0" language="C#" DefaultNamespace="System.Net.Protocols.Msnp" clr-version="Net_2_0" targetFramework="2.0" ctype="DotNetProject">
+  <Policies>
+    <StandardHeader inheritsSet="LGPLv2License" />
+  </Policies>
   <Configurations active="Debug|Any CPU">
     <Configuration name="Debug|Any CPU" ctype="DotNetProjectConfiguration">
       <Output directory="bin/Debug/" assembly="System.Net.Protocols.Msnp" />
@@ -17,19 +20,19 @@
     <File name="Properties/AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/Connection.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/DataArrivedArgs.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpDispatchServer.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpDispatchClient.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/ErrorEventHandler.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCertificatePolicy.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommand.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpCommandType.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpContactState.cs" subtype="Code" buildaction="Nothing" />
     <File name="Core/MsnpEngine.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpNotificationServer.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpNotificationClient.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/NotificationSuccessHandler.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/Switchboard.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpSwitchboard.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/Utils.cs" subtype="Code" buildaction="Compile" />
     <File name="Account.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/SBSession.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpSBSession.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/SBSessionCollection.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/IConnection.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/PassportArrivedHandler.cs" subtype="Code" buildaction="Compile" />
@@ -40,8 +43,6 @@
     <File name="Core/MsnpClient.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/IMsnpCommandable.cs" subtype="Code" buildaction="Compile" />
     <File name="ContactState.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpSwitchboard.cs" subtype="Code" buildaction="Compile" />
-    <File name="Core/MsnpSbSession.cs" subtype="Code" buildaction="Compile" />
     <File name="GroupCollection.cs" subtype="Code" buildaction="Compile" />
     <File name="ObservedCollection.cs" subtype="Code" buildaction="Compile" />
     <File name="ObservedCollectionAction.cs" subtype="Code" buildaction="Compile" />
@@ -51,6 +52,15 @@
     <File name="Conversation.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpMessage.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpMessageHandler.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/SbSessionCollectionEvent.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/SbSessionCollectionItem.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/UsernameCollection.cs" subtype="Code" buildaction="Compile" />
+    <File name="Core/MsnpErrorType.cs" subtype="Code" buildaction="Compile" />
+    <File name="Message.cs" subtype="Code" buildaction="Compile" />
+    <File name="TextMessage.cs" subtype="Code" buildaction="Compile" />
+    <File name="MessageType.cs" subtype="Code" buildaction="Compile" />
+    <File name="FontStyle.cs" subtype="Code" buildaction="Compile" />
+    <File name="Color.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

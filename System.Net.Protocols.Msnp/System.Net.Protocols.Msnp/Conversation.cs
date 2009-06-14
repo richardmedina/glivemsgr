@@ -23,6 +23,7 @@
 //
 
 using System;
+using System.Net.Protocols.Msnp.Core;
 
 namespace System.Net.Protocols.Msnp
 {
@@ -38,14 +39,24 @@ namespace System.Net.Protocols.Msnp
 		private string _auth_id2;
 		
 		private Account _account;
+		private MsnpSBSession _session;
 		
-		public Conversation (Account account)
+		public Conversation (Account account, MsnpSBSession session)
 		{
 			_account = account;
+			_session = session;
+			_session.Username = _account.Username;
+			_session.CommandArrived += sessionCommandArrived;
 		}
 		
-		public void Identify (string id1, string id2)
+		public void Open ()
 		{
+			_session.Open ();
+		}
+		
+		private void sessionCommandArrived (object sender, MsnpCommandArrivedArgs args)
+		{
+			
 		}
 		
 		public string Hostname {
