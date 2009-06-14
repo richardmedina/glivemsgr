@@ -4,6 +4,7 @@
       <Output directory="bin/Debug/" assemblyKeyFile="." assembly="MsnpTesting" />
       <Build debugmode="True" target="Exe" />
       <Execution runwithwarnings="True" externalconsole="True" consolepause="True" runtime="MsNet" clr-version="Net_2_0" />
+      <EnvironmentVariables />
       <CodeGeneration compiler="Mcs" warninglevel="4" optimize="False" unsafecodeallowed="False" generateoverflowchecks="True" definesymbols="DEBUG;TRACE" generatexmldocumentation="False" ctype="CSharpCompilerParameters" />
     </Configuration>
     <Configuration name="Release|Any CPU" ctype="DotNetProjectConfiguration">
@@ -17,12 +18,17 @@
     <File name="Program.cs" subtype="Code" buildaction="Compile" />
     <File name="Properties/AssemblyInfo.cs" subtype="Code" buildaction="Compile" />
     <File name="MyAsyncNet.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets" subtype="Directory" buildaction="Compile" />
+    <File name="Widgets/MainWindow.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/ContactList.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/LoginWidget.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Gac" localcopy="True" refto="System.Xml, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
     <ProjectReference type="Project" localcopy="True" refto="System.Net.Protocols.Msnp" />
+    <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </References>
   <LanguageParameters ApplicationIcon="." ctype="CSharpProjectParameters" />
 </Project>

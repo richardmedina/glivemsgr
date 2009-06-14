@@ -49,6 +49,10 @@ namespace System.Net.Protocols.Msnp.Core
 		PNG,
 		// Dispatch Commands
 		MSG,
+		QRY,
+		// Switchboard
+		ANS,
+		IRO,
 		
 		Unknown
 	}

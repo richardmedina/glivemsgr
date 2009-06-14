@@ -37,7 +37,7 @@ namespace System.Net.Protocols.Msnp.Core
 			get { return _command; }
 		}
 		
-		public string Boddy {
+		public string Body {
 			get { return _body; }
 		}
 	}

@@ -1,4 +1,4 @@
-// MsnpNotificationServer.cs
+// MsnpNotificationClient.cs
 //
 // Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
 //
@@ -28,7 +28,7 @@ using System.Text;
 
 namespace System.Net.Protocols.Msnp.Core
 {
-	public class MsnpNotificationServer : MsnpClient
+	public class MsnpNotificationClient : MsnpClient
 	{
 		private const string _hostname = "messenger.hotmail.com";
 		private const int _port = 1863;
@@ -36,16 +36,15 @@ namespace System.Net.Protocols.Msnp.Core
 		private string _username;
         
 		private int _trId = 1;
-		private int _list_version = 0;
         
 		private event NotificationSuccessHandler _success;        
 		//private event EventHandler _error;	
         
-		public MsnpNotificationServer () : this (string.Empty)
+		public MsnpNotificationClient () : this (string.Empty)
 		{
 		}
         
-		public MsnpNotificationServer (string username) : base (MsnpClientType.Notification)
+		public MsnpNotificationClient (string username) : base (MsnpClientType.Notification)
 		{
 			_success = onSuccess;
 			_username = username;
@@ -109,13 +108,13 @@ namespace System.Net.Protocols.Msnp.Core
         
 		protected virtual void OnSuccess (string hostname, int port)
 		{
-			_success (this, 
-				new NotificationSuccessArgs (hostname, port));
-      		}
+				_success (this, 
+					new NotificationSuccessArgs (hostname, port));
+      	}
                 
-       		private void onSuccess (object sender, NotificationSuccessArgs args)
-        	{
-        	}
+       	private void onSuccess (object sender, NotificationSuccessArgs args)
+        {
+        }
                 
 		public string Username {
 			get { return _username; }

@@ -33,12 +33,25 @@ namespace System.Net.Protocols.Msnp.Core
 		private MsnpClientType _serverType;
 		
 		private event MsnpCommandArrivedHandler _commandArrived;
+		private event MsnpMessageHandler _message_arrived;
 		
 		public MsnpClient (MsnpClientType servertype) : base (string.Empty, 0)
 		{
 			_serverType = servertype;
 			
 			_commandArrived = onCommandArrived;
+			_message_arrived = onMessageArrived;
+		}
+		
+		public void SendCommand (MsnpCommand command)
+		{
+			Send (command.RawString);
+		}
+		
+		public void SendMessage (MsnpMessage message)
+		{
+			SendCommand (message.Command);
+			Send (message.Body);
 		}
 		
 		protected virtual void OnCommandArrived (MsnpCommand command)
@@ -49,13 +62,42 @@ namespace System.Net.Protocols.Msnp.Core
 		protected override void OnDataArrived (string data)
 		{
 			MsnpCommand command = MsnpCommand.Parse (ServerType, data);
+			if (command.Type == MsnpCommandType.MSG) {
+					processMSG (command);
+					return;
+			}
+			if (command.Type == MsnpCommandType.Unknown)
+				Console.WriteLine ("**UNKNOW COMMAND**:{0}", command.RawString); 
 			OnCommandArrived (command);
 			base.OnDataArrived (data);
+		}
+		
+		protected virtual void OnMessageArrived (MsnpMessage message)
+		{
+			_message_arrived (this, new MsnpMessageArgs (message));
+		}
+		
+		private void processMSG (MsnpCommand command)
+		{
+			int size;
+			
+			if (int.TryParse (command.Arguments [2], out size)) {
+				string buffer = Read (size);
+				MsnpMessage msg = new MsnpMessage (command, buffer);
+				
+				OnMessageArrived (msg);
+			}
 		}
 		
 		private void onCommandArrived (object sender, MsnpCommandArrivedArgs args)
 		{
 		}
+		
+		private void onMessageArrived (object sender, MsnpMessageArgs args)
+		{
+		}
+		
+		
 		
 		public MsnpClientType ServerType {
 			get { return _serverType; }
@@ -67,6 +109,11 @@ namespace System.Net.Protocols.Msnp.Core
 		public event MsnpCommandArrivedHandler CommandArrived {
 			add { _commandArrived += value; }
 			remove { _commandArrived -= value; }
+		}
+		
+		public event MsnpMessageHandler MessageArrived {
+			add { _message_arrived += value; }
+			remove { _message_arrived -= value; }
 		}
 	}
 }

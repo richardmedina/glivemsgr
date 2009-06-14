@@ -28,6 +28,9 @@ using System.Text;
 using System.Threading;
 using System.Net.Protocols.Msnp;
 using System.Net.Protocols.Msnp.Core;
+using Gtk;
+using MsnpTesting.Widgets;
+
 namespace MsnpTesting
 {
 	public class Program
@@ -35,21 +38,34 @@ namespace MsnpTesting
 		
 		static void Main(string[] args)
 		{
+			
+			printColor ("0000F1");
+			printColor ("0CD0F1");
+			printColor ("1111F1");
+			
 			Account account = new Account ();
 			Console.Write ("Username: ");
 			account.Username = Console.ReadLine ();
 			Console.Write ("Password: ");
 			account.Password = Console.ReadLine ();
+			account.SetState (ContactState.Online);
 			
 			account.LoggedIn += accountLoggedIn;
 			//account.CommandArrived += accountCommandArrived;
 			//account.GroupsLoaded += accountGroupsLoaded;
-			account.ContactsLoaded += accountContactsLoaded;
+			//account.ContactsLoaded += accountContactsLoaded;
 			account.StateChanged += accountStateChanged;
+			account.MessageArrived += accountMessageArrived;
 			
 			
 			account.Login ();
 			Console.WriteLine ("Connecting ..");
+			
+			/*Application.Init ();
+			MainWindow win = new MainWindow ();
+			win.ShowAll ();
+			Application.Run ();
+			*/
 			Console.ReadLine ();
 		}
 		/*
@@ -61,12 +77,23 @@ namespace MsnpTesting
 				args.Command.RawString);
 		}
 		*/
+		
+		private static void printColor (string str)
+		{
+			Color color;
+			
+			Console.WriteLine ("input: {0}", str);
+			if (Color.TryParse (str, out color)) {
+				Console.WriteLine (color);
+				Console.WriteLine (color.ToHexString ());
+			}
+		}
 		private static void accountLoggedIn (object sender, EventArgs args)
 		{
 			Console.WriteLine ("Logged!");
 			((Account) sender).SetState (ContactState.Online);
 		}
-		
+/*		
 		private static void accountGroupsLoaded (object sender, EventArgs args)
 		{
 			Console.WriteLine ("{0} Groups Loaded..", ((Account) sender).Groups.Count);
@@ -77,19 +104,27 @@ namespace MsnpTesting
 		
 		private static void accountContactsLoaded (object sender, EventArgs args)
 		{
+			
 			Account account = (Account) sender; 
 			foreach (Group group in account.Groups) {
 				Console.WriteLine (group.Name);
 				foreach (Contact contact in group)
 					Console.WriteLine ("\t{0}",contact.Username);
 			}
+			
 			//Console.WriteLine ("Contacts Loaded");
 		}
-		
+*/		
 		private static void accountStateChanged (object sender, EventArgs args)
 		{
 			Console.WriteLine ("Your state is now {0}", 
 				Utils.ContactStateToString ((int) ((Account)sender).State));
+		}
+		
+		private static void accountMessageArrived (object sender, MsnpMessageArgs args)
+		{
+			Console.WriteLine ("MessageArrived({0}): {1}", args.Message.Command, 
+			                   args.Message.Body);
 		}
 	}
 }

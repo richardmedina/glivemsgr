@@ -72,55 +72,67 @@ namespace System.Net.Protocols.Msnp.Core
 
 			// arguments start index
 			int startIndex = 2;
-
-			if (pieces[0] == "CVR")
-				command.Type = MsnpCommandType.CVR;
-			else if (pieces [0] == "VER")
-				command.Type = MsnpCommandType.VER;
-			else if (pieces[0] == "USR")
-				command.Type = MsnpCommandType.USR;
-			else if (pieces[0] == "SYN")
-				command.Type = MsnpCommandType.SYN;
-			else if (pieces[0] == "LSG") {
-				command.Type = MsnpCommandType.LSG;
-				startIndex = 1;
-			}
-			else if (pieces[0] == "MSG") {
+			
+			if (pieces[0] == "MSG") {
 				command.Type = MsnpCommandType.MSG;
 				startIndex = 1;
 			}
-			else if (pieces[0] == "LST") {
-				command.Type = MsnpCommandType.LST;
-				startIndex = 1;
-			}
-			else if (pieces[0] == "PNG") {
-				command.Type = MsnpCommandType.PNG;
-				startIndex = 1;
-			}
-			else if (pieces[0] == "CHG")
-				command.Type = MsnpCommandType.CHG;
-			else if (pieces[0] == "FLN")
-				command.Type = MsnpCommandType.FLN;
-			else if (pieces[0] == "ILN")
-				command.Type = MsnpCommandType.ILN;
-			else if (pieces[0] == "NLN")
-				command.Type = MsnpCommandType.NLN;
-			else if (pieces[0] == "CHL")
-				command.Type = MsnpCommandType.CHL;
-			else if (pieces[0] == "RNG") {
-				command.Type = MsnpCommandType.RNG;
-				startIndex = 1;
-			}
-			else if (pieces[0] == "REA")
-				command.Type = MsnpCommandType.REA;
-			else if (pieces[0] == "XFR") {
-				command.Type = MsnpCommandType.XFR;
-				int id;
-				if (int.TryParse(pieces[1], out id))
-					command.TrId = id;
-			}
+				
+			if (command.ServerType == MsnpClientType.Switchboard) {
+				if (pieces [0] == "IRO")
+					command.Type = MsnpCommandType.IRO;
+				if (pieces [0] == "ANS") {
+					Console.WriteLine ("Creating ANS Command");
+					command.Type = MsnpCommandType.ANS;
+				}
+			} else {
+				if (pieces[0] == "QRY")
+					command.Type = MsnpCommandType.QRY;
+				else if (pieces[0] == "CVR")
+					command.Type = MsnpCommandType.CVR;
+				else if (pieces [0] == "VER")
+					command.Type = MsnpCommandType.VER;
+				else if (pieces[0] == "USR")
+					command.Type = MsnpCommandType.USR;
+				else if (pieces[0] == "SYN")
+					command.Type = MsnpCommandType.SYN;
+				else if (pieces[0] == "LSG") {
+					command.Type = MsnpCommandType.LSG;
+					startIndex = 1;
+				}
+				else if (pieces[0] == "LST") {
+					command.Type = MsnpCommandType.LST;
+					startIndex = 1;
+				}
+				else if (pieces[0] == "PNG") {
+					command.Type = MsnpCommandType.PNG;
+					startIndex = 1;
+				}
+				else if (pieces[0] == "CHG")
+					command.Type = MsnpCommandType.CHG;
+				else if (pieces[0] == "FLN")
+					command.Type = MsnpCommandType.FLN;
+				else if (pieces[0] == "ILN")
+					command.Type = MsnpCommandType.ILN;
+				else if (pieces[0] == "NLN")
+					command.Type = MsnpCommandType.NLN;
+				else if (pieces[0] == "CHL")
+					command.Type = MsnpCommandType.CHL;
+				else if (pieces[0] == "RNG") {
+					command.Type = MsnpCommandType.RNG;
+					startIndex = 1;
+				}
+				else if (pieces[0] == "REA")
+					command.Type = MsnpCommandType.REA;
+				else if (pieces[0] == "XFR") {
+					command.Type = MsnpCommandType.XFR;
+					int id;
+					if (int.TryParse(pieces[1], out id))
+						command.TrId = id;
+				}
 
-
+			}
+			
 			if (command.Type != MsnpCommandType.Unknown)
 			{
 				command.Arguments = new string[pieces.Length - startIndex];
@@ -129,8 +141,8 @@ namespace System.Net.Protocols.Msnp.Core
 			}
 
 			return command;
+			
 		}
-
 		public override string ToString()
 		{
 			return RawString;

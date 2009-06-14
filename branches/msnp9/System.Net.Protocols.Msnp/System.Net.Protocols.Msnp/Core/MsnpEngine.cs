@@ -27,10 +27,10 @@ namespace System.Net.Protocols.Msnp.Core
 		private string _username;
 		private string _password;
 		
-		private MsnpNotificationServer _notification;
-		private MsnpDispatchServer _dispatch;
+		private MsnpNotificationClient _notification;
+		private MsnpDispatchClient _dispatch;
 		
-		private Switchboard _switchboard;
+		private MsnpSwitchboard _switchboard;
 		
 		private event MsnpCommandArrivedHandler _commandArrived;
 		private event LoginErrorHandler _loginError;
@@ -49,8 +49,8 @@ namespace System.Net.Protocols.Msnp.Core
 			_loginError = onLoginError;
 			_message_arrived = onMessageArrived;
 			
-			_notification = new MsnpNotificationServer ();
-			_dispatch = new MsnpDispatchServer ();
+			_notification = new MsnpNotificationClient ();
+			_dispatch = new MsnpDispatchClient ();
 			
 			_notification.CommandArrived += onAnyCommandArrived;
 			_notification.Success += notificationSuccess;
@@ -60,7 +60,7 @@ namespace System.Net.Protocols.Msnp.Core
 			_dispatch.CommandArrived += onAnyCommandArrived;
 			_dispatch.MessageArrived += dispatchMessageArrived;
 		//	_dispatch.Disconnected += dispatchDisconnected;
-			_switchboard = new Switchboard (this);
+			_switchboard = new MsnpSwitchboard (this);
 		}
 		
 		public void Connect ()
@@ -87,7 +87,9 @@ namespace System.Net.Protocols.Msnp.Core
 		private void notificationSuccess (object sender,
 			NotificationSuccessArgs args)
 		{
+			Console.WriteLine ("Attemp");
 			_notification.Close ();
+			Console.WriteLine ("Closed not");
 			
 			_dispatch.Username = _username;
 			_dispatch.Password = _password;
@@ -107,8 +109,6 @@ namespace System.Net.Protocols.Msnp.Core
 		private void onAnyCommandArrived (object sender,
 			MsnpCommandArrivedArgs args)
 		{
-			//Console.WriteLine ("{0}:{1}", args.Command.Type, args.Command.RawString);
-			
 			OnCommandArrived (args.Command);
 		}
 		
@@ -140,7 +140,19 @@ namespace System.Net.Protocols.Msnp.Core
 			protected set { _dispatch.ListVersion = value; }
 		
 		}
+
+		public MsnpDispatchClient Dispatch {
+			get { return _dispatch; }
+		}
+	
+		public MsnpNotificationClient Notification {
+			get { return _notification; }
+		}
 		
+		public MsnpSwitchboard Switchboard {
+				get { return _switchboard; }
+		}
+
 		// Signals
 		
 		public event MsnpCommandArrivedHandler CommandArrived {
@@ -156,14 +168,6 @@ namespace System.Net.Protocols.Msnp.Core
 		public event MsnpMessageHandler MessageArrived {
 			add { _message_arrived += value; }
 			remove { _message_arrived -= value; }
-		}
-
-		public MsnpDispatchServer Dispatch {
-			get { return _dispatch; }
-		}
-	
-		protected MsnpNotificationServer Notification {
-			get { return _notification; }
 		}
 	}
 }

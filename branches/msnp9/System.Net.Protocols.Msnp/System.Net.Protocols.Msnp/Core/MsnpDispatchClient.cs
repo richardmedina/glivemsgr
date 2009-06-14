@@ -1,4 +1,4 @@
-// MsnpDispatchServer.cs
+// MsnpDispatchClient.cs
 //
 // Copyright (c) 2008 Ricardo Medina <ricki@dana-ide.org>
 //
@@ -33,7 +33,7 @@ namespace System.Net.Protocols.Msnp.Core
 {
 
 
-	public class MsnpDispatchServer : MsnpClient
+	public class MsnpDispatchClient : MsnpClient
 	{
 		private string _username;
 		private string _password;
@@ -41,9 +41,9 @@ namespace System.Net.Protocols.Msnp.Core
 		private int _list_version = 0;
 		
 		private event PassportArrivedHandler _passportArrived;
-		private event MsnpMessageHandler _message_arrived;
 		
-		public MsnpDispatchServer () : 
+		
+		public MsnpDispatchClient () : 
 			this (string.Empty, 
 				0, 
 				string.Empty, 
@@ -52,14 +52,14 @@ namespace System.Net.Protocols.Msnp.Core
 		{
 		}
 
-		public MsnpDispatchServer (string hostname, int port, string username, string password, int trId)
+		public MsnpDispatchClient (string hostname, int port, string username, string password, int trId)
 			: base(MsnpClientType.Dispatch)
 		{
 			_username = username;
 			_password = password;
 			_trId = trId;
 			_passportArrived = onPassportArrived;
-			_message_arrived = onMessageArrived;
+			
 			
 			Hostname = hostname;
 			Port = port;
@@ -115,9 +115,6 @@ namespace System.Net.Protocols.Msnp.Core
 				case MsnpCommandType.USR:
 					processUSR (command);
 				break;
-				case MsnpCommandType.MSG:
-					processMSG (command);
-				break;
 			}
 			
 			base.OnCommandArrived (command);
@@ -134,6 +131,15 @@ namespace System.Net.Protocols.Msnp.Core
 			
 			Send ("VER {0} MSNP8 MSNP9 CVR0", TrId ++);
 		}
+		
+		protected override void OnMessageArrived (MsnpMessage message)
+		{
+			if (message.Command.Arguments [0] == "Hotmail")
+				Send ("SYN {0} {1}", TrId ++, _list_version);
+			
+			base.OnMessageArrived (message);
+		}
+
 
 		/*
 		protected override void OnDataArrived (string data)
@@ -145,13 +151,7 @@ namespace System.Net.Protocols.Msnp.Core
 		}
 		*/
 		
-		protected virtual void OnMessageArrived (MsnpMessage message)
-		{
-			if (message.Command.Arguments [0] == "Hotmail") {
-				Send ("SYN {0} {1}", TrId ++, _list_version);
-			}
-			_message_arrived (this, new MsnpMessageArgs (message));
-		}
+		
 		protected virtual void OnPassportArrived (string content)
 		{
 			_passportArrived (this, new PassportArrivedArgs (content));
@@ -242,18 +242,6 @@ namespace System.Net.Protocols.Msnp.Core
 			return string.Empty;
 		}
 		
-		private void processMSG (MsnpCommand command)
-		{
-			int size;
-			
-			if (int.TryParse (command.Arguments [2], out size)) {
-				string buffer = Read (size);
-				MsnpMessage msg = new MsnpMessage (command, buffer);
-				
-				OnMessageArrived (msg);
-			}
-		}
-		
 		private void processUSR (MsnpCommand command)
 		{
 			if (command.Arguments [0] == "TWN") {
@@ -280,9 +268,6 @@ namespace System.Net.Protocols.Msnp.Core
 				TrId ++, _username);
 		}
 		
-		private void onMessageArrived (object sender, MsnpMessageArgs args)
-		{
-		}
 		private void onPassportArrived (object sender, PassportArrivedArgs args)
 		{
 		}
@@ -319,10 +304,6 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		// Events
 		
-		public event MsnpMessageHandler MessageArrived {
-			add { _message_arrived += value; }
-			remove { _message_arrived -= value; }
-		}
 		public event PassportArrivedHandler PassportArrived {
 			add { _passportArrived += value; }
 			remove { _passportArrived -= value; }

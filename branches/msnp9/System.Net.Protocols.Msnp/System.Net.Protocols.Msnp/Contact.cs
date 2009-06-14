@@ -60,7 +60,7 @@ namespace System.Net.Protocols.Msnp
 			_account = dispatch;
 			_account.CommandArrived += dispatchCommandArrived;
 		}
-		
+
 		private void dispatchCommandArrived (object sender, 
 			MsnpCommandArrivedArgs args)
 		{
@@ -71,13 +71,13 @@ namespace System.Net.Protocols.Msnp
 						args.Command.Arguments [4],
 						Username);
 				*/		
-					if (args.Command.Arguments [4] == Username) {
+					/*if (args.Command.Arguments [4] == Username) {
 						Console.WriteLine (
 							"Me ({0}) Wants to chat with you",
 							Username);
 						Console.WriteLine (args.Command.RawString);
 						
-					}
+					}*/
 				}
 		}
 		
