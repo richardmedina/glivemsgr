@@ -15,7 +15,7 @@ namespace GLiveMsgr.Gui
 		private Gtk.VBox vbox;
 		
 		private ConversationHeaderWidget header;
-		private ConversationToolbar toolbar;
+		//private ConversationToolbar toolbar;
 		
 		private ConversationChatWidget chatWidget;
 		private ConversationPicturesWidget displayPictures;
@@ -35,7 +35,7 @@ namespace GLiveMsgr.Gui
 				_conversation.Account.Username,
 				_conversation.Account.Alias);
 				
-			toolbar = new ConversationToolbar ();
+			//toolbar = new ConversationToolbar ();
 			chatWidget = new ConversationChatWidget (_conversation);
 			displayPictures = new ConversationPicturesWidget ();
 			_arrowButton = new ArrowButton ();

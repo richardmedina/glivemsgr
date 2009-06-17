@@ -1,4 +1,4 @@
-<Project name="Glivemsgr" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
+<Project name="GLiveMsgr" fileversion="2.0" language="C#" clr-version="Net_2_0" ctype="DotNetProject">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="DotNetProjectConfiguration">
       <Output directory="bin/Debug" assembly="GLiveMsgr.Gui" />
@@ -115,6 +115,15 @@
     <File name="ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="Widgets/ChangeLog" subtype="Code" buildaction="Nothing" />
     <File name="I18N.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/DisplayPictureMenu.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/DisplayPictureDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/ConfigDialog.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/IConfigPage.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/AppearanceConfigPage.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/ConfigCategoriesView.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/ConversationFileMenu.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/ConversationHelpMenu.cs" subtype="Code" buildaction="Compile" />
+    <File name="Widgets/PageAction.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="gtk-sharp, Version=2.8.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />

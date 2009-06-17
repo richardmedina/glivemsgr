@@ -12,13 +12,13 @@ namespace GLiveMsgr.Gui
 	{
 		
 		private LinkWidget [] links;
-		private string [] labels = {
+		private string [,] labels = {
 			//"You forgot your password?",
 			//"State of the service",
 			//"Gets a Windows Live ID"
-			"Ricki's Blog",
-			"Project Home",
-			"Mail me"
+			{"Ricki's Blog", "http://ricki.dana-ide.org"},
+			{"Project Home", "http://glivemsgr.dana-ide.org"},
+			{"Mail me", "mailto:ricki@dana-ide.org"}
 		};
 		
 		private string [] link_location = {
@@ -31,8 +31,9 @@ namespace GLiveMsgr.Gui
 		{
 			links = new LinkWidget [labels.Length];
 			
-			for (int i = 0; i < labels.Length; i ++) {
-				links [i] = new LinkWidget (labels [i]);
+			for (int i = 0; i < labels.GetLength (0); i ++) {
+				links [i] = new LinkWidget (labels [i, 0]);
+				links [i].Location = labels [i, 1];
 				links [i].ModifyBg (StateType.Normal,
 					Theme.GdkColorFromCairo (Theme.BaseColor));
 				links [i].ModifyText (StateType.Normal,
@@ -51,11 +52,11 @@ namespace GLiveMsgr.Gui
 		private void link_Clicked (object sender, EventArgs args)
 		{
 			LinkWidget link = sender as LinkWidget;
-			
-			for (int i = 0; i < links.Length; i ++)
-				if (link == links [i]) {
-					lauchBrowser (link_location [i]);
-				}
+			lauchBrowser (link.Location);
+			//for (int i = 0; i < links.Length; i ++)
+			//	if (link == links [i]) {
+			//		lauchBrowser (link_location [i]);
+			//	}
 		}
 		
 		private void lauchBrowser (string location)

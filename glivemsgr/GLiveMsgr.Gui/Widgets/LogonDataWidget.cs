@@ -12,10 +12,12 @@ namespace GLiveMsgr.Gui
 	
 	public class LogonDataWidget : Gtk.HBox
 	{
+	
+		private DisplayPictureWidget _displayPicture;
 		private FixedComboBoxEntry comboEmail;
-		private FixedEntry entryPassword;
+		private Gtk.Entry entryPassword;
 		
-		//private ComboMsnState comboState;
+		private ComboMsnState comboState;
 		
 		private Gtk.VBox vboxAnim;
 		
@@ -27,7 +29,7 @@ namespace GLiveMsgr.Gui
 		private string [] options_labels = {
 			"Remember email address",
 			"Remember password",
-			"Auto login"
+			"Default account"
 		};
 		
 		
@@ -39,6 +41,8 @@ namespace GLiveMsgr.Gui
 		{	
 		
 			this.account = account;
+			_displayPicture = new DisplayPictureWidget ();
+			_displayPicture.Editable = true;
 			comboEmail = new FixedComboBoxEntry (
 				new string [] {
 					"email1@address.com",
@@ -48,13 +52,18 @@ namespace GLiveMsgr.Gui
 			comboEmail.Entry.Text = string.Empty;
 			comboEmail.Entry.Activated += comboEmail_Activated;
 			
-			entryPassword = new FixedEntry ();
-			entryPassword.Entry.Visibility = false;
-			entryPassword.Entry.Activated += entryPassword_Activated;
+			// FIXME. This object must be created with 2 arguments
+			// see FixedEntry class
+			entryPassword = new Entry ();
+			entryPassword.Visibility = false;
+			entryPassword.Activated += entryPassword_Activated;
 			
-			entryPassword.Entry.Text = string.Empty;
-			//comboState = new ComboMsnState ();
+			entryPassword.Text = string.Empty;
+			
+			comboState = new ComboMsnState ();
+			
 			//comboState.ModifyBase (StateType.Normal, new Gdk.Color (255, 0, 0));
+			
 			buttonConnect = new Button ("Login");
 			buttonConnect.Relief = ReliefStyle.None;
 			
@@ -70,7 +79,7 @@ namespace GLiveMsgr.Gui
 			
 			VBox vbox = new VBox (false, 5);
 			
-			vbox.PackStart (centeredWidget (new DisplayPictureWidget ()), false, false, 10);
+			vbox.PackStart (centeredWidget (_displayPicture), false, false, 10);
 			
 			
 			vbox.PackStart (
@@ -89,7 +98,9 @@ namespace GLiveMsgr.Gui
 				
 			vbox.PackStart (entryPassword, false, false, 0);
 			
-			//vbox.PackStart (comboState, false, false, 0);
+			vbox.PackStart (alignWidget (Factory.Label ("State")), 
+				false, false, 0);
+			vbox.PackStart (comboState, false, false, 0);
 			
 			vboxAnim = new VBox (false, 0);
 			
@@ -109,7 +120,7 @@ namespace GLiveMsgr.Gui
 		{
 			comboEmail.Sensitive  = true;
 			comboEmail.Entry.Text = string.Empty;
-			entryPassword.Entry.Text = string.Empty;
+			entryPassword.Text = string.Empty;
 			entryPassword.Sensitive = true;
 			comboEmail.GrabFocus ();
 			ShowChild (1);
@@ -185,7 +196,7 @@ namespace GLiveMsgr.Gui
 				return;
 			}
 				
-			if (entryPassword.Entry.Text.Trim ().Length == 0)
+			if (entryPassword.Text.Trim ().Length == 0)
 				return;
 				
 			if (connecting) {
@@ -199,7 +210,7 @@ namespace GLiveMsgr.Gui
 				ShowChild (0);
 				account.Username = this.EntryEmail.Text;
 				account.Password = this.EntryPassword.Text;
-				account.State = MsnpContactState.Online;
+				account.State = comboState.ContactState;
 				comboEmail.Sensitive = false;
 				entryPassword.Sensitive = false;
 				
@@ -231,7 +242,7 @@ namespace GLiveMsgr.Gui
 		private void comboEmail_Activated (object sender, EventArgs args)
 		{
 			if (comboEmail.Entry.Text.Trim ().Length > 0)
-				entryPassword.Entry.GrabFocus ();
+				entryPassword.GrabFocus ();
 		}
 		
 		private void entryPassword_Activated (object sender, EventArgs args)
@@ -248,7 +259,7 @@ namespace GLiveMsgr.Gui
 		}
 		
 		public Gtk.Entry EntryPassword {
-			get { return this.entryPassword.Entry; }
+			get { return this.entryPassword; }
 		}
 		
 		/*public ComboMsnState ComboState {

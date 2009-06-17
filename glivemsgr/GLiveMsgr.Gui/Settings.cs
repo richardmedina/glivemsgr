@@ -19,13 +19,19 @@ namespace GLiveMsgr.Gui
 //		private string downloadFolder;
 //		private string defaultPicture;
 		
-		private string browser; 
+		private string browser;
+		private string _appname = "GNOME Live Messenger by Ricki Medina";
 		
 		private static Settings instance = new Settings ();
 		
 		public Settings ()
 		{
 			browser = getDefaultBrowser ();
+		}
+		
+		internal string GetWindowTitle (string title)
+		{
+			return string.Format ("{0} - {1}", title, _appname);
 		}
 		
 		private string getDefaultBrowser ()

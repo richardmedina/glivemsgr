@@ -21,11 +21,14 @@ namespace GLiveMsgr.Gui
 		
 		private Gtk.VBox vbox;
 		
+		private Gdk.Cursor _cursor_hand = new Gdk.Cursor (Gdk.CursorType.Hand2);
+		
 		private bool _notifCreated = false;
 		
 		public MainWindow ()
 		{
-			Title = "GNOME Live Messenger - by Ricki Medina";
+			Title = GLiveMsgr.Gui.Settings.Instance.GetWindowTitle (
+				"Login");
 			Decorated = false;
 			Icon = Gdk.Pixbuf.LoadFromResource ("messenger_icon.png");
 			
@@ -47,8 +50,10 @@ namespace GLiveMsgr.Gui
 			
 			vbox.PackStart (mainWidget);
 			
-			Add (vbox);			
-			Resize (280, 530);
+			Add (vbox);
+			SetSizeRequest (280, 530);
+			
+			Theme.Modified += delegate { theme_refresh (); };
 			//showNotification ();
 		}
 		
@@ -63,6 +68,43 @@ namespace GLiveMsgr.Gui
 		{
 		}
 		
+		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
+		{
+			if (evnt.Button == 1) { // && 
+				//evnt.Type == Gdk.EventType.TwoButtonPress) {
+				if (evnt.X > LogoPosX &&
+					evnt.Y > LogoPosY &&
+					evnt.X < LogoPosX + LogoWidth &&
+					evnt.Y < LogoPosY + LogoHeight) {
+						ConfigDialog dlg = new ConfigDialog ();
+					dlg.ApplyButton.Clicked += delegate { Theme.SendModified (); };
+					dlg.Run ();
+					dlg.Destroy ();
+					Theme.SendModified ();
+					return false;
+				}
+			}
+			
+			return base.OnButtonPressEvent (evnt);
+		}
+		
+		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
+		{
+			if (evnt.X > LogoPosX &&
+					evnt.Y > LogoPosY &&
+					evnt.X < LogoPosX + LogoWidth &&
+					evnt.Y < LogoPosY + LogoHeight) {
+				
+					evnt.Window.Cursor = _cursor_hand;
+					return false;
+				}
+			else 
+				evnt.Window.Cursor = null;
+		
+			return base.OnMotionNotifyEvent (evnt);
+		}
+
+
 		protected override void OnShown ()
 		{
 			base.OnShown ();
@@ -138,6 +180,13 @@ namespace GLiveMsgr.Gui
 				if (args.Instance == window.Conversation)
 					Console.WriteLine ("Conversation found"); 
 			}
+		}
+		
+		private void theme_refresh ()
+		{
+			QueueDraw ();
+			foreach (Gtk.Window win in windows)
+				win.QueueDraw ();
 		}
 		
 		public MsnpAccount Account {

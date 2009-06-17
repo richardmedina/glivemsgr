@@ -23,11 +23,10 @@ namespace GLiveMsgr.Gui
 			base.Name ="GNOME Live Messenger";
 			base.Version = "0.1a";
 			base.Website = "http://messenger.dana-ide.org";
-			base.Comments =
-				"GNOME Live Messenger is a *nix, MacOS X and " +
-				"MS Windows cross-platforms of Windows Live Messenger written in C# and using Mono " +
-				"Framework, Gtk# and System.Net.Protocols.Msnp library";
-			
+			base.Comments = "GNOME Live Messenger is a simple MSNP " +
+				"Network client. Is my favorite hobbie since " +
+				"Santo and Blue Daemon Figthers :-).\n\n" +
+				"Enjoy it!";
 			
 			base.License = "GNU/GPL";
 			

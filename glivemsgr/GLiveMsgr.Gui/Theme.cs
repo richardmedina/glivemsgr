@@ -11,13 +11,15 @@ namespace GLiveMsgr.Gui
 	public static class Theme
 	{
 		// Set default theme
+		private static event EventHandler _modified;
+		
 		static Theme ()
 		{
-		
+			_modified = onModified;
 			FgColor = RgbToCairoColor (0, 0, 0);
 			
 			BgColor = RgbToCairoColor (0xFC, 0x9A, 0x3F);			
-			BaseColor = RgbToCairoColor (0xFF, 0xE6, 0xD5);
+			BaseColor = RgbToCairoColor (255, 0, 0); //(0xFF, 0xE6, 0xD5);
 			
 			TextColor = RgbToCairoColor (0x1A, 0x1A, 0x1A);
 			
@@ -26,7 +28,7 @@ namespace GLiveMsgr.Gui
 			TooltipFgColor = RgbToCairoColor (0, 0, 0);
 			TooltipBgColor = RgbToCairoColor (0xF5, 0xF5, 0xF5);
 			
-			loadYellowTheme ();
+			loadThemeFromStyle ();
 		}
 		
 		private static void loadYellowTheme ()
@@ -46,42 +48,67 @@ namespace GLiveMsgr.Gui
 
 		public static Gdk.Color GdkColorFromCairo (Cairo.Color color)
 		{
-//			double unit = 1/255;
+			float cairo_unit = byte.MaxValue;
 			
 			Gdk.Color gdk_color = new Gdk.Color (
-				(byte) (color.R * 255),
-				(byte) (color.G * 255),
-				(byte) (color.B * 255));
-			
-			//Console.WriteLine (gdk_color);
-			//Console.WriteLine ("From cairo : {0:X},{1:X},{2:X}", 
-			//	(int) (color.R * 255), (int) (color.G * 255), (int) (color.B * 255));
+				(byte) (color.R * cairo_unit),
+				(byte) (color.G * cairo_unit),
+				(byte) (color.B * cairo_unit));// * cairo_unit));
 			
 			return gdk_color;
 		}
 		
 		public static Cairo.Color CairoColorFromGdk (Gdk.Color color)
 		{
-			return RgbToCairoColor ((byte) color.Red, 
-				(byte) color.Green, 
-				(byte) color.Blue);
+			double gdk_unit = byte.MaxValue;
+			
+			byte r = UshortToByte (color.Red);
+			byte g = UshortToByte (color.Green);
+			byte b = UshortToByte (color.Blue);
+			
+			Cairo.Color c = new Cairo.Color (
+				(r / gdk_unit), 
+				(g / gdk_unit), 
+				(b / gdk_unit));
+			
+			Console.WriteLine ("R{0},G{1},B{2}", c.R, c.G, c.B);
+			return c;
+		}
+
+		public static byte UshortToByte (ushort val)
+		{
+			ushort b = (ushort) (val << 8);
+			b = (ushort) (b >> 8);
+			return (byte) b;
 		}
 		
 		public static Cairo.Color RgbToCairoColor (int red, int green, int blue)
 		{
-			double unit = 1f / 255f;
+			float unit = 1f / ushort.MaxValue;
 				
 			return new Cairo.Color (unit * red, unit * green, unit * blue);
+		}
+		
+		public static void SendModified ()
+		{
+			_modified (null, EventArgs.Empty);
 		}
 		
 		private static void loadThemeFromStyle ()
 		{
 			Gtk.Style gtkstyle = new Gtk.Style ();
+			
+			Gdk.Color c = gtkstyle.Base (StateType.Normal);
+			
+			Console.WriteLine ("Console. R {0}, G {1} B {2}",
+				c.Red, c.Green, c.Blue);
+			
+			                   
 			Theme.FgColor = Theme.CairoColorFromGdk (
 				gtkstyle.Foreground (StateType.Normal));
 			
 			Theme.BgColor = Theme.CairoColorFromGdk ( 
-				gtkstyle.Background (StateType.Normal));
+				gtkstyle.Background (StateType.Selected));
 				
 			Theme.BaseColor = Theme.CairoColorFromGdk (
 				gtkstyle.Base (StateType.Normal));
@@ -89,12 +116,13 @@ namespace GLiveMsgr.Gui
 			Theme.SelectedBgColor = Theme.CairoColorFromGdk (
 				gtkstyle.Base (StateType.Normal));
 			
-			//Gdk.Color color = Theme.GdkColorFromCairo (Theme.SelectedBgColor);
-			
-			//foreach (Gdk.Color color in gtkstyle.BaseColors)
 			Gdk.Color color = GdkColorFromCairo (Theme.BaseColor);
 				//Console.WriteLine ("Selected : {0}, {1:X},{2:X}",
 				//	(byte) color.Red, (byte) color.Green, (byte) color.Blue);
+		}
+		
+		private static void onModified (object sender, EventArgs args)
+		{
 		}
 		
 		private static Cairo.Color fgColor;
@@ -145,6 +173,11 @@ namespace GLiveMsgr.Gui
 		public static Cairo.Color TooltipBgColor {
 			get { return tooltipBgColor; }
 			set { tooltipBgColor = value; }
+		}
+		
+		public static event EventHandler Modified {
+			add { _modified += value; }
+			remove { _modified -= value; }
 		}
 	}
 }

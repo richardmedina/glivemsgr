@@ -15,6 +15,19 @@ namespace GLiveMsgr.Gui
 	{
 		private bool _logoVisible;
 		
+		private Gdk.Cursor cursor_right = new Gdk.Cursor (
+			Gdk.CursorType.RightSide);
+		private Gdk.Cursor cursor_bottom = new Gdk.Cursor (
+			Gdk.CursorType.BottomSide);
+		private Gdk.Cursor cursor_bottomright = new Gdk.Cursor (
+			Gdk.CursorType.BottomRightCorner);
+			
+		private int _logo_posx = 0;
+		private int _logo_posy = 0;
+		private int _logo_width = 0;
+		private int _logo_height = 0;
+
+		
 		public PopupWindow () : this (string.Empty, WindowType.Toplevel)
 		{
 		}
@@ -31,25 +44,40 @@ namespace GLiveMsgr.Gui
 		{
 			Title = title;
 			BorderWidth = 5;
-			AddEvents ((int) Gdk.EventMask.ButtonPressMask);
+			AddEvents ((int) (Gdk.EventMask.ButtonPressMask | Gdk.EventMask.PointerMotionMask));
 			Resize (200, 150);
 			ModifyBg (StateType.Normal,
 				Theme.GdkColorFromCairo (Theme.BaseColor));
 		}
 		
-		protected override void OnRealized ()
-		{
-			base.OnRealized ();
+		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
+		{			
+			GdkWindow.Cursor = null;
+			
+			if (evnt.X > Allocation.Width - 15 && 
+				evnt.Y > Allocation.Height - 15) {
+				GdkWindow.Cursor = cursor_bottomright;
+			} else if (evnt.X > Allocation.Width -15) {
+				GdkWindow.Cursor = cursor_right;
+			} else if (evnt.Y > Allocation.Height -15) {
+				GdkWindow.Cursor = cursor_bottom;
+			}
+			
+			//Child.ProcessEvent (evnt);
+			
+			return base.OnMotionNotifyEvent (evnt);
 		}
+
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
 		{
 			if (evnt.Type == Gdk.EventType.TwoButtonPress &&
 				evnt.Button ==1) {
-				if (GdkWindow.State == Gdk.WindowState.Maximized ||
-					GdkWindow.State == Gdk.WindowState.Fullscreen) {
-					GdkWindow.Unmaximize ();
+				if ((GdkWindow.State & Gdk.WindowState.Maximized) > 0 ||
+					(GdkWindow.State & Gdk.WindowState.Fullscreen) > 0) {
 					GdkWindow.Unfullscreen ();
+					GdkWindow.Unmaximize ();
+					
 				} else {
 					GdkWindow.Maximize ();
 					if ((evnt.State & Gdk.ModifierType.ControlMask) > 0)
@@ -79,7 +107,7 @@ namespace GLiveMsgr.Gui
 			
 			using (Cairo.Context context = 
 				Gdk.CairoHelper.Create (evnt.Window)) {
-			
+				
 				context.Rectangle (1, 1, 
 					Allocation.Width -2, Allocation.Height);
 			
@@ -92,17 +120,35 @@ namespace GLiveMsgr.Gui
 			
 				grad.AddColorStop (1,
 					Theme.BaseColor);
+				
+				Gdk.Color mmc = Theme.GdkColorFromCairo (Theme.BgColor);
+				Gdk.Color mmc2 = Theme.GdkColorFromCairo (Theme.BaseColor);
+				Console.WriteLine ("Drawing. Cairo {0},{1},{2} Gdk {3},{4},{5}",
+				                   Theme.BgColor.R, Theme.BgColor.G, Theme.BgColor.B,
+				                   mmc.Red, mmc.Green, mmc.Blue);
+				
+				Console.WriteLine ("Drawing2. Cairo {0},{1},{2} Gdk {3},{4},{5}",
+				                   Theme.BaseColor.R, Theme.BaseColor.G, Theme.BaseColor.B,
+				                   mmc2.Red, mmc2.Green, mmc2.Blue);
 			
 				context.Pattern = grad;
 			
 				context.Fill ();
-				if (LogoVisible) {		
+				
+				if (LogoVisible) {
+					// FIXME. this resource must be released..
 					Cairo.ImageSurface imageSurf = 
 						new Cairo.ImageSurface ("gnome-logo.png");
 			
+					_logo_posx = Allocation.Width - imageSurf.Width - 5;
+					_logo_posy = Allocation.Height - imageSurf.Height - 5;
+					_logo_width = imageSurf.Width;
+					_logo_height = imageSurf.Height;
+			
 					imageSurf.Show (context,
-						Allocation.Width - imageSurf.Width - 5,
-						Allocation.Height - imageSurf.Height - 5);
+						_logo_posx,
+						_logo_posy);
+					((IDisposable) imageSurf).Dispose ();
 				}
 
 				double lw = 2;
@@ -124,9 +170,10 @@ namespace GLiveMsgr.Gui
 				context.LineTo (mx, mh);
 				context.ClosePath ();
 				context.Stroke ();
-			}			
+			}
 			
-			Child.SendExpose (evnt);
+			if (Child != null)
+				Child.SendExpose (evnt);
 			
 			return ret;
 		}
@@ -135,7 +182,9 @@ namespace GLiveMsgr.Gui
 		{
 			base.OnSizeAllocated (allocation);
 			
-			Gdk.Pixmap pixmap = new Gdk.Pixmap (GdkWindow, allocation.Width, allocation.Height, 1);
+			Gdk.Pixmap pixmap = new Gdk.Pixmap (GdkWindow, 
+				allocation.Width, 
+				allocation.Height, 1);
 			using(Gdk.GC gc = new Gdk.GC(pixmap))
 			{
 				Gdk.Colormap colormap = Gdk.Colormap.System;
@@ -196,6 +245,22 @@ namespace GLiveMsgr.Gui
 				_logoVisible = value;
 				QueueDraw ();
 			}
+		}
+		
+		public int LogoPosX {
+			get { return _logo_posx; }
+		}
+		
+		public int LogoPosY {
+			get { return _logo_posy; }
+		}
+		
+		public int LogoWidth {
+			get { return _logo_width; }
+		}
+		
+		public int LogoHeight {
+			get { return _logo_height; }
 		}
 	}
 }
