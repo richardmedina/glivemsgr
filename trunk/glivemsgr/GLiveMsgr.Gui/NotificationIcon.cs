@@ -116,6 +116,7 @@ namespace GLiveMsgr.Gui
 				itemDisconnect = new ImageMenuItem (Gtk.Stock.Disconnect, null);
 				itemDisconnect.Sensitive = false;
 				itemPrefs = new ImageMenuItem (Gtk.Stock.Preferences, null);
+				itemPrefs.Activated += itemPrefsActivated;
 				itemAbout = new ImageMenuItem (Gtk.Stock.About, null);
 				itemAbout.Activated += itemAbout_Activated;
 				itemQuit = new ImageMenuItem (Gtk.Stock.Quit, null);
@@ -136,6 +137,13 @@ namespace GLiveMsgr.Gui
 								
 				dialog.Run ();
 				dialog.Destroy ();
+			}
+			
+			private void itemPrefsActivated (object sender, EventArgs args)
+			{
+				ConfigDialog dlg = new ConfigDialog ();
+				dlg.Run ();
+				dlg.Destroy ();
 			}
 			
 			public ImageMenuItem ItemShowHide {

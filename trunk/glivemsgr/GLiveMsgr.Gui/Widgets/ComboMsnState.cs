@@ -6,9 +6,9 @@ using System.Net.Protocols.Msnp;
 
 namespace GLiveMsgr.Gui
 {
-	/*
 	
-	public class ContactStateCombo : Gtk.ComboBox
+	
+	public class ComboMsnState : Gtk.ComboBox
 	{
 
 		private string [] menu_labels = {
@@ -36,7 +36,7 @@ namespace GLiveMsgr.Gui
 		
 		private Gtk.ListStore model;
 		
-		public ContactStateCombo ()
+		public ComboMsnState ()
 		{
 			model = new Gtk.ListStore (
 				typeof (Gdk.Pixbuf),
@@ -57,11 +57,12 @@ namespace GLiveMsgr.Gui
 			base.AddAttribute (textRenderer, "text", 1);
 			
 			base.Active = 0;
-			
+			/*
 			base.ModifyBg (StateType.Normal,
 				Theme.GetGdkColor (Theme.LogonBackground));
 			base.ModifyText (StateType.Normal,
 				Theme.GetGdkColor (Theme.LogonEntryForeground));
+			*/
 		}
 		
 		private void populateModel ()
@@ -76,11 +77,9 @@ namespace GLiveMsgr.Gui
 		}
 	
 		public MsnpContactState ContactState {
-			get {
-				return (MsnpContactState) this.Active;
-			}
+			get { return (MsnpContactState) this.Active; }
 		}
 	
 	}
-	*/
+	
 }

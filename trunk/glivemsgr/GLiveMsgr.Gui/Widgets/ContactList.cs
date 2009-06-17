@@ -108,13 +108,8 @@ namespace GLiveMsgr.Gui
 			// White
 			
 			cardPopup = new ContactCardPopup ();
-			ModifyBase (StateType.Normal,
-				Theme.GdkColorFromCairo (Theme.BaseColor));
-			
-			ModifyBase (StateType.Selected,
-				Theme.GdkColorFromCairo (Theme.SelectedBgColor));
-			ModifyBase (StateType.Active,
-				Theme.GdkColorFromCairo (Theme.SelectedBgColor));
+			Theme.Modified += delegate { theme_refresh (); };
+			theme_refresh ();
 		}
 		
 		public ContactListItem GetItem (Gtk.TreeIter iter)
@@ -524,6 +519,16 @@ namespace GLiveMsgr.Gui
 				new ContactListItem (contact));
 			
 			contactIters.Add (iter);
+		}
+		
+		private void theme_refresh ()
+		{
+			ModifyBase (StateType.Normal,
+				Theme.GdkColorFromCairo (Theme.BaseColor));
+			ModifyBase (StateType.Selected,
+				Theme.GdkColorFromCairo (Theme.SelectedBgColor));
+			ModifyBase (StateType.Active,
+				Theme.GdkColorFromCairo (Theme.SelectedBgColor));
 		}
 
 		public new Gtk.TreeStore Model {

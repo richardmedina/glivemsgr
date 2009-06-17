@@ -27,7 +27,7 @@ namespace GLiveMsgr.Gui
 			eventbox = new EventBox ();
 			
 			displayPicture = new DisplayPictureWidget ();
-			displayPicture.ShadowType = ShadowType.EtchedIn;
+			//displayPicture.ShadowType = ShadowType.EtchedIn;
 			
 			arrow = new Arrow (ArrowType.Down, ShadowType.EtchedOut);
 			

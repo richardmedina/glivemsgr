@@ -24,6 +24,22 @@ namespace GLiveMsgr.Gui
 		{
 			Application.Init ();
 			MainWindow window = new MainWindow ();
+			//ConversationWindow w = new ConversationWindow (new MsnpConversation (new MsnpAccount ()));
+			//w.ShowAll ();
+			Gdk.Color color = new Gdk.Color (127, 255, 127);
+			
+			/*
+			ushort r = (ushort) (color.Red << 8);
+			r = (ushort) (r >> 8);
+			ushort g = (ushort) (color.Green << 8);
+			g = (ushort) (g >> 8);
+			ushort b = (ushort) (color.Blue << 8);
+			b = (ushort) (b >> 8);
+			
+			Console.WriteLine ("{0},{1},{2}", r, g, b);
+			*/
+			Console.WriteLine ("{0},{1},{2}",
+				Theme.UshortToByte (color.Red), Theme.UshortToByte (color.Green), Theme.UshortToByte (color.Blue));
 			window.ShowAll ();
 			
 			Application.Run ();

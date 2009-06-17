@@ -34,9 +34,7 @@ namespace GLiveMsgr.Gui
 		}
 		
 		public Gtk.Entry Entry {
-			get {
-				return base.Entry;
-			}
+			get { return base.Entry; }
 		}
 	}
 }

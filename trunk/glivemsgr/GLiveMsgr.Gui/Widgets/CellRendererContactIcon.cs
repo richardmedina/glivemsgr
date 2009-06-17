@@ -56,7 +56,7 @@ namespace GLiveMsgr.Gui
 					Pixbuf.Height,
 					Gdk.RgbDither.None,
 					0, 0);
-					
+				
 				if ((flags & CellRendererState.Prelit) > 0) {	
 					Cairo.Context cr = Gdk.CairoHelper.Create (window);
 					

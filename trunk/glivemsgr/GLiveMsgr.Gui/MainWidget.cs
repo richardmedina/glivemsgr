@@ -26,6 +26,7 @@ namespace GLiveMsgr.Gui
 			_account.Terminated += account_Terminated;
 			
 			windows = new WindowCollection ();
+			
 			//account.ConversationRequest += account_ConversationRequest;
 			_account.Conversations.Added += account_ConversationAdded;
 			_account.Conversations.Removed += account_ConversationRemoved;
@@ -37,7 +38,9 @@ namespace GLiveMsgr.Gui
 				Theme.GdkColorFromCairo (Theme.BaseColor));
 			
 			_logonWidget = new LogonWidget (account);
+				
 			_contactListWidget = new ContactListWidget (account);
+			
 			//logonWidget.LogonData.ButtonConnect.Clicked += 
 			//	ButtonConnect_Clicked;
 			
@@ -110,7 +113,7 @@ namespace GLiveMsgr.Gui
 				}
 			});
 		}
-
+		
 		public MsnpAccount Account {
 			get { return _account; }
 		}

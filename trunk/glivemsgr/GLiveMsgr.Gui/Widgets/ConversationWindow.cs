@@ -31,6 +31,7 @@ namespace GLiveMsgr.Gui
 			conversation.Buddies.Added += conversation_Buddies_Added;
 			
 			Title = "Conversation with ";
+			Icon = Gdk.Pixbuf.LoadFromResource ("messenger.png");
 			
 			Resize (530, 380);
 			

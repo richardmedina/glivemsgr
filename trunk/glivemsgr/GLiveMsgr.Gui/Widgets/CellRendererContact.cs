@@ -29,7 +29,7 @@ namespace GLiveMsgr.Gui
 		protected override void Render (Gdk.Drawable window, Widget widget, Gdk.Rectangle background_area,
 			Gdk.Rectangle cell_area, Gdk.Rectangle expose_area, CellRendererState flags)
 		{
-		
+			
 				//Mutex m = new Mutex ();
 				//m.WaitOne ();
 			using (Cairo.Context context = Gdk.CairoHelper.Create (window)) {				
@@ -42,6 +42,7 @@ namespace GLiveMsgr.Gui
 				}
 				
 				showText (context, Text, ref x, background_area.Y, true, isgroup);
+				((IDisposable)context.Target).Dispose ();
 			}
 		}
 		
@@ -55,6 +56,7 @@ namespace GLiveMsgr.Gui
 			//image.Destroy ();
 			
 			x += image.Width;
+			((IDisposable) image).Dispose ();
 		}
 
 		private void showText (Cairo.Context cr, string text, ref int x, int y, bool usemarkup, bool isgroup) 
@@ -94,6 +96,7 @@ namespace GLiveMsgr.Gui
 			layout.GetPixelSize (out lw, out lh);
 			
 			x += lw;
+			layout.Dispose ();
 		}
 		
 		private void showText (Cairo.Context cr, string text, ref int x, int y)

@@ -12,7 +12,7 @@ namespace GLiveMsgr.Gui
 	
 	public class ContactListHeader : Gtk.VBox
 	{
-		private Gtk.Image displayPic;
+		private DisplayPictureWidget displayPic;
 		
 		private Gtk.HBox hbox;
 		
@@ -29,9 +29,11 @@ namespace GLiveMsgr.Gui
 			Gdk.Pixbuf pixbuf = Gdk.Pixbuf.LoadFromResource 
 				("user_display_picture_default.png");
 			
-			pixbuf = pixbuf.ScaleSimple (60, 60, Gdk.InterpType.Nearest);
+			//pixbuf = pixbuf.ScaleSimple (60, 60, Gdk.InterpType.Nearest);
 			
-			displayPic = new Gtk.Image (pixbuf);
+			displayPic = new DisplayPictureWidget (pixbuf);
+			displayPic.SetSizeRequest (70, 70);
+			displayPic.Editable = true;
 			
 			_aliasButton = new AliasChangeButton ();
 			

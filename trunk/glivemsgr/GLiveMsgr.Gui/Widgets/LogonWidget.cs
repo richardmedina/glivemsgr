@@ -22,7 +22,9 @@ namespace GLiveMsgr.Gui
 			this.account = account;
 			
 			logonHeader = new LogonHeaderWidget ();
-			logonData = new LogonDataWidget (this.account);
+			
+			logonData = new LogonDataWidget (account);
+			
 			logonFooter = new LogonFooterWidget ();
 			
 			//base.ModifyBg (StateType.Normal, 
@@ -36,7 +38,7 @@ namespace GLiveMsgr.Gui
 			ShowAll ();
 			
 		}
-				
+		
 		public LogonHeaderWidget LogonHeader {
 			get { return logonHeader; }
 		}

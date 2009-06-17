@@ -1,21 +1,21 @@
 <Combine name="glivemsgr" fileversion="2.0" outputpath="build/bin/">
   <Configurations active="Debug">
     <Configuration name="Debug" ctype="CombineConfiguration">
-      <Entry build="True" name="Glivemsgr" configuration="Debug" />
+      <Entry build="True" name="GLiveMsgr" configuration="Debug" />
       <Entry build="True" name="System.Net.Protocols" configuration="Debug" />
       <Entry build="True" name="System.Net.Protocols.Msnp" configuration="Debug" />
       <Entry build="True" name="RickiLib.Widgets" configuration="Debug" />
       <Entry build="True" name="RickiLib.Types" configuration="Debug" />
     </Configuration>
     <Configuration name="Release" ctype="CombineConfiguration">
-      <Entry build="True" name="Glivemsgr" configuration="Release" />
+      <Entry build="True" name="GLiveMsgr" configuration="Release" />
       <Entry build="True" name="System.Net.Protocols" configuration="Release" />
       <Entry build="True" name="System.Net.Protocols.Msnp" configuration="Release" />
       <Entry build="True" name="RickiLib.Widgets" configuration="Release" />
       <Entry build="True" name="RickiLib.Types" configuration="Release" />
     </Configuration>
   </Configurations>
-  <StartMode startupentry="Glivemsgr" single="True">
+  <StartMode startupentry="GLiveMsgr" single="True">
     <Execute type="None" entry="GLiveMsgr.Gui" />
     <Execute type="None" entry="System.Net.Protocols" />
     <Execute type="None" entry="System.Net.Protocols.Msnp" />
