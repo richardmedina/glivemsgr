@@ -43,7 +43,7 @@ namespace System.Net.Protocols.Msnp
 		
 		private event EventHandler _stateChanged; 
 		
-		private ConversationArrivedHandler _conversationArrived;
+		private ConversationEventHandler _conversationArrived;
 		
 		public Contact (Account account, string username) :
 			this (account, username, string.Empty)
@@ -98,7 +98,7 @@ namespace System.Net.Protocols.Msnp
 			set { _lists = value; }
 		}
 		
-		public event ConversationArrivedHandler ConversationArrived {
+		public event ConversationEventHandler ConversationArrived {
 			add { _conversationArrived += value; }
 			remove { _conversationArrived -= value; }
 		}

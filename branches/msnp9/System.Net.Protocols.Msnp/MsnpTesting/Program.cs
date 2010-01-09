@@ -38,6 +38,8 @@ namespace MsnpTesting
 		
 		static void Main(string[] args)
 		{
+			//TextMessage msg;
+			//TextMessage.TryParse (string.Empty, out msg);
 			
 			printColor ("0000F1");
 			printColor ("0CD0F1");
@@ -56,6 +58,11 @@ namespace MsnpTesting
 			//account.ContactsLoaded += accountContactsLoaded;
 			account.StateChanged += accountStateChanged;
 			account.MessageArrived += accountMessageArrived;
+			account.Conversations.Added += conversationAdded;
+			
+			//account.Switchboard.Sessions.Added += switchBoardSessionsAdded;
+			
+			
 			
 			
 			account.Login ();
@@ -117,14 +124,31 @@ namespace MsnpTesting
 */		
 		private static void accountStateChanged (object sender, EventArgs args)
 		{
+			Account account = (Account) sender;
 			Console.WriteLine ("Your state is now {0}", 
-				Utils.ContactStateToString ((int) ((Account)sender).State));
+				Utils.ContactStateToString ((int) account.State));
+				
+			//if (account.State == ContactState.Offline)
+				
+				
 		}
 		
 		private static void accountMessageArrived (object sender, MsnpMessageArgs args)
 		{
 			Console.WriteLine ("MessageArrived({0}): {1}", args.Message.Command, 
 			                   args.Message.Body);
+		}
+		
+		private static void conversationAdded (object sender, ConversationEventArgs args)
+		{
+			args.Conversation.MessageArrived += messageArrived;
+			args.Conversation.Open ();
+		}
+		
+		private static void messageArrived (object sender, MessageEventArgs args)
+		{
+			if (args.Message.Type == System.Net.Protocols.Msnp.MessageType.Text)
+				Console.WriteLine ("{0}>{1}", (args.Message as TextMessage).ToString (), (args.Message as TextMessage).Text);
 		}
 	}
 }

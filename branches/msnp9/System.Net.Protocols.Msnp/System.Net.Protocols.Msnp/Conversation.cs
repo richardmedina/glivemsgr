@@ -41,22 +41,60 @@ namespace System.Net.Protocols.Msnp
 		private Account _account;
 		private MsnpSBSession _session;
 		
+		private event MessageEvent _message_arrived;
+		
 		public Conversation (Account account, MsnpSBSession session)
 		{
 			_account = account;
 			_session = session;
 			_session.Username = _account.Username;
+			_session.Opened += delegate {
+				Console.WriteLine ("Session openned");
+			};
+			
 			_session.CommandArrived += sessionCommandArrived;
+			_session.MessageArrived += sessionMessageArrived;
+			
+			_message_arrived = onMessageArrived;
+			Console.WriteLine ("Conversation Created");
 		}
 		
 		public void Open ()
 		{
+			Console.WriteLine ("Running Open ()");
 			_session.Open ();
+		}
+		
+		protected virtual void OnMessageArrived (Message message)
+		{
+			Console.WriteLine ("MessageArrived");
+			_message_arrived (this, new MessageEventArgs (message));
 		}
 		
 		private void sessionCommandArrived (object sender, MsnpCommandArrivedArgs args)
 		{
+			Console.WriteLine ("SessionCommandArrived");
+		}
+		
+		private void sessionMessageArrived (object sender, MsnpMessageArgs args)
+		{
+			//string message = args.Message.Body;
+			TextMessage message;
 			
+			Console.WriteLine ("Parsing Received Message...");
+			
+			if (TextMessage.TryParse (args.Message, out message)) {
+				OnMessageArrived (message);
+			}
+		}
+		
+		private void onMessageArrived (object sender, MessageEventArgs args)
+		{
+		}
+		
+		public event MessageEvent MessageArrived {
+			add { _message_arrived += value; }
+			remove { _message_arrived -= value; }
 		}
 		
 		public string Hostname {
@@ -86,6 +124,10 @@ namespace System.Net.Protocols.Msnp
 		
 		public Account Account {
 			get { return _account; }
+		}
+		
+		public MsnpSBSession Session {
+			get { return _session; }
 		}
 	}
 }

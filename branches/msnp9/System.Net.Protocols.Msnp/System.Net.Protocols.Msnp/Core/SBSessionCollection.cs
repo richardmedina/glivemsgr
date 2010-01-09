@@ -50,8 +50,9 @@ namespace System.Net.Protocols.Msnp.Core
 			base.Remove (session);
 		}
 		
-		public void Activate (MsnpSBSession session)
+		public void Activate (MsnpSBSession session, MsnpCommand command)
 		{
+			session.Command = command;
 			OnActivated (session);
 		}
 		

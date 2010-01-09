@@ -1,26 +1,26 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="System.Net.Protocols.Msnp/Message.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MsnpTesting/Program.cs" ctype="Workbench">
     <Files>
-      <File FileName="System.Net.Protocols.Msnp/Account.cs" Line="318" Column="62" />
-      <File FileName="System.Net.Protocols.Msnp/Core/MsnpSwitchboard.cs" Line="76" Column="28" />
-      <File FileName="System.Net.Protocols.Msnp/Core/MsnpClient.cs" Line="53" Column="32" />
-      <File FileName="System.Net.Protocols.Msnp/Core/MsnpSBSession.cs" Line="97" Column="4" />
-      <File FileName="System.Net.Protocols.Msnp/Core/MsnpEngine.cs" Line="143" Column="1" />
-      <File FileName="System.Net.Protocols.Msnp/Core/MsnpNotificationClient.cs" Line="112" Column="6" />
-      <File FileName="System.Net.Protocols.Msnp/Core/MsnpDispatchClient.cs" Line="1" Column="1" />
-      <File FileName="MsnpTesting/Program.cs" Line="86" Column="15" />
-      <File FileName="System.Net.Protocols.Msnp/Core/Connection.cs" Line="64" Column="35" />
-      <File FileName="System.Net.Protocols.Msnp/Conversation.cs" Line="42" Column="34" />
-      <File FileName="System.Net.Protocols.Msnp/Message.cs" Line="33" Column="28" />
-      <File FileName="System.Net.Protocols.Msnp/TextMessage.cs" Line="39" Column="4" />
+      <File FileName="System.Net.Protocols.Msnp/Core/MsnpEngine.cs" Line="60" Column="18" />
+      <File FileName="System.Net.Protocols.Msnp/Account.cs" Line="334" Column="27" />
+      <File FileName="System.Net.Protocols.Msnp/Conversation.cs" Line="130" Column="28" />
+      <File FileName="MsnpTesting/Program.cs" Line="135" Column="3" />
+      <File FileName="System.Net.Protocols.Msnp/Core/MsnpSBSession.cs" Line="147" Column="29" />
+      <File FileName="System.Net.Protocols.Msnp/Message.cs" Line="26" Column="15" />
+      <File FileName="System.Net.Protocols.Msnp/TextMessage.cs" Line="1" Column="1" />
+      <File FileName="System.Net.Protocols.Msnp/Core/Connection.cs" Line="180" Column="4" />
+      <File FileName="System.Net.Protocols.Msnp/Core/SBSessionCollection.cs" Line="55" Column="30" />
+      <File FileName="System.Net.Protocols.Msnp/Core/MsnpSwitchboard.cs" Line="1" Column="1" />
+      <File FileName="System.Net.Protocols.Msnp/ConversationCollection.cs" Line="31" Column="29" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="MsnpTesting" expanded="True" />
+          <Node name="MsnpTesting" expanded="True">
+            <Node name="Program.cs" selected="True" />
+          </Node>
           <Node name="System.Net.Protocols.Msnp" expanded="True">
             <Node name="Core" expanded="True" />
-            <Node name="Message.cs" selected="True" />
           </Node>
         </State>
       </Pad>

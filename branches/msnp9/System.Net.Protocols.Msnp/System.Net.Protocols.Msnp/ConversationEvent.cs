@@ -27,23 +27,16 @@ using System;
 namespace System.Net.Protocols.Msnp
 {
 	
-	public delegate void ConversationArrivedHandler (object sender,
-		ConversationArrivedArgs args);
+	public delegate void ConversationEventHandler (object sender,
+		ConversationEventArgs args);
 	
-	public class ConversationArrivedArgs
+	public class ConversationEventArgs : System.EventArgs
 	{
-		private Contact _owner;
 		private Conversation _conversation;
 		
-		public ConversationArrivedArgs (Contact owner, 
-			Conversation conversation)
+		public ConversationEventArgs (Conversation conversation)
 		{
-			_owner = owner;
 			_conversation = conversation;
-		}
-		
-		public Contact Owner {
-			get { return _owner; }
 		}
 		
 		public Conversation Conversation {

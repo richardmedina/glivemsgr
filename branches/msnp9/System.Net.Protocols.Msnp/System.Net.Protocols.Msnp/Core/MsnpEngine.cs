@@ -63,10 +63,22 @@ namespace System.Net.Protocols.Msnp.Core
 			_switchboard = new MsnpSwitchboard (this);
 		}
 		
-		public void Connect ()
+		public void Login ()
 		{
 			_notification.Username = Username;
 			_notification.Open ();
+		}
+		
+		public void Logout ()
+		{
+			if (_notification.Active) {
+				Console.WriteLine ("Closing _notification");
+				_notification.Close ();
+			}
+			if (_dispatch.Active) {
+				Console.WriteLine ("Closing _dispatch");
+				_dispatch.Close ();
+			}
 		}
 		
 		protected virtual void OnCommandArrived (MsnpCommand command)

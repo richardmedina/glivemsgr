@@ -43,6 +43,8 @@ namespace System.Net.Protocols.Msnp
 		private event EventHandler _contactsLoaded;
 		private event EventHandler _stateChanged;
 		
+		private ConversationCollection _conversations;
+		
 		
 		
 		public Account () : this (string.Empty, string.Empty)
@@ -61,13 +63,10 @@ namespace System.Net.Protocols.Msnp
 			_contactsLoaded += onContactsLoaded;
 			_stateChanged = onStateChanged;
 			
+			_conversations = new ConversationCollection ();
+			
 			Switchboard.Added += SwitchboardAdded;
 			Switchboard.Activated += SwitchboardActivated;
-		}
-		
-		public void Login ()
-		{
-			Connect ();
 		}
 		
 		public void SetState (ContactState state)
@@ -266,6 +265,7 @@ namespace System.Net.Protocols.Msnp
 		{
 			// an incomming message
 			//printCommandArgs (command);
+			
 		}
 		
 		private void processSYN (MsnpCommand command)
@@ -315,15 +315,18 @@ namespace System.Net.Protocols.Msnp
 		
 		private void SwitchboardAdded (object sender, SBSessionCollectionEventArgs args)
 		{
-			Conversation conv = new Conversation (this, args.Session);
-			Console.WriteLine ("Attemping to start conversation");
-			conv.Open ();
-			Console.WriteLine ("Created");
+			Console.WriteLine ("Adding conversation to pool");
+			Conversation conversation = new Conversation (this, args.Session);
+			Conversations.Add (conversation);
+			conversation.Open ();
 		}
 		
 		private void SwitchboardActivated (object sender, SBSessionCollectionEventArgs args)
 		{
 			Console.WriteLine ("Activating conversation.. DONE");
+			foreach (Conversation conversation in Conversations)
+				if (conversation.Session == args.Session)
+					conversation.Open ();
 		}
 		
 		public event EventHandler LoggedIn {
@@ -355,6 +358,10 @@ namespace System.Net.Protocols.Msnp
 		public ContactState State {
 			get { return _contactState; }
 			protected set { _contactState = value; }
+		}
+		
+		public ConversationCollection Conversations {
+			get { return _conversations; }
 		}
 		
 		// Events
