@@ -43,12 +43,14 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		public MsnpSBSession (MsnpCommand command) : base (MsnpClientType.Switchboard)
 		{
-				_command = command;
+				Command = command;
 				// index 4 is the username who calling..
 				Owner = command.Arguments [4];
 				_opened = onOpened;
 				_closed = onClosed;
 				_members = new List<string> ();
+				
+				Console.WriteLine ("Session ready to run Open");
 		}
 		
 		public new void Open ()
@@ -98,12 +100,12 @@ namespace System.Net.Protocols.Msnp.Core
 		
 		protected override void OnCommandArrived (MsnpCommand command)
 		{
-			
+			Console.WriteLine ("MSnpSBSession.OnCommandArrived");
 			if (command.Type == MsnpCommandType.IRO) {
 				// position 2 in command is username of member
 				_members.Add (command.Arguments [2]);
 				// This action must be performed in order to process next command, some bug here!
-				Read ();
+				//Read ();
 			}
 			if (command.Type == MsnpCommandType.ANS)
 				OnOpened ();
@@ -138,6 +140,11 @@ namespace System.Net.Protocols.Msnp.Core
 		public string Owner {
 			get { return _owner; }
 			set { _owner = value; }
+		}
+		
+		public MsnpCommand Command {
+			get { return _command; }
+			set { _command = value; }
 		}
 		
 		public event EventHandler Opened {

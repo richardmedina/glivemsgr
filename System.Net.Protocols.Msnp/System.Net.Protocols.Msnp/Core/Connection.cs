@@ -115,12 +115,14 @@ namespace System.Net.Protocols.Msnp.Core
 		{
 			_writer.WriteLine (format, objs);
 			_writer.Flush ();
+			Console.WriteLine (">>{0}", string.Format (format, objs));
 		}
 		
 		public void RawSend (string format, params object [] objs)
 		{
 			_writer.Write (format, objs);
 			_writer.Flush ();
+			Console.WriteLine (">>{0}", string.Format (format, objs));
 		}
 		
 		public string Read ()
@@ -157,6 +159,8 @@ namespace System.Net.Protocols.Msnp.Core
 			if (text.Length > 0)
 				OnDataArrived (text);
 			}
+			
+			Console.WriteLine ("<<{0}", text);
 			return text;
 		}
 		// TODO: must read 'length' characters
@@ -173,7 +177,7 @@ namespace System.Net.Protocols.Msnp.Core
 			}
 			
 			
-			
+			Console.WriteLine ("<<{0}", str);
 			return str;
 		}
 		

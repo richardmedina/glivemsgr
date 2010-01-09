@@ -48,7 +48,7 @@
     <File name="ObservedCollectionAction.cs" subtype="Code" buildaction="Compile" />
     <File name="ListType.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/LoginErrorHandler.cs" subtype="Code" buildaction="Compile" />
-    <File name="ConversationArrived.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConversationEvent.cs" subtype="Code" buildaction="Compile" />
     <File name="Conversation.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpMessage.cs" subtype="Code" buildaction="Compile" />
     <File name="Core/MsnpMessageHandler.cs" subtype="Code" buildaction="Compile" />
@@ -61,6 +61,8 @@
     <File name="MessageType.cs" subtype="Code" buildaction="Compile" />
     <File name="FontStyle.cs" subtype="Code" buildaction="Compile" />
     <File name="Color.cs" subtype="Code" buildaction="Compile" />
+    <File name="MessageEvent.cs" subtype="Code" buildaction="Compile" />
+    <File name="ConversationCollection.cs" subtype="Code" buildaction="Compile" />
   </Contents>
   <References>
     <ProjectReference type="Gac" localcopy="True" refto="System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />

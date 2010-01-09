@@ -77,7 +77,7 @@ namespace System.Net.Protocols.Msnp.Core
 				MsnpSBSession session;
 				// Fourth argument contains the calling username
 				if (GetSession (args.Command.Arguments [4], out session))
-					Activate (session);
+					Activate (session, args.Command);
 				else {
 					session = CreateSession (args.Command);
 					Add (session);
