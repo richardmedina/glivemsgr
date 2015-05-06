@@ -1,0 +1,1 @@
+GNOME Live Messenger is an open source MSN Messenger client for GNOME Desktop.
